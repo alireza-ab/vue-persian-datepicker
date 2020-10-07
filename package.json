@@ -1,7 +1,7 @@
 {
 	"name": "vue-persian-range-datepicker",
 	"description": "A datepicker component for select persian date",
-	"version": "0.1.0-beta",
+	"version": "0.0.0",
 	"main": "./dist/datepicker.umd.js",
 	"unpkg": "./dist/datepicker.min.js",
 	"scripts": {
