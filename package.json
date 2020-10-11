@@ -1,15 +1,15 @@
 {
 	"name": "vue-persian-range-datepicker",
 	"description": "A datepicker component for select persian date",
-	"version": "0.0.0",
-	"main": "./dist/datepicker.umd.js",
+	"version": "0.0.1",
+	"main": "./dist/datepicker.common.js",
 	"unpkg": "./dist/datepicker.min.js",
 	"scripts": {
 		"serve": "webpack-dev-server --hot --watch",
 		"build:prod": "cross-env NODE_ENV=production webpack",
-		"build:umd": "cross-env NODE_ENV=umd webpack",
+		"build:common": "cross-env NODE_ENV=common webpack",
 		"build:unpkg": "cross-env NODE_ENV=unpkg webpack",
-		"build:all": "npm run build:prod && npm run build:umd && npm run build:unpkg"
+		"build:all": "npm run build:prod && npm run build:common && npm run build:unpkg"
 	},
 	"repository": {
 		"type": "git",

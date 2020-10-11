@@ -95,14 +95,14 @@ if (process.env.NODE_ENV === 'production') {
     })]
 }
 
-if (process.env.NODE_ENV === 'umd') {
+if (process.env.NODE_ENV === 'common') {
     module.exports.entry = './src/components/DatePicker.vue'
 
     module.exports.output = {
         path: path.resolve(__dirname, './dist'),
         publicPath: '/dist/',
-        filename: 'datepicker.umd.js',
-        library: 'VuePersianRangeDatePicker',
+        filename: 'datepicker.common.js',
+        library: 'datePicker',
         libraryTarget: 'umd'
     }
 
@@ -135,7 +135,7 @@ if (process.env.NODE_ENV === 'unpkg') {
         path: path.resolve(__dirname, './dist'),
         publicPath: '/dist/',
         filename: 'datepicker.min.js',
-        library: 'VuePersianRangeDatePicker',
+        library: 'datePicker',
         libraryExport: 'default',
     }
     module.exports.devtool = ''

@@ -1,7 +1,11 @@
 <template>
 	<div
-		:class="['pdp-fa', { 'pdp-range': range }, { 'pdp-modal': modalMode }]"
-		id="pdp"
+		:class="[
+			'pdp',
+			'pdp-fa',
+			{ 'pdp-range': range },
+			{ 'pdp-modal': modalMode },
+		]"
 	>
 		<slot name="before">
 			<label v-if="label" :for="attrs.id" class="pdp-label">
@@ -404,7 +408,7 @@
 			attrs() {
 				let attrs = { ...this.$attrs };
 				delete attrs.value;
-				attrs.id = attrs.id || "date";
+				attrs.id = attrs.id || "date-" + this.createUniqeNumber();
 				return attrs;
 			},
 			years() {
@@ -607,11 +611,11 @@
 					this.$emit("select");
 					if (this.range && !this.endRange) {
 						document
-							.querySelector("#pdp .pdp-main")
+							.querySelector(".pdp .pdp-main")
 							.addEventListener("mouseover", this.selectInRangeDate);
 					} else if (this.endRange) {
 						document
-							.querySelector("#pdp .pdp-main")
+							.querySelector(".pdp .pdp-main")
 							.removeEventListener("mouseover", this.selectInRangeDate);
 					}
 				}
@@ -660,12 +664,12 @@
 						39: -1, // for right arrow must one day subtract
 						40: 7, // for down arrow must seven day add
 					};
-					let focusedDay = document.querySelectorAll("#pdp .pdp-day.hover");
+					let focusedDay = document.querySelectorAll(".pdp .pdp-day.hover");
 					if (!focusedDay.length) {
-						focusedDay = document.querySelectorAll("#pdp .pdp-day.in-range");
+						focusedDay = document.querySelectorAll(".pdp .pdp-day.in-range");
 						if (!focusedDay.length)
 							focusedDay = document.querySelectorAll(
-								"#pdp .pdp-day.start-range,#pdp .pdp-day.end-range"
+								".pdp .pdp-day.start-range,.pdp .pdp-day.end-range"
 							);
 					}
 					focusedDay = focusedDay[focusedDay.length - 1];
@@ -690,12 +694,12 @@
 						}
 						await this.$nextTick(() => {
 							focusedDay = document.querySelector(
-								`#pdp .pdp-main .pdp-month[data-column='${column}'] .pdp-day[value='${nextElementValue}']`
+								`.pdp .pdp-main .pdp-month[data-column='${column}'] .pdp-day[value='${nextElementValue}']`
 							);
 							focusedDay.classList.add("hover");
 						});
 					} else {
-						focusedDay = document.querySelector("#pdp .pdp-day:not(.empty)");
+						focusedDay = document.querySelector(".pdp .pdp-day:not(.empty)");
 						focusedDay.classList.add("hover");
 					}
 					if (this.range && this.startRange && !this.endRange) {
@@ -703,7 +707,7 @@
 					}
 				} else if (e.keyCode == 13) {
 					// 13 is key code of Enter key
-					let focusedDay = document.querySelector("#pdp .pdp-day.hover");
+					let focusedDay = document.querySelector(".pdp .pdp-day.hover");
 					if (focusedDay)
 						this.selectDate(focusedDay.innerText, this.getColumn(focusedDay));
 					else this.selectDate();
@@ -713,7 +717,7 @@
 				if (!target.classList.contains("pdp-day")) return;
 				let column = this.getColumn(target);
 				let date = target.innerText;
-				document.querySelectorAll(`#pdp .pdp-day`).forEach((el) => {
+				document.querySelectorAll(`.pdp .pdp-day`).forEach((el) => {
 					el.classList.remove("in-range");
 				});
 				let onDisplay;
@@ -726,7 +730,7 @@
 						for (let j = +date; j > 0; j--) {
 							if (this.checkDate(onDisplay.date(j))) {
 								target = document.querySelector(
-									`#pdp .pdp-main .pdp-month[data-column='${i}'] .pdp-day[value='${j}']:not(.start-range)`
+									`.pdp .pdp-main .pdp-month[data-column='${i}'] .pdp-day[value='${j}']:not(.start-range)`
 								);
 								if (target) target.classList.add("in-range");
 								else break columnLoop;
@@ -761,6 +765,11 @@
 			},
 			getColumn(el) {
 				return el.parentNode.parentNode.parentNode.dataset.column;
+			},
+			createUniqeNumber() {
+				return (
+					new Date().getMilliseconds() + "" + Math.floor(Math.random() * 100)
+				);
 			},
 		},
 	};

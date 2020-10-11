@@ -28,14 +28,12 @@
 				</label>
 			</template>
 		</date-picker>
-
-		<!-- <date-picker></date-picker> -->
 	</div>
 </template>
 
 <script>
 	import datePicker, { PersianDate } from "./components/DatePicker";
-	// import datePicker, { PersianDate } from "./components/DatePicker.vue";
+
 	export default {
 		name: "App",
 		components: { datePicker },
@@ -47,7 +45,7 @@
 			};
 		},
 		mounted() {
-			console.log(this.core);
+			console.log(this.core.toString());
 		},
 		methods: {
 			open() {
