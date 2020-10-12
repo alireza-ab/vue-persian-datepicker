@@ -1,11 +1,6 @@
 <template>
 	<div
-		:class="[
-			'pdp',
-			'pdp-fa',
-			{ 'pdp-range': range },
-			{ 'pdp-modal': modalMode },
-		]"
+		:class="['pdp', 'pdp-fa', { 'pdp-range': range }, { 'pdp-modal': modal }]"
 	>
 		<slot name="before">
 			<label v-if="label" :for="attrs.id" class="pdp-label">
@@ -82,7 +77,7 @@
 						</slot>
 					</button>
 					<div>
-						<div v-for="(item, i) in columnNumber" :key="i">
+						<div v-for="(item, i) in columnCount" :key="i">
 							<button
 								@click="showPart('month')"
 								class="pdp-month"
@@ -125,7 +120,7 @@
 				<div class="pdp-main">
 					<div
 						class="pdp-month"
-						v-for="(item, i) in columnNumber"
+						v-for="(item, i) in columnCount"
 						:key="i"
 						:data-column="i"
 					>
@@ -329,7 +324,7 @@
 			 * @default true
 			 * @type Boolean
 			 */
-			modalMode: {
+			modal: {
 				default: false,
 				type: Boolean,
 			},
@@ -351,7 +346,7 @@
 			 *  	or send the object of the number of
 			 *  	column in the breakpoint.
 			 * 		2. if the breaking point in the object
-			 * 		is not specified, the default value is 2
+			 * 		is not specified, the default value it's 2
 			 */
 			column: {
 				default: () => {
@@ -428,7 +423,7 @@
 			},
 			monthDays() {
 				let months = [];
-				for (let i = 0; i < this.columnNumber; i++) {
+				for (let i = 0; i < this.columnCount; i++) {
 					let emptyCells;
 					let selectedYear = this.onDisplay
 						.clone()
@@ -516,7 +511,7 @@
 				}
 				return months;
 			},
-			columnNumber() {
+			columnCount() {
 				if (typeof this.column == "number") return this.column;
 				let column;
 				Object.keys(this.column)
@@ -573,11 +568,11 @@
 				this.showYearSelect = false;
 			},
 			selectDate(date, column) {
+				let onDisplay = this.onDisplay
+					.clone()
+					.addMonth(column || 0)
+					.date(date);
 				if (date) {
-					let onDisplay = this.onDisplay
-						.clone()
-						.addMonth(column || 0)
-						.date(date);
 					if (this.range) {
 						if (this.endRange) {
 							this.startRange = onDisplay;
@@ -611,7 +606,7 @@
 					this.submitDate();
 				}
 				if (date) {
-					this.$emit("select");
+					this.$emit("select", onDisplay);
 					if (this.range && !this.endRange) {
 						document
 							.querySelector(".pdp .pdp-main")
@@ -689,10 +684,10 @@
 						nextElementValue = nextElementValue.date();
 						column = focusedMonth.diff(firstColumnMonth, "month");
 						if (column < 0) {
-							this.onDisplay.subtractMonth(this.columnNumber);
-							column = this.columnNumber - 1;
-						} else if (column >= this.columnNumber) {
-							this.onDisplay.addMonth(this.columnNumber);
+							this.onDisplay.subtractMonth(this.columnCount);
+							column = this.columnCount - 1;
+						} else if (column >= this.columnCount) {
+							this.onDisplay.addMonth(this.columnCount);
 							column = 0;
 						}
 						await this.$nextTick(() => {
@@ -763,7 +758,10 @@
 				}
 				this.displayValue = displayDate;
 				this.setModel(date);
-				this.$emit("change");
+				this.$emit(
+					"change",
+					this.range ? [this.startRange, this.endRange] : this.startRange
+				);
 				if (close) this.showDatePicker = false;
 			},
 			getColumn(el) {

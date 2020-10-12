@@ -67,17 +67,20 @@
 				e.preventDefault();
 				console.log("focused");
 			},
-			change() {
-				console.log("changed");
+			change(e) {
+				console.log(e, "changed");
 			},
-			select() {
-				console.log("selected");
+			select(e) {
+				console.log(e, "selected");
 			},
 		},
 	};
 </script>
 
 <style>
+	body {
+		height: 500rem;
+	}
 	#app {
 		margin: 1px;
 		/* padding: 100px; */

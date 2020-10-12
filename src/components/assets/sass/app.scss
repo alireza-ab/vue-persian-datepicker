@@ -91,9 +91,11 @@
 		}
 
 		.pdp {
+			position: fixed;
 			top: 50%;
 			left: 50%;
-			transform: translateX(-50%) translateY(-50%);
+			transform: translate(-50%, -50%);
+			animation: startModal 0.1s;
 
 			&::after {
 				all: unset !important;
@@ -413,12 +415,23 @@
 }
 
 @keyframes start {
-	0% {
-		transform: translateX(-50%) translateY(-50%) scale(0.5);
+	from {
+		transform: scale(0.5);
 		opacity: 0;
 	}
-	100% {
-		transform: translateX(-50%) translateY(-50%) scale(1);
+	to {
+		transform: scale(1);
+		opacity: 1;
+	}
+}
+
+@keyframes startModal {
+	from {
+		transform: translate(-50%, -50%) scale(0.5);
+		opacity: 0;
+	}
+	to {
+		transform: translate(-50%, -50%) scale(1);
 		opacity: 1;
 	}
 }
