@@ -8,17 +8,17 @@
 			</label>
 		</slot>
 		<div :class="divClass">
-			<slot name="icon">
-				<div
-					:class="[
-						'pdp-icon',
-						{ 'pdp-pointer': ['all', 'icon'].includes(clickOn) },
-					]"
-					@click="showPicker('icon')"
-				>
+			<div
+				:class="[
+					'pdp-icon',
+					{ 'pdp-pointer': ['all', 'icon'].includes(clickOn) },
+				]"
+				@click="showPicker('icon')"
+			>
+				<slot name="icon">
 					<calendar-icon width="20" height="20"></calendar-icon>
-				</div>
-			</slot>
+				</slot>
+			</div>
 			<input
 				:class="inputClass"
 				type="text"
@@ -159,7 +159,7 @@
 				</div>
 				<div class="pdp-footer">
 					<div>
-						<slot name="startRange"></slot>
+						<slot name="footer"></slot>
 						<small v-if="startRange">
 							{{ startRange.toString(displayFormat) }}
 						</small>
@@ -377,7 +377,7 @@
 		},
 		model: {
 			prop: "value",
-			event: "setdate",
+			event: "setDate",
 		},
 		watch: {
 			show(val) {
@@ -619,7 +619,7 @@
 				}
 			},
 			setModel(date) {
-				this.$emit("setdate", date);
+				this.$emit("setDate", date);
 			},
 			goToToday() {
 				this.onDisplay = new PersianDate();
