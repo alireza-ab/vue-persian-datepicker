@@ -20,7 +20,6 @@
 			@open="open"
 			@select="select"
 			@change="change"
-			:modal-mode="true"
 		>
 			<template #before>
 				<label for="date">
@@ -28,6 +27,8 @@
 				</label>
 			</template>
 		</date-picker>
+
+		<button @click="show = true">show</button>
 	</div>
 </template>
 

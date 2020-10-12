@@ -206,6 +206,10 @@
 	//TODO: add resize function
 	//TODO: test in all browser
 	//TODO: add style must be optional
+	//TODO: change range prop to mode
+	//TODO: if now date is disabled, show last date
+	//TODO: add to .pdp position relative
+	//TODO: when use show prop false this when datepicker closed
 	//TODO: refactor and write comment
 
 	// Core
@@ -341,7 +345,7 @@
 
 			/**
 			 * number of column
-			 * @default "{ 320: 1 }"
+			 * @default "{ 576: 1 }"
 			 * @type Object | Number
 			 * @desc 1. you can send the number of column
 			 *  	or send the object of the number of
@@ -351,7 +355,7 @@
 			 */
 			column: {
 				default: () => {
-					return { 320: 1 };
+					return { 576: 1 };
 				},
 				type: [Number, Object],
 			},
@@ -517,12 +521,11 @@
 				let column;
 				Object.keys(this.column)
 					.sort((a, b) => b - a)
-					.forEach((breakpoint) => {
+					.some((breakpoint) => {
 						if (this.documentWidth <= breakpoint)
 							column = this.column[breakpoint];
-						else column = 2;
 					});
-				return column;
+				return column || 2;
 			},
 		},
 		created() {
