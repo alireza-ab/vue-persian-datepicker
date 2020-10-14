@@ -2,11 +2,10 @@
 	<div id="app" class="rtl">
 		<date-picker
 			v-model="date"
-			placeholder="لطفا یک تاریخ را انتخاب کنید"
 			tabindex="1"
 			required
-			from="1399"
-			to="1399/12/15"
+			from="1398"
+			to="1401"
 			format="YYYY-MM-DD"
 			input-format="jYYYY/jMM/jDD"
 			display-format="jDD jMMMM"
@@ -21,14 +20,7 @@
 			@select="select"
 			@change="change"
 		>
-			<template #before>
-				<label for="date">
-					select date:
-				</label>
-			</template>
 		</date-picker>
-
-		<button @click="show = true">show</button>
 	</div>
 </template>
 
@@ -83,7 +75,7 @@
 	}
 	#app {
 		margin: 1px;
-		/* padding: 100px; */
+		padding: 40rem;
 	}
 
 	.rtl {

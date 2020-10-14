@@ -204,7 +204,6 @@
 	//TODO: change range prop to mode
 	//TODO: if now date is disabled, show last date
 	//TODO: add to .pdp position relative
-	//TODO: when use show prop false this when datepicker closed
 	//TODO: refactor and write comment
 
 	// Core
@@ -225,7 +224,7 @@
 		props: {
 			/**
 			 * the format of the model value
-			 * @default YYYY-MM-DD
+			 * @default "YYYY-MM-DD"
 			 * @type String
 			 * @see https://github.com/alireza-ab/persian-date#formats
 			 */
@@ -236,7 +235,7 @@
 
 			/**
 			 * the format of the input value
-			 * @default date
+			 * @default "date"
 			 * @type String
 			 * @see https://github.com/alireza-ab/persian-date#formats
 			 */
@@ -290,7 +289,7 @@
 
 			/**
 			 * show the picker with click on the some sections
-			 * @default all
+			 * @default "all"
 			 * @type String
 			 * @values all | input | icon | none
 			 */
@@ -301,7 +300,7 @@
 
 			/**
 			 * the classes for the div parent of input
-			 * @default pdp-group
+			 * @default "pdp-group"
 			 * @type String
 			 */
 			divClass: {
@@ -311,7 +310,7 @@
 
 			/**
 			 * the classes for the input
-			 * @default pdp-input
+			 * @default "pdp-input"
 			 * @type String
 			 */
 			inputClass: {
@@ -523,7 +522,7 @@
 				return column || 2;
 			},
 		},
-		created() {
+		async created() {
 			let val = this.$attrs.value;
 			if (val && this.checkDate(val)) {
 				this.startRange = new PersianDate(val);
@@ -531,7 +530,10 @@
 				this.setModel();
 			} else {
 				this.setModel();
-				this.onDisplay = new PersianDate();
+				let today = new PersianDate();
+				this.onDisplay = today;
+				if (await this.checkDate(today.toString())) this.onDisplay = today;
+				else this.onDisplay = this.fromDate.clone();
 			}
 		},
 		methods: {
