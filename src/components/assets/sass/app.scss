@@ -244,7 +244,7 @@
 			justify-content: center;
 			align-items: center;
 			font-size: 0.8rem;
-			background: $background-color;
+			background: inherit;
 			list-style: none;
 			position: absolute;
 			left: 0;
@@ -269,7 +269,6 @@
 				justify-content: center;
 				align-items: center;
 				flex: 30% 0;
-				background: $background-color;
 
 				&:not(.disabled):hover {
 					border-radius: $radius;
