@@ -218,7 +218,7 @@
 
 	export { PersianDate };
 	export default {
-		name: "PersianRangeDatePicker",
+		name: "DatePicker",
 		inheritAttrs: false,
 		components: {
 			arrowIcon,

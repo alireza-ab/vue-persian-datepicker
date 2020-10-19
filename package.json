@@ -1,7 +1,7 @@
 {
-	"name": "vue-persian-range-datepicker",
+	"name": "@alireza-ab/vue-persian-datepicker",
 	"description": "A datepicker component for select persian date",
-	"version": "0.0.1",
+	"version": "0.0.0",
 	"main": "./dist/datepicker.common.js",
 	"unpkg": "./dist/datepicker.min.js",
 	"scripts": {
@@ -13,7 +13,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/alireza-ab/vue-persian-range-datepicker"
+		"url": "https://github.com/alireza-ab/vue-persian-datepicker"
 	},
 	"keywords": [
 		"javascript",
@@ -27,7 +27,10 @@
 		"jalali datepicker",
 		"shamsi datepicker",
 		"range datepicker",
-		"persian range datepicker"
+		"persian range datepicker",
+		"vue datepicker",
+		"vue persian datepicker",
+		"vue persian range datepicker"
 	],
 	"author": "Alireza Alibeiki <alibeikialireza@gmail.com>",
 	"license": "MIT",
