@@ -1,6 +1,11 @@
 <template>
 	<div
-		:class="['pdp', 'pdp-fa', { 'pdp-range': range }, { 'pdp-modal': modal }]"
+		:class="[
+			'pdp',
+			'pdp-fa',
+			{ 'pdp-range': mode === 'range' },
+			{ 'pdp-modal': modal },
+		]"
 	>
 		<slot name="before">
 			<label v-if="label" :for="attrs.id" class="pdp-label">
@@ -201,8 +206,6 @@
 	//TODO: add resize function
 	//TODO: test in all browser
 	//TODO: add style must be optional
-	//TODO: change range prop to mode
-	//TODO: if now date is disabled, show last date
 	//TODO: add to .pdp position relative
 	//TODO: refactor and write comment
 
@@ -365,13 +368,14 @@
 			},
 
 			/**
-			 * select range of dates or select on date
-			 * @default true
-			 * @type Boolean
+			 * mode of select date
+			 * @default "range"
+			 * @type String
+			 * @values range | single
 			 */
-			range: {
-				default: true,
-				type: Boolean,
+			mode: {
+				default: "range",
+				type: String,
 			},
 		},
 		model: {
@@ -530,8 +534,11 @@
 				this.setModel();
 			} else {
 				this.setModel();
-				let today = new PersianDate();
-				this.onDisplay = today;
+				let today = new PersianDate()
+					.hour(0)
+					.minute(0)
+					.second(0)
+					.millisecond(0);
 				if (await this.checkDate(today.toString())) this.onDisplay = today;
 				else this.onDisplay = this.fromDate.clone();
 			}
@@ -574,8 +581,9 @@
 					.clone()
 					.addMonth(column || 0)
 					.date(date);
+				console.log(onDisplay);
 				if (date) {
-					if (this.range) {
+					if (this.mode === "range") {
 						if (this.endRange) {
 							this.startRange = onDisplay;
 							this.endRange = "";
@@ -586,7 +594,7 @@
 						} else this.startRange = onDisplay;
 					} else this.startRange = onDisplay;
 				} else if (this.displayValue) {
-					if (this.range && this.startRange) {
+					if (this.mode && this.startRange) {
 						this.displayValue = this.displayValue.replace(
 							this.startRange.toString(this.inputFormat) + " - ",
 							""
@@ -603,13 +611,13 @@
 					return (this.startRange = "");
 				else if (
 					this.autoSubmit &&
-					(!this.range || (this.range && this.endRange))
+					(this.mode !== "range" || (this.mode === "range" && this.endRange))
 				) {
 					this.submitDate();
 				}
 				if (date) {
 					this.$emit("select", onDisplay);
-					if (this.range && !this.endRange) {
+					if (this.mode === "range" && !this.endRange) {
 						document
 							.querySelector(".pdp .pdp-main")
 							.addEventListener("mouseover", this.selectInRangeDate);
@@ -644,10 +652,7 @@
 					from = this.fromDate.toString();
 					to = this.toDate.toString();
 				}
-				return this.onDisplay
-					.clone()
-					.parse(date)
-					.isBetween(from, to, "[]");
+				return new PersianDate().parse(date).isBetween(from, to, "[]");
 			},
 			showPicker(el) {
 				if (this.clickOn == "all" || this.clickOn == el) {
@@ -702,7 +707,7 @@
 						focusedDay = document.querySelector(".pdp .pdp-day:not(.empty)");
 						focusedDay.classList.add("hover");
 					}
-					if (this.range && this.startRange && !this.endRange) {
+					if (this.mode === "range" && this.startRange && !this.endRange) {
 						this.selectInRangeDate({ target: focusedDay });
 					}
 				} else if (e.keyCode == 13) {
@@ -745,7 +750,7 @@
 			},
 			submitDate(close = true) {
 				let date, displayDate;
-				if (!this.range) {
+				if (this.mode !== "range") {
 					displayDate = this.startRange.toString(this.inputFormat);
 					date = this.startRange.toString(this.format);
 				} else {
@@ -762,7 +767,9 @@
 				this.setModel(date);
 				this.$emit(
 					"change",
-					this.range ? [this.startRange, this.endRange] : this.startRange
+					this.mode === "range"
+						? [this.startRange, this.endRange]
+						: this.startRange
 				);
 				if (close) this.showDatePicker = false;
 			},

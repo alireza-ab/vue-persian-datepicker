@@ -11,7 +11,7 @@
 			display-format="jDD jMMMM"
 			:auto-submit="false"
 			:show="show"
-			:range="true"
+			mode="range"
 			@input="input"
 			@close="close"
 			@blur="blur"
@@ -70,8 +70,24 @@
 </script>
 
 <style>
+	@font-face {
+		font-family: IRANSans;
+		font-style: normal;
+		font-weight: 300;
+		src: url(https://cdn.raadina.com/raadina/fonts/IRANSansWeb_Medium.5a25001.eot);
+		src: url(https://cdn.raadina.com/raadina/fonts/IRANSansWeb_Medium.5a25001.eot?#iefix)
+				format("embedded-opentype"),
+			url(https://cdn.raadina.com/raadina/fonts/IRANSansWeb_Medium.8451859.woff2)
+				format("woff2"),
+			url(https://cdn.raadina.com/raadina/fonts/IRANSansWeb_Medium.32cc237.woff)
+				format("woff"),
+			url(https://cdn.raadina.com/raadina/fonts/IRANSansWeb_Medium.caa93b1.ttf)
+				format("truetype");
+	}
+
 	body {
 		height: 500rem;
+		font-family: IRANSans;
 	}
 	#app {
 		margin: 1px;

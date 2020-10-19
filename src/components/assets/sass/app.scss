@@ -27,7 +27,7 @@
 	&::-webkit-scrollbar-thumb {
 		border-radius: $radius;
 		border: 0.1rem solid white; /* should match background, can't be transparent */
-		background-color: $border-color;
+		background: $border-color;
 	}
 }
 
@@ -87,7 +87,7 @@
 
 	&.pdp-modal {
 		.pdp-overlay {
-			background-color: rgba(0, 0, 0, 0.5) !important;
+			background: rgba(0, 0, 0, 0.5) !important;
 		}
 
 		.pdp {
@@ -159,7 +159,7 @@
 			color: $text-color;
 			text-align: center;
 			white-space: nowrap;
-			background-color: $icon-background-color;
+			background: $icon-background-color;
 			border: 1px solid $border-color;
 		}
 	}
@@ -171,7 +171,7 @@
 		right: 0;
 		left: 0;
 		z-index: $z-index;
-		background-color: $overlay-color;
+		background: $overlay-color;
 	}
 
 	.pdp-pointer {
@@ -218,7 +218,7 @@
 
 			button {
 				border: 0;
-				background: none;
+				background: inherit;
 				cursor: pointer;
 
 				&:focus {
@@ -277,7 +277,7 @@
 				}
 
 				&.disabled {
-					background-color: $background-color;
+					background: $background-color;
 					text-shadow: unset;
 					box-shadow: unset;
 					color: $disabled-color !important;
@@ -287,7 +287,7 @@
 				&.selected {
 					border: 2px solid $primary-color;
 					border-radius: $radius;
-					background-color: $primary-color !important;
+					background: $primary-color !important;
 					color: $hover-color;
 				}
 			}
@@ -303,7 +303,7 @@
 				margin: 0 1rem;
 
 				.pdp-week {
-					background: $background-color;
+					background: inherit;
 					margin-bottom: 0.3rem;
 					display: flex;
 					justify-content: space-around;
@@ -318,7 +318,7 @@
 				}
 
 				.pdp-days {
-					background-color: $background-color;
+					background: inherit;
 
 					.pdp-day {
 						display: inline-flex;
@@ -346,12 +346,12 @@
 
 						&.start-range,
 						&.end-range {
-							background-color: $primary-color;
+							background: $primary-color;
 							color: $hover-color;
 						}
 
 						&.disabled {
-							background-color: white;
+							background: white;
 							box-shadow: unset;
 							text-shadow: unset;
 							color: $disabled-color !important;
@@ -360,12 +360,12 @@
 						}
 
 						&.hover {
-							background-color: $secondary-color !important;
+							background: $secondary-color !important;
 							color: $hover-color;
 						}
 
 						&.in-range {
-							background-color: $in-range-background-color;
+							background: $in-range-background-color;
 							color: $hover-color;
 						}
 
@@ -376,7 +376,7 @@
 
 						&.tada {
 							animation: tada 1s;
-							background-color: $secondary-color;
+							background: $secondary-color;
 							box-shadow: $hover-and-selected-box-shadow;
 						}
 					}
@@ -403,11 +403,11 @@
 				text-decoration: none;
 				border: none;
 				border-radius: $radius;
-				background-color: $secondary-color;
+				background: $secondary-color;
 				cursor: pointer;
 
 				&:hover {
-					background-color: $primary-color;
+					background: $primary-color;
 				}
 			}
 		}
