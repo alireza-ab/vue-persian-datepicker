@@ -32,6 +32,8 @@
 }
 
 .pdp {
+	position: relative;
+
 	&.pdp-fa {
 		direction: rtl;
 		text-align: right;
@@ -227,13 +229,11 @@
 			}
 
 			.pdp-arrow.disabled {
-				color: $disabled-color;
-				fill: $disabled-color;
+				opacity: 0.3;
 			}
 
 			.pdp-arrow:not(.disabled):hover {
-				color: $secondary-color;
-				fill: $secondary-color;
+				opacity: 0.3;
 			}
 		}
 
@@ -276,11 +276,10 @@
 				}
 
 				&.disabled {
-					background: $background-color;
 					text-shadow: unset;
 					box-shadow: unset;
-					color: $disabled-color !important;
 					cursor: default !important;
+					opacity: 0.3;
 				}
 
 				&.selected {
@@ -350,12 +349,11 @@
 						}
 
 						&.disabled {
-							background: white;
 							box-shadow: unset;
 							text-shadow: unset;
-							color: $disabled-color !important;
 							cursor: default !important;
 							border-color: transparent;
+							opacity: 0.3;
 						}
 
 						&.hover {

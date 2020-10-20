@@ -197,7 +197,6 @@
 
 <script>
 	//TODO: alt field
-	//TODO: set model in range --> refactor
 	//TODO: add select time
 	//TODO: add attrs for div and other elements
 	//TODO: add props for disable some dates
@@ -206,7 +205,6 @@
 	//TODO: add resize function
 	//TODO: test in all browser
 	//TODO: add style must be optional
-	//TODO: add to .pdp position relative
 	//TODO: refactor and write comment
 
 	// Core
@@ -540,7 +538,9 @@
 					.second(0)
 					.millisecond(0);
 				if (await this.checkDate(today.toString())) this.onDisplay = today;
-				else this.onDisplay = this.fromDate.clone();
+				else {
+					this.onDisplay = this.nearestDate(today);
+				}
 			}
 		},
 		methods: {
@@ -574,6 +574,8 @@
 			},
 			changeSelectedYear(year) {
 				this.onDisplay.year(year);
+				if (!this.checkDate(this.onDisplay))
+					this.onDisplay = this.nearestDate(this.onDisplay);
 				this.showYearSelect = false;
 			},
 			selectDate(date, column) {
@@ -581,7 +583,6 @@
 					.clone()
 					.addMonth(column || 0)
 					.date(date);
-				console.log(onDisplay);
 				if (date) {
 					if (this.mode === "range") {
 						if (this.endRange) {
@@ -594,18 +595,24 @@
 						} else this.startRange = onDisplay;
 					} else this.startRange = onDisplay;
 				} else if (this.displayValue) {
-					if (this.mode && this.startRange) {
-						this.displayValue = this.displayValue.replace(
+					let date;
+					if (this.mode === "range" && this.startRange) {
+						let endRangeDate = this.displayValue.replace(
 							this.startRange.toString(this.inputFormat) + " - ",
 							""
 						);
-						if (new PersianDate().parse(this.displayValue).isValid())
-							this.endRange = this.onDisplay.clone().parse(this.displayValue);
+						date = new PersianDate().parse(endRangeDate);
+						if (date.isValid() && this.checkDate(date)) {
+							this.endRange = date;
+							this.submitDate(false);
+						}
 					} else {
-						if (new PersianDate().parse(this.displayValue).isValid())
-							this.startRange = this.onDisplay.clone().parse(this.displayValue);
+						date = new PersianDate().parse(this.displayValue);
+						if (date.isValid() && this.checkDate(date)) {
+							this.startRange = date;
+							this.submitDate(false);
+						}
 					}
-					this.submitDate(false);
 				} else this.startRange = "";
 				if (!this.checkDate(this.startRange, "date"))
 					return (this.startRange = "");
@@ -681,7 +688,7 @@
 					if (focusedDay) {
 						let column = this.getColumn(focusedDay);
 						focusedDay.classList.remove("hover");
-						let firstColumnMonth = this.onDisplay.toString("jy/jM");
+						let firstColumnMonth = this.onDisplay.toString();
 						let focusedMonth = this.onDisplay.clone().addMonth(column);
 						let nextElementValue = focusedMonth
 							.date(focusedDay.innerText)
@@ -780,6 +787,12 @@
 				return (
 					new Date().getMilliseconds() + "" + Math.floor(Math.random() * 100)
 				);
+			},
+			nearestDate(date) {
+				return Math.abs(date.diff(this.fromDate)) <=
+					Math.abs(date.diff(this.toDate))
+					? this.fromDate.clone()
+					: this.toDate.clone();
 			},
 		},
 	};

@@ -4,7 +4,7 @@
 			v-model="date"
 			tabindex="1"
 			required
-			from="1398"
+			from="1400"
 			to="1401"
 			format="YYYY-MM-DD"
 			input-format="jYYYY/jMM/jDD"

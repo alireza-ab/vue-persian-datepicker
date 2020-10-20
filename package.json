@@ -1,7 +1,7 @@
 {
 	"name": "@alireza-ab/vue-persian-datepicker",
 	"description": "A datepicker component for select persian date",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"main": "./dist/datepicker.common.js",
 	"unpkg": "./dist/datepicker.min.js",
 	"scripts": {
@@ -35,11 +35,11 @@
 	"author": "Alireza Alibeiki <alibeikialireza@gmail.com>",
 	"license": "MIT",
 	"dependencies": {
-		"@alireza-ab/persian-date": "^1.5.0"
+		"@alireza-ab/persian-date": "^1.5.1"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.12.0",
-		"@vue/cli-plugin-babel": "^4.5.7",
+		"@babel/core": "^7.12.3",
+		"@vue/cli-plugin-babel": "^4.5.8",
 		"babel-loader": "^8.1.0",
 		"core-js": "^3.6.5",
 		"cross-env": "^7.0.2",
