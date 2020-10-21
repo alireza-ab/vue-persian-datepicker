@@ -6,7 +6,7 @@ This supports **single dates** and **date range selections**. It's very customiz
 
 Also, you can select the date with **keyboard**. use **arrows keys** or **typing** the date.
 
-[![npm version](https://www.npmjs.com/package/@alireza-ab/vue-persian-datepicker)](https://img.shields.io/npm/v/@alireza-ab/vue-persian-datepicker)
+[![npm version](https://img.shields.io/npm/v/@alireza-ab/vue-persian-datepicker)](https://www.npmjs.com/package/@alireza-ab/vue-persian-datepicker)
 
 ## Documentation
 
