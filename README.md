@@ -12,7 +12,7 @@ Also, you can select the date with **keyboard**. use **arrows keys** or **typing
 
 For full documentation, visit [https://alireza-ab.ir/datepicker](https://alireza-ab.ir/datepicker)
 
-[![select date with vue persian datepicker](https://alireza-ab.ir/images/GIFs/selectWithArrow.gif)](https://alireza-ab.ir/datepicker)
+[![select date with vue persian datepicker | GIF](https://alireza-ab.ir/images/GIFs/selectWithArrow.gif)](https://alireza-ab.ir/datepicker)
 
 ### Install
 
