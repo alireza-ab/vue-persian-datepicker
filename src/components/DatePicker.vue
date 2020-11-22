@@ -33,12 +33,13 @@
 				@focus="showPicker('input')"
 				v-model="displayValue"
 				@keydown="selectWithArrow"
+				ref="input"
 			/>
 		</div>
 		<slot name="after"></slot>
 		<div v-if="showDatePicker">
 			<div class="pdp-overlay" @click="showDatePicker = false"></div>
-			<div class="pdp">
+			<div class="pdp" :class="{ 'pdp-top': showTopOfInput }">
 				<ul class="pdp-select-month" v-show="showMonthSelect">
 					<li
 						v-for="(month, index) in months"
@@ -203,7 +204,6 @@
 	//TODO: add clearable props
 	//TODO: add close button for months and years
 	//TODO: add resize function
-	//TODO: test in all browser
 	//TODO: add style must be optional
 	//TODO: refactor and write comment
 
@@ -227,7 +227,7 @@
 			 * the format of the model value
 			 * @default "YYYY-MM-DD"
 			 * @type String
-			 * @see https://github.com/alireza-ab/persian-date#formats
+			 * @see https://alireza-ab.ir/persian-date/formats#
 			 */
 			format: {
 				default: "YYYY-MM-DD",
@@ -238,7 +238,7 @@
 			 * the format of the input value
 			 * @default "date"
 			 * @type String
-			 * @see https://github.com/alireza-ab/persian-date#formats
+			 * @see https://alireza-ab.ir/persian-date/formats#
 			 */
 			inputFormat: {
 				default: "date",
@@ -249,7 +249,7 @@
 			 * the format of the value that shows in the footer of picker
 			 * @default "jD jMMMM"
 			 * @type String
-			 * @see https://github.com/alireza-ab/persian-date#formats
+			 * @see https://alireza-ab.ir/persian-date/formats#
 			 */
 			displayFormat: {
 				default: "jD jMMMM",
@@ -386,12 +386,16 @@
 			},
 			showDatePicker(val) {
 				if (val) this.$emit("open");
-				else this.$emit("close");
+				else {
+					document.removeEventListener("scroll", this.locate);
+					this.$emit("close");
+				}
 			},
 		},
 		data() {
 			return {
 				showDatePicker: this.show,
+				showTopOfInput: false,
 				showMonthSelect: false,
 				showYearSelect: false,
 				weekdays: ["ش", "ی", "د", "س", "چ", "پ", "ج"],
@@ -664,7 +668,11 @@
 			showPicker(el) {
 				if (this.clickOn == "all" || this.clickOn == el) {
 					document.getElementById(this.attrs.id).focus();
-					return (this.showDatePicker = true);
+					this.showDatePicker = true;
+					this.$nextTick(() => {
+						this.locate();
+					});
+					document.addEventListener("scroll", this.locate);
 				}
 			},
 			async selectWithArrow(e) {
@@ -793,6 +801,17 @@
 					Math.abs(date.diff(this.toDate))
 					? this.fromDate.clone()
 					: this.toDate.clone();
+			},
+			locate() {
+				console.log(1);
+				let input = document.querySelector("#date");
+				let inputOffset =
+					input.offsetHeight + input.getBoundingClientRect().top;
+				let picker = document.querySelector(".pdp .pdp");
+				let pickerOffset = picker.offsetHeight + 10;
+				if (inputOffset < pickerOffset) this.showTopOfInput = false;
+				else if (window.innerHeight - (inputOffset + pickerOffset) < 0)
+					this.showTopOfInput = true;
 			},
 		},
 	};

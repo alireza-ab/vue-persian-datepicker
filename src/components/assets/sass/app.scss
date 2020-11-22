@@ -105,6 +105,18 @@
 		}
 	}
 
+	&.pdp-top {
+		bottom: calc(1.5em + 0.75rem + 2px);
+		margin-top: unset;
+		margin-bottom: 0.5rem;
+
+		&::after {
+			bottom: unset;
+			top: 100%;
+			transform: rotate(180deg);
+		}
+	}
+
 	* {
 		box-sizing: border-box;
 	}

@@ -12,6 +12,7 @@
 			:auto-submit="false"
 			:show="show"
 			mode="range"
+			id="date"
 			@input="input"
 			@close="close"
 			@blur="blur"
@@ -70,9 +71,13 @@
 </script>
 
 <style lang="scss">
+	html {
+		font-size: 16px;
+	}
+
 	#app {
 		margin: 1px;
-		padding: 20rem;
+		padding: 30rem 0;
 	}
 
 	.rtl {
