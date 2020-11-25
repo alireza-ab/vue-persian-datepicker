@@ -1,0 +1,23 @@
+{
+  "from": "1399",
+  "to": "1399/06/31",
+  "format": "YY-M-D",
+  "input-format": "jYY/jM/jD",
+  "display-format": "jD jMMMM",
+  "show": false,
+  "label": "select date:",
+  "click-on": "all",
+  "div-class": "pdp-group add-class",
+  "input-class": "pdp-input add-class",
+  "column": {
+    "576": 1,
+    "992": 2,
+    "2000": 3
+  },
+  "mode": "range",
+  "auto-submit": false,
+  "modal": true,
+  "required": "required",
+  "placeholder": "تاریخ تولد",
+  "disabled": "disabled"
+}

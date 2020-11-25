@@ -69,14 +69,11 @@
 						:class="[
 							'pdp-arrow',
 							{
-								disabled: !checkDate(
-									onDisplay.clone().subtractMonth(),
-									'month'
-								),
+								disabled: !checkDate(onDisplay.clone().subMonth(), 'month'),
 							},
 						]"
 						title="ماه قبل"
-						@click="changeSelectedMonth('subtract')"
+						@click="changeSelectedMonth('sub')"
 					>
 						<slot name="right-arrow">
 							<arrow-icon direction="right" width="10" height="10"></arrow-icon>
@@ -125,7 +122,7 @@
 
 				<div class="pdp-main">
 					<div
-						class="pdp-month"
+						class="pdp-column"
 						v-for="(item, i) in columnCount"
 						:key="i"
 						:data-column="i"
@@ -197,6 +194,8 @@
 </template>
 
 <script>
+	//TODO: add ref to elements
+	//TODO: fix select and change events
 	//TODO: alt field
 	//TODO: add select time
 	//TODO: add attrs for div and other elements
@@ -209,7 +208,7 @@
 
 	// Core
 	import PersianDate from "@alireza-ab/persian-date/src/PersianDate";
-	import { MONTHS } from "@alireza-ab/persian-date/src/utils";
+	import { CALENDAR } from "@alireza-ab/persian-date/src/utils";
 	// components
 	import arrowIcon from "./utils/ArrowIcon.vue";
 	import calendarIcon from "./utils/CalendarIcon.vue";
@@ -509,7 +508,7 @@
 				let months = {};
 				for (let i = 1; i <= 12; i++) {
 					months[i] = {
-						label: MONTHS["fa"][i],
+						label: CALENDAR["jalali"]["months"][i],
 						selected: this.onDisplay.month() == i,
 						disabled: !this.checkDate(this.onDisplay.clone().month(i), "month"),
 					};
@@ -522,6 +521,7 @@
 				Object.keys(this.column)
 					.sort((a, b) => b - a)
 					.some((breakpoint) => {
+						console.log(this.column[breakpoint]);
 						if (this.documentWidth <= breakpoint)
 							column = this.column[breakpoint];
 					});
@@ -546,6 +546,9 @@
 					this.onDisplay = this.nearestDate(today);
 				}
 			}
+			window.addEventListener("resize", () => {
+				this.documentWidth = window.innerWidth;
+			});
 		},
 		methods: {
 			showPart(part) {
@@ -569,8 +572,8 @@
 				let clone = this.onDisplay.clone();
 				if (month == "add") {
 					this.onDisplay.addMonth();
-				} else if (month == "subtract") {
-					this.onDisplay.subtractMonth();
+				} else if (month == "sub") {
+					this.onDisplay.subMonth();
 				} else this.onDisplay.month(month);
 				if (this.checkDate(this.onDisplay, "month"))
 					this.showMonthSelect = false;
@@ -627,6 +630,7 @@
 					this.submitDate();
 				}
 				if (date) {
+					//FIXME: show in Rages in hover when datepicker closed and opened
 					this.$emit("select", onDisplay);
 					if (this.mode === "range" && !this.endRange) {
 						document
@@ -675,9 +679,9 @@
 					document.addEventListener("scroll", this.locate);
 				}
 			},
-			async selectWithArrow(e) {
+			async selectWithArrow({ keyCode }) {
 				// [37, 38, 39, 40] are key codes of arrow keys
-				if ([37, 38, 39, 40].includes(e.keyCode)) {
+				if ([37, 38, 39, 40].includes(keyCode)) {
 					let arrow = {
 						37: 1, // for left arrow must one day add
 						38: -7, // for up arrow must seven day subtract
@@ -686,11 +690,9 @@
 					};
 					let focusedDay = document.querySelectorAll(".pdp .pdp-day.hover");
 					if (!focusedDay.length) {
-						focusedDay = document.querySelectorAll(".pdp .pdp-day.in-range");
-						if (!focusedDay.length)
-							focusedDay = document.querySelectorAll(
-								".pdp .pdp-day.start-range,.pdp .pdp-day.end-range"
-							);
+						focusedDay = document.querySelectorAll(
+							".pdp .pdp-day.start-range,.pdp .pdp-day.end-range"
+						);
 					}
 					focusedDay = focusedDay[focusedDay.length - 1];
 					if (focusedDay) {
@@ -700,13 +702,13 @@
 						let focusedMonth = this.onDisplay.clone().addMonth(column);
 						let nextElementValue = focusedMonth
 							.date(focusedDay.innerText)
-							.addDay(arrow[e.keyCode]);
+							.addDay(arrow[keyCode]);
 						if (!this.checkDate(nextElementValue))
 							return focusedDay.classList.add("hover");
 						nextElementValue = nextElementValue.date();
 						column = focusedMonth.diff(firstColumnMonth, "month");
 						if (column < 0) {
-							this.onDisplay.subtractMonth(this.columnCount);
+							this.onDisplay.subMonth(this.columnCount);
 							column = this.columnCount - 1;
 						} else if (column >= this.columnCount) {
 							this.onDisplay.addMonth(this.columnCount);
@@ -714,7 +716,7 @@
 						}
 						await this.$nextTick(() => {
 							focusedDay = document.querySelector(
-								`.pdp .pdp-main .pdp-month[data-column='${column}'] .pdp-day[value='${nextElementValue}']`
+								`.pdp .pdp-main .pdp-column[data-column='${column}'] .pdp-day[value='${nextElementValue}']`
 							);
 							focusedDay.classList.add("hover");
 						});
@@ -725,7 +727,7 @@
 					if (this.mode === "range" && this.startRange && !this.endRange) {
 						this.selectInRangeDate({ target: focusedDay });
 					}
-				} else if (e.keyCode == 13) {
+				} else if (keyCode == 13) {
 					// 13 is key code of Enter key
 					let focusedDay = document.querySelector(".pdp .pdp-day.hover");
 					if (focusedDay)
@@ -750,7 +752,7 @@
 						for (let j = +date; j > 0; j--) {
 							if (this.checkDate(onDisplay.date(j))) {
 								target = document.querySelector(
-									`.pdp .pdp-main .pdp-month[data-column='${i}'] .pdp-day[value='${j}']:not(.start-range)`
+									`.pdp .pdp-main .pdp-column[data-column='${i}'] .pdp-day[value='${j}']:not(.start-range)`
 								);
 								if (target) target.classList.add("in-range");
 								else break columnLoop;
@@ -788,8 +790,8 @@
 				);
 				if (close) this.showDatePicker = false;
 			},
-			getColumn(el) {
-				return el.parentNode.parentNode.parentNode.dataset.column;
+			getColumn({ parentNode }) {
+				return parentNode.parentNode.parentNode.dataset.column;
 			},
 			createUniqeNumber() {
 				return (
@@ -803,8 +805,7 @@
 					: this.toDate.clone();
 			},
 			locate() {
-				console.log(1);
-				let input = document.querySelector("#date");
+				let input = document.querySelector("#" + this.attrs.id);
 				let inputOffset =
 					input.offsetHeight + input.getBoundingClientRect().top;
 				let picker = document.querySelector(".pdp .pdp");

@@ -4,7 +4,7 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
-    entry: './src/main.js',
+    entry: process.env.NODE_ENV === 'test' ? './test/main.js' : './src/main.js',
     output: {
         path: path.resolve(__dirname, './dist'),
         publicPath: '/dist/',
