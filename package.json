@@ -1,7 +1,7 @@
 {
 	"name": "@alireza-ab/vue-persian-datepicker",
 	"description": "A datepicker component for select persian date",
-	"version": "1.1.1",
+	"version": "1.1.2",
 	"main": "./dist/datepicker.common.js",
 	"unpkg": "./dist/datepicker.min.js",
 	"scripts": {
