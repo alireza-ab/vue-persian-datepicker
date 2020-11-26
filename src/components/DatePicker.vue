@@ -33,13 +33,13 @@
 				@focus="showPicker('input')"
 				v-model="displayValue"
 				@keydown="selectWithArrow"
-				ref="input"
+				ref="pdpInput"
 			/>
 		</div>
 		<slot name="after"></slot>
 		<div v-if="showDatePicker">
 			<div class="pdp-overlay" @click="showDatePicker = false"></div>
-			<div class="pdp" :class="{ 'pdp-top': showTopOfInput }">
+			<div :class="['pdp-picker', { 'pdp-top': showTopOfInput }]">
 				<ul class="pdp-select-month" v-show="showMonthSelect">
 					<li
 						v-for="(month, index) in months"
@@ -53,7 +53,7 @@
 						{{ month.label }}
 					</li>
 				</ul>
-				<ul class="pdp-select-year" v-show="showYearSelect">
+				<ul class="pdp-select-year" v-show="showYearSelect" ref="pdpSelectYear">
 					<li
 						v-for="(year, index) in years"
 						:key="index"
@@ -120,7 +120,7 @@
 					</button>
 				</div>
 
-				<div class="pdp-main">
+				<div class="pdp-main" ref="pdpMain">
 					<div
 						class="pdp-column"
 						v-for="(item, i) in columnCount"
@@ -202,7 +202,6 @@
 	//TODO: add props for disable some dates
 	//TODO: add clearable props
 	//TODO: add close button for months and years
-	//TODO: add resize function
 	//TODO: add style must be optional
 	//TODO: refactor and write comment
 
@@ -386,7 +385,7 @@
 			showDatePicker(val) {
 				if (val) this.$emit("open");
 				else {
-					document.removeEventListener("scroll", this.locate);
+					if (!this.modal) document.removeEventListener("scroll", this.locate);
 					this.$emit("close");
 				}
 			},
@@ -411,7 +410,6 @@
 			attrs() {
 				let attrs = { ...this.$attrs };
 				delete attrs.value;
-				attrs.id = attrs.id || "date-" + this.createUniqeNumber();
 				return attrs;
 			},
 			years() {
@@ -455,6 +453,7 @@
 								month[week][day] = { empty: true };
 								--emptyCells;
 							} else if (daysOfMonthNumber) {
+								//FIXME: refactor
 								month[week][day] = {
 									friday: day == 6,
 									key: this.onDisplay
@@ -521,7 +520,6 @@
 				Object.keys(this.column)
 					.sort((a, b) => b - a)
 					.some((breakpoint) => {
-						console.log(this.column[breakpoint]);
 						if (this.documentWidth <= breakpoint)
 							column = this.column[breakpoint];
 					});
@@ -536,11 +534,7 @@
 				this.setModel();
 			} else {
 				this.setModel();
-				let today = new PersianDate()
-					.hour(0)
-					.minute(0)
-					.second(0)
-					.millisecond(0);
+				let today = new PersianDate().startOf("date");
 				if (await this.checkDate(today.toString())) this.onDisplay = today;
 				else {
 					this.onDisplay = this.nearestDate(today);
@@ -556,12 +550,13 @@
 					this.showYearSelect = !this.showYearSelect;
 					if (this.showYearSelect) {
 						this.$nextTick(() => {
-							let selectedYearTop = document.querySelector(
-								".pdp-select-year li.selected"
+							let selectedYearTop = this.$refs.pdpSelectYear.querySelector(
+								"li.selected"
 							).offsetTop;
-							document
-								.querySelector(".pdp-select-year")
-								.scroll({ top: selectedYearTop, behavior: "smooth" });
+							this.$refs.pdpSelectYear.scroll({
+								top: selectedYearTop,
+								behavior: "smooth",
+							});
 						});
 					}
 				} else if (part == "month") {
@@ -633,13 +628,15 @@
 					//FIXME: show in Rages in hover when datepicker closed and opened
 					this.$emit("select", onDisplay);
 					if (this.mode === "range" && !this.endRange) {
-						document
-							.querySelector(".pdp .pdp-main")
-							.addEventListener("mouseover", this.selectInRangeDate);
+						this.$refs.pdpMain.addEventListener(
+							"mouseover",
+							this.selectInRangeDate
+						);
 					} else if (this.endRange) {
-						document
-							.querySelector(".pdp .pdp-main")
-							.removeEventListener("mouseover", this.selectInRangeDate);
+						this.$refs.pdpMain.removeEventListener(
+							"mouseover",
+							this.selectInRangeDate
+						);
 					}
 				}
 			},
@@ -649,6 +646,7 @@
 			goToToday() {
 				this.onDisplay = new PersianDate();
 				this.$nextTick(() => {
+					//FIXME:
 					document.querySelector(".pdp-day.today").classList.add("tada");
 				});
 				setTimeout(() => {
@@ -671,12 +669,14 @@
 			},
 			showPicker(el) {
 				if (this.clickOn == "all" || this.clickOn == el) {
-					document.getElementById(this.attrs.id).focus();
+					this.$refs.pdpInput.focus();
 					this.showDatePicker = true;
-					this.$nextTick(() => {
-						this.locate();
-					});
-					document.addEventListener("scroll", this.locate);
+					if (!this.modal) {
+						this.$nextTick(() => {
+							this.locate();
+						});
+						document.addEventListener("scroll", this.locate);
+					}
 				}
 			},
 			async selectWithArrow({ keyCode }) {
@@ -793,11 +793,6 @@
 			getColumn({ parentNode }) {
 				return parentNode.parentNode.parentNode.dataset.column;
 			},
-			createUniqeNumber() {
-				return (
-					new Date().getMilliseconds() + "" + Math.floor(Math.random() * 100)
-				);
-			},
 			nearestDate(date) {
 				return Math.abs(date.diff(this.fromDate)) <=
 					Math.abs(date.diff(this.toDate))
@@ -805,10 +800,10 @@
 					: this.toDate.clone();
 			},
 			locate() {
-				let input = document.querySelector("#" + this.attrs.id);
+				let input = this.$refs.pdpInput;
 				let inputOffset =
 					input.offsetHeight + input.getBoundingClientRect().top;
-				let picker = document.querySelector(".pdp .pdp");
+				let picker = document.querySelector(".pdp-picker");
 				let pickerOffset = picker.offsetHeight + 10;
 				if (inputOffset < pickerOffset) this.showTopOfInput = false;
 				else if (window.innerHeight - (inputOffset + pickerOffset) < 0)

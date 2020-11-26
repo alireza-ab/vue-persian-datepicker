@@ -92,7 +92,7 @@
 			background: rgba(0, 0, 0, 0.5) !important;
 		}
 
-		.pdp {
+		.pdp-picker {
 			position: fixed;
 			top: 50%;
 			left: 50%;
@@ -102,18 +102,6 @@
 			&::after {
 				all: unset !important;
 			}
-		}
-	}
-
-	&.pdp-top {
-		bottom: calc(1.5em + 0.75rem + 2px);
-		margin-top: unset;
-		margin-bottom: 0.5rem;
-
-		&::after {
-			bottom: unset;
-			top: 100%;
-			transform: rotate(180deg);
 		}
 	}
 
@@ -192,7 +180,7 @@
 		cursor: pointer;
 	}
 
-	.pdp {
+	.pdp-picker {
 		position: absolute;
 		color: $text-color;
 		background: $background-color;
@@ -203,6 +191,18 @@
 		margin-top: 0.5rem;
 		padding: 0.3rem 0.6rem;
 		animation: start 0.1s;
+
+		&.pdp-top {
+			bottom: calc(1.5em + 0.75rem + 2px);
+			margin-top: unset;
+			margin-bottom: 0.5rem;
+
+			&::after {
+				bottom: unset;
+				top: 100%;
+				transform: rotate(180deg);
+			}
+		}
 
 		@include little-flag();
 
@@ -388,6 +388,8 @@
 							background: $secondary-color;
 							box-shadow: $hover-and-selected-box-shadow;
 							color: #000;
+							position: relative;
+							z-index: 1;
 						}
 					}
 				}

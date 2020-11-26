@@ -4,7 +4,7 @@
 			v-model="date"
 			tabindex="1"
 			required
-			from="1399"
+			from="1399/01/01"
 			to="1399/6/31"
 			format="YYYY-MM-DD"
 			input-format="jYYYY/jMM/jDD"
@@ -13,6 +13,7 @@
 			:show="show"
 			mode="range"
 			id="date"
+			:modal="false"
 			@input="input"
 			@close="close"
 			@blur="blur"
@@ -23,6 +24,8 @@
 		>
 		</date-picker>
 		<div class="show">date is: {{ date }}</div>
+
+		<date-picker> </date-picker>
 	</div>
 </template>
 
