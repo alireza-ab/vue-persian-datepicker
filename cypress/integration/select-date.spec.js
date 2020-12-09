@@ -17,7 +17,7 @@ describe('select date range', () => {
     it('with arrow keys', () => {
         cy.visit('/')
         cy.tab()
-            .type('{downarrow}{downarrow}{leftarrow}{leftarrow}{enter}')
+            .type('{downarrow}{downarrow}{downarrow}{leftarrow}{leftarrow}{enter}')
             .type('{downarrow}{rightarrow}{rightarrow}{enter}')
         cy.get('.pdp-input').should('have.value', '1399/06/10 - 1399/06/15')
     })
@@ -47,7 +47,7 @@ describe('select date single', () => {
     it('with arrow keys', () => {
         cy.visit('/')
         cy.tab()
-            .type('{downarrow}{downarrow}{leftarrow}{leftarrow}{enter}')
+            .type('{downarrow}{downarrow}{downarrow}{leftarrow}{leftarrow}{enter}')
         cy.get('.pdp-input').should('have.value', '1399/06/10')
     })
 

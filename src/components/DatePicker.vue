@@ -25,15 +25,15 @@
 				</slot>
 			</div>
 			<input
-				:class="inputClass"
 				type="text"
 				autocomplete="off"
+				ref="pdpInput"
+				v-model="displayValue"
+				:class="inputClass"
 				v-bind="attrs"
 				v-on="$listeners"
 				@focus="showPicker('input')"
-				v-model="displayValue"
 				@keydown="selectWithArrow"
-				ref="pdpInput"
 			/>
 		</div>
 		<slot name="after"></slot>
@@ -66,6 +66,7 @@
 				<div class="pdp-header">
 					<button
 						tabindex="-1"
+						type="button"
 						:class="[
 							'pdp-arrow',
 							{
@@ -107,6 +108,7 @@
 					</div>
 					<button
 						tabindex="-1"
+						type="button"
 						:class="[
 							'pdp-arrow',
 							{ disabled: !checkDate(onDisplay.clone().addMonth(), 'month') },
@@ -172,6 +174,7 @@
 					</div>
 					<div>
 						<button
+							type="button"
 							class="pdp-today"
 							@click="goToToday()"
 							:tabindex="+attrs.tabindex + 1 || undefined"
@@ -180,6 +183,7 @@
 						</button>
 						<button
 							v-if="!autoSubmit"
+							type="button"
 							class="pdp-submit"
 							@click="submitDate"
 							:tabindex="+attrs.tabindex + 1 || undefined"
@@ -194,7 +198,6 @@
 </template>
 
 <script>
-	//TODO: add ref to elements
 	//TODO: fix select and change events
 	//TODO: alt field
 	//TODO: add select time
@@ -597,7 +600,6 @@
 						} else this.startRange = onDisplay;
 					} else this.startRange = onDisplay;
 				} else if (this.displayValue) {
-					let date;
 					if (this.mode === "range" && this.startRange) {
 						let endRangeDate = this.displayValue.replace(
 							this.startRange.toString(this.inputFormat) + " - ",
@@ -625,7 +627,6 @@
 					this.submitDate();
 				}
 				if (date) {
-					//FIXME: show in Rages in hover when datepicker closed and opened
 					this.$emit("select", onDisplay);
 					if (this.mode === "range" && !this.endRange) {
 						this.$refs.pdpMain.addEventListener(
@@ -646,7 +647,6 @@
 			goToToday() {
 				this.onDisplay = new PersianDate();
 				this.$nextTick(() => {
-					//FIXME:
 					document.querySelector(".pdp-day.today").classList.add("tada");
 				});
 				setTimeout(() => {
@@ -679,9 +679,9 @@
 					}
 				}
 			},
-			async selectWithArrow({ keyCode }) {
+			async selectWithArrow(e) {
 				// [37, 38, 39, 40] are key codes of arrow keys
-				if ([37, 38, 39, 40].includes(keyCode)) {
+				if ([37, 38, 39, 40].includes(e.keyCode)) {
 					let arrow = {
 						37: 1, // for left arrow must one day add
 						38: -7, // for up arrow must seven day subtract
@@ -702,7 +702,7 @@
 						let focusedMonth = this.onDisplay.clone().addMonth(column);
 						let nextElementValue = focusedMonth
 							.date(focusedDay.innerText)
-							.addDay(arrow[keyCode]);
+							.addDay(arrow[e.keyCode]);
 						if (!this.checkDate(nextElementValue))
 							return focusedDay.classList.add("hover");
 						nextElementValue = nextElementValue.date();
@@ -727,7 +727,8 @@
 					if (this.mode === "range" && this.startRange && !this.endRange) {
 						this.selectInRangeDate({ target: focusedDay });
 					}
-				} else if (keyCode == 13) {
+				} else if (e.keyCode == 13) {
+					e.preventDefault();
 					// 13 is key code of Enter key
 					let focusedDay = document.querySelector(".pdp .pdp-day.hover");
 					if (focusedDay)
@@ -782,13 +783,15 @@
 				}
 				this.displayValue = displayDate;
 				this.setModel(date);
-				this.$emit(
-					"change",
-					this.mode === "range"
-						? [this.startRange, this.endRange]
-						: this.startRange
-				);
-				if (close) this.showDatePicker = false;
+				if (close) {
+					this.$emit(
+						"submit",
+						this.mode === "range"
+							? [this.startRange, this.endRange]
+							: this.startRange
+					);
+					this.showDatePicker = false;
+				}
 			},
 			getColumn({ parentNode }) {
 				return parentNode.parentNode.parentNode.dataset.column;

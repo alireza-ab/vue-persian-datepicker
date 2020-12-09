@@ -9,7 +9,7 @@ describe('arrow keys', () => {
     it('without select date', () => {
         cy.visit('/')
         cy.tab()
-            .type('{downarrow}{rightarrow}')
+            .type('{downarrow}{downarrow}{rightarrow}')
         cy.get('[data-column=1] .hover').should('contain.text', '31')
         cy.get('.pdp-input').type('{uparrow}')
         cy.get('[data-column=1] .hover').should('contain.text', '24')
