@@ -1,6 +1,6 @@
 /// <reference types="Cypress" />
 
-describe('select date range', () => {
+describe('others', () => {
     beforeEach(() => {
         cy.changeProps('from', undefined)
         cy.changeProps('to', undefined)
@@ -34,5 +34,32 @@ describe('select date range', () => {
         })
     })
 
+    it('select range date and change locale', () => {
+        cy.changeProps('from', '1399')
+        cy.changeProps('to', '1399/6/31')
+        cy.changeProps('locale', 'fa,en')
+        cy.visit('/')
+        cy.get('.pdp-input').focus()
+        cy.contains('15').first().click()
+        cy.contains('20').first().click()
+        cy.get('.pdp-input').focus()
+        cy.get('.pdp-header .top button').click()
+        cy.contains('September')
+        cy.get('.start-range').should('contain.text', '5')
+        cy.get('.end-range').should('contain.text', '10')
+    })
 
+    it('select single date and change locale', () => {
+        cy.changeProps('from', '1399')
+        cy.changeProps('to', '1399/6/31')
+        cy.changeProps('locale', 'en,fa')
+        cy.changeProps('mode', 'single')
+        cy.visit('/')
+        cy.get('.pdp-input').focus()
+        cy.contains('10').first().click()
+        cy.get('.pdp-input').focus()
+        cy.get('.pdp-header .top button').click()
+        cy.contains('شهریور')
+        cy.get('.start-range').should('contain.text', '20')
+    })
 })

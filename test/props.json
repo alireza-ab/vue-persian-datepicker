@@ -1,6 +1,7 @@
 {
   "from": "1399",
   "to": "1399/06/31",
+  "locale": "fa,en",
   "format": "YY-M-D",
   "input-format": "jYY/jM/jD",
   "display-format": "jD jMMMM",

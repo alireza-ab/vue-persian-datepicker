@@ -9,7 +9,7 @@
 			@focus="focus"
 			@open="open"
 			@select="select"
-			@change="change"
+			@submit="submit"
 		>
 			<div
 				v-for="(slot, name) in slots"
@@ -60,8 +60,8 @@
 				e.preventDefault();
 				this.status += "input";
 			},
-			change(e) {
-				this.status += "change:" + e;
+			submit(e) {
+				this.status += "submit:" + e;
 			},
 			select(e) {
 				this.status += "select:" + e.toString();

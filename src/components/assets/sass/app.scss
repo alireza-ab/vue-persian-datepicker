@@ -6,7 +6,7 @@
 		position: absolute;
 		bottom: 100%;
 		//--- right of datepicker ---//
-		right: 1.2rem;
+		// right: 1.2rem;
 		//--- center of datepicker ---//
 		/* left: 50%; transform: translateX(-50%); */
 		//--- left of datepicker ---//
@@ -34,7 +34,35 @@
 .pdp {
 	position: relative;
 
-	&.pdp-fa {
+	&:not(.pdp-range) .pdp-day.start-range {
+		border-radius: $radius !important;
+	}
+
+	&.pdp-range .pdp-picker.rtl .pdp-day.start-range {
+		border-radius: 0 $radius $radius 0 !important;
+	}
+
+	&.pdp-range .pdp-picker.rtl .pdp-day.end-range {
+		border-radius: $radius 0 0 $radius !important;
+	}
+
+	&.pdp-range .pdp-picker.rtl .pdp-day.end-range.start-range {
+		border-radius: $radius !important;
+	}
+
+	&.pdp-range .pdp-picker.ltr .pdp-day.start-range {
+		border-radius: $radius 0 0 $radius !important;
+	}
+
+	&.pdp-range .pdp-picker.ltr .pdp-day.end-range {
+		border-radius: 0 $radius $radius 0 !important;
+	}
+
+	&.pdp-range .pdp-picker.ltr .pdp-day.end-range.start-range {
+		border-radius: $radius !important;
+	}
+
+	&.rtl {
 		direction: rtl;
 		text-align: right;
 
@@ -46,32 +74,15 @@
 
 			*:last-child {
 				border-radius: $radius 0 0 $radius;
-				margin-right: -1px;
 			}
 		}
 
-		&:not(.pdp-range) .pdp-day.start-range {
-			border-radius: $radius !important;
-		}
-
-		&.pdp-range .pdp-day.start-range {
-			border-radius: 0 $radius $radius 0 !important;
-		}
-
-		&.pdp-range .pdp-day.end-range {
-			border-radius: $radius 0 0 $radius !important;
-		}
-
-		&.pdp-range .pdp-day.end-range.start-range {
-			border-radius: $radius !important;
-		}
-
-		&.pdp-range .pdp-day.in-range {
-			border-radius: 0 !important;
+		.pdp-picker::after {
+			right: 1.2rem;
 		}
 	}
 
-	&.pdp-en {
+	&.ltr {
 		direction: ltr;
 		text-align: left;
 
@@ -84,6 +95,10 @@
 			*:last-child {
 				border-radius: 0 $radius $radius 0;
 			}
+		}
+
+		.pdp-picker::after {
+			left: 1.2rem;
 		}
 	}
 
@@ -192,6 +207,27 @@
 		padding: 0.3rem 0.6rem;
 		animation: start 0.1s;
 
+		&.ltr {
+			direction: ltr;
+
+			.pdp-header .bottom {
+				flex-direction: row-reverse;
+
+				& > div {
+					display: flex;
+					flex-direction: row-reverse;
+				}
+			}
+
+			.pdp-select-year,
+			.pdp-select-month,
+			.pdp-header .bottom,
+			.pdp-main,
+			.pdp-footer {
+				font-family: sans-serif;
+			}
+		}
+
 		&.pdp-top {
 			bottom: calc(1.5em + 0.75rem + 2px);
 			margin-top: unset;
@@ -211,41 +247,65 @@
 		}
 
 		.pdp-header {
-			padding: 0.3rem;
-			display: flex;
-			align-items: center;
-			height: 3rem;
-			direction: rtl;
-			border-bottom: 1px solid $border-color;
+			& > div:first-child {
+				border-bottom: 1px solid $border-color;
+				margin-bottom: 0.5rem;
+			}
 
-			& > div {
+			.top {
+				padding: 0.75rem 0.3rem 1rem 0.3rem;
 				display: flex;
-				flex-grow: 1;
-				justify-content: space-around;
+				justify-content: space-between;
+				font-size: 90%;
 
-				.pdp-month,
-				.pdp-year {
+				button {
+					border: 0;
+					background: inherit;
+					cursor: pointer;
 					color: $primary-color;
-					font-size: 1rem;
+
+					&:focus {
+						outline: 0;
+					}
 				}
 			}
 
-			button {
-				border: 0;
-				background: inherit;
-				cursor: pointer;
+			.bottom {
+				padding: 0.3rem;
+				display: flex;
+				align-items: center;
+				height: 3rem;
+				direction: rtl;
 
-				&:focus {
-					outline: 0;
+				& > div {
+					display: flex;
+					flex-grow: 1;
+					justify-content: space-around;
+
+					.pdp-month,
+					.pdp-year {
+						color: $primary-color;
+						font-size: 1rem;
+					}
 				}
-			}
 
-			.pdp-arrow.disabled {
-				opacity: 0.3;
-			}
+				button {
+					border: 0;
+					background: inherit;
+					cursor: pointer;
 
-			.pdp-arrow:not(.disabled):hover {
-				opacity: 0.3;
+					&:focus {
+						outline: 0;
+					}
+				}
+
+				.pdp-arrow.disabled {
+					opacity: 0.3;
+				}
+
+				.pdp-arrow:not(.disabled):hover {
+					opacity: 0.3;
+				}
 			}
 		}
 
@@ -307,7 +367,7 @@
 
 		.pdp-main {
 			display: flex;
-			margin: 1rem 0;
+			margin-bottom: 1rem;
 
 			.pdp-column {
 				margin: 0 1rem;
@@ -376,6 +436,7 @@
 						&.in-range {
 							background: $in-range-background-color;
 							color: $hover-color;
+							border-radius: 0 !important;
 						}
 
 						&:not(.disabled):hover,

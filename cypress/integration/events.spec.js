@@ -38,7 +38,7 @@ describe('events', () => {
         cy.get('.status').should('contain.text', 'input')
     })
 
-    it('select & change', () => {
+    it('select & submit', () => {
         cy.visit('/')
         cy.get('.pdp-input').focus()
         cy.get('.pdp-day').contains('1').click()
@@ -46,6 +46,6 @@ describe('events', () => {
         cy.get('.pdp-input').focus()
         cy.get('.pdp-day').contains('10').click()
         cy.get('.status').should('contain.text', 'select:1399/06/10')
-        cy.get('.status').should('contain.text', 'change:1399/06/01,1399/06/10')
+        cy.get('.status').should('contain.text', 'submit:1399/06/01,1399/06/10')
     })
 })

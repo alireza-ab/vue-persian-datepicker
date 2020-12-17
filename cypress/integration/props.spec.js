@@ -53,6 +53,41 @@ describe('from and to props', () => {
     })
 })
 
+describe('locale prop', () => {
+    it('fa and en', () => {
+        cy.changeProps('locale', 'fa,en')
+        cy.visit('/')
+        cy.get('.pdp-input').focus()
+        cy.get('.pdp-header .top div').should('contain.text', 'تقویم شمسی')
+        cy.get('.pdp-header .top button').click()
+        cy.get('.pdp-header .top div').should('contain.text', 'Gregorian Calendar')
+    })
+
+    it('en and fa', () => {
+        cy.changeProps('locale', 'en,fa')
+        cy.visit('/')
+        cy.get('.pdp-input').focus()
+        cy.get('.pdp-header .top div').should('contain.text', 'Gregorian Calendar')
+        cy.get('.pdp-header .top button').click()
+        cy.get('.pdp-header .top div').should('contain.text', 'تقویم شمسی')
+    })
+
+    it('en', () => {
+        cy.changeProps('locale', 'en')
+        cy.visit('/')
+        cy.get('.pdp-input').focus()
+        cy.contains('September')
+
+    })
+
+    it('fa', () => {
+        cy.changeProps('locale', 'fa,en')
+        cy.visit('/')
+        cy.get('.pdp-input').focus()
+        cy.contains('شهریور')
+    })
+})
+
 describe('formats', () => {
     it('format prop', () => {
         cy.changeProps('format', 'YYYY-MM-DD')
@@ -172,7 +207,7 @@ describe('clickOn prop', () => {
         cy.get('.pdp-picker').should('not.exist')
     })
 
-    it('wit all value', () => {
+    it('with all value', () => {
         cy.changeProps('click-on', 'all')
         cy.visit('/')
         cy.get('.pdp-picker').should('not.exist')

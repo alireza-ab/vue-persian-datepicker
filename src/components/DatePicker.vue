@@ -2,9 +2,9 @@
 	<div
 		:class="[
 			'pdp',
-			'pdp-fa',
 			{ 'pdp-range': mode === 'range' },
 			{ 'pdp-modal': modal },
+			langs[currentLocale].dir.input,
 		]"
 	>
 		<slot name="before">
@@ -39,7 +39,13 @@
 		<slot name="after"></slot>
 		<div v-if="showDatePicker">
 			<div class="pdp-overlay" @click="showDatePicker = false"></div>
-			<div :class="['pdp-picker', { 'pdp-top': showTopOfInput }]">
+			<div
+				:class="[
+					'pdp-picker',
+					{ 'pdp-top': showTopOfInput },
+					langs[currentLocale].dir.picker,
+				]"
+			>
 				<ul class="pdp-select-month" v-show="showMonthSelect">
 					<li
 						v-for="(month, index) in months"
@@ -64,62 +70,86 @@
 					</li>
 				</ul>
 				<div class="pdp-header">
-					<button
-						tabindex="-1"
-						type="button"
-						:class="[
-							'pdp-arrow',
-							{
-								disabled: !checkDate(onDisplay.clone().subMonth(), 'month'),
-							},
-						]"
-						title="ماه قبل"
-						@click="changeSelectedMonth('sub')"
-					>
-						<slot name="right-arrow">
-							<arrow-icon direction="right" width="10" height="10"></arrow-icon>
-						</slot>
-					</button>
-					<div>
-						<div v-for="(item, i) in columnCount" :key="i">
-							<button
-								@click="showPart('month')"
-								class="pdp-month"
-								tabindex="-1"
-							>
-								{{
-									months[
+					<div class="top" v-if="locale.includes(',')">
+						<div>{{ lang.translations.text }}</div>
+						<button type="button" @click="changeLocale">
+							{{ nextLocale }}
+						</button>
+					</div>
+					<div class="bottom">
+						<button
+							tabindex="-1"
+							type="button"
+							:class="[
+								'pdp-arrow',
+								{
+									disabled: !checkDate(onDisplay.clone().subMonth(), 'month'),
+								},
+							]"
+							:title="lang.translations.prevMonth"
+							@click="changeSelectedMonth('sub')"
+						>
+							<slot name="right-arrow">
+								<arrow-icon
+									direction="right"
+									width="10"
+									height="10"
+									:inverse="langs[currentLocale].dir.picker == 'ltr'"
+								></arrow-icon>
+							</slot>
+						</button>
+						<div>
+							<div v-for="(item, i) in columnCount" :key="i">
+								<button
+									@click="showPart('month')"
+									class="pdp-month"
+									type="button"
+									tabindex="-1"
+								>
+									{{
+										months[
+											onDisplay
+												.clone()
+												.addMonth(i)
+												.month()
+										].label
+									}}
+								</button>
+								<button
+									type="button"
+									@click="showPart('year')"
+									class="pdp-year"
+									tabindex="-1"
+								>
+									{{
 										onDisplay
 											.clone()
 											.addMonth(i)
-											.month()
-									].label
-								}}
-							</button>
-							<button @click="showPart('year')" class="pdp-year" tabindex="-1">
-								{{
-									onDisplay
-										.clone()
-										.addMonth(i)
-										.year()
-								}}
-							</button>
+											.year()
+									}}
+								</button>
+							</div>
 						</div>
+						<button
+							tabindex="-1"
+							type="button"
+							:class="[
+								'pdp-arrow',
+								{ disabled: !checkDate(onDisplay.clone().addMonth(), 'month') },
+							]"
+							:title="lang.translations.nextMonth"
+							@click="changeSelectedMonth('add')"
+						>
+							<slot name="left-arrow">
+								<arrow-icon
+									direction="left"
+									width="10"
+									height="10"
+									:inverse="langs[currentLocale].dir.picker == 'ltr'"
+								></arrow-icon>
+							</slot>
+						</button>
 					</div>
-					<button
-						tabindex="-1"
-						type="button"
-						:class="[
-							'pdp-arrow',
-							{ disabled: !checkDate(onDisplay.clone().addMonth(), 'month') },
-						]"
-						title="ماه بعد"
-						@click="changeSelectedMonth('add')"
-					>
-						<slot name="left-arrow">
-							<arrow-icon direction="left" width="10" height="10"></arrow-icon>
-						</slot>
-					</button>
 				</div>
 
 				<div class="pdp-main" ref="pdpMain">
@@ -132,7 +162,7 @@
 						<div class="pdp-week">
 							<div
 								class="pdp-weekday"
-								v-for="(weekday, index) in weekdays"
+								v-for="(weekday, index) in langs[currentLocale].weekdays"
 								:key="index"
 							>
 								{{ weekday }}
@@ -174,12 +204,13 @@
 					</div>
 					<div>
 						<button
+							v-if="this.checkDate(this.core)"
 							type="button"
 							class="pdp-today"
 							@click="goToToday()"
 							:tabindex="+attrs.tabindex + 1 || undefined"
 						>
-							امروز
+							{{ lang.translations.today }}
 						</button>
 						<button
 							v-if="!autoSubmit"
@@ -188,7 +219,7 @@
 							@click="submitDate"
 							:tabindex="+attrs.tabindex + 1 || undefined"
 						>
-							تایید
+							{{ lang.translations.submit }}
 						</button>
 					</div>
 				</div>
@@ -198,7 +229,8 @@
 </template>
 
 <script>
-	//TODO: fix select and change events
+	//FIXME: use en numbers in gregorian calendar
+	//FIXME: when the type the date, the submit event not fire.
 	//TODO: alt field
 	//TODO: add select time
 	//TODO: add attrs for div and other elements
@@ -376,6 +408,17 @@
 				default: "range",
 				type: String,
 			},
+
+			/**
+			 * the locale of datepicker
+			 * @default "fa"
+			 * @type String
+			 * @values fa | en | fa,en
+			 */
+			locale: {
+				default: "fa",
+				type: String,
+			},
 		},
 		model: {
 			prop: "value",
@@ -395,11 +438,11 @@
 		},
 		data() {
 			return {
+				core: new PersianDate(),
 				showDatePicker: this.show,
 				showTopOfInput: false,
 				showMonthSelect: false,
 				showYearSelect: false,
-				weekdays: ["ش", "ی", "د", "س", "چ", "پ", "ج"],
 				onDisplay: "",
 				startRange: "",
 				endRange: "",
@@ -407,6 +450,70 @@
 				toDate: new PersianDate().parse(this.to),
 				displayValue: "",
 				documentWidth: this.$isServer ? 0 : window.innerWidth,
+				langs: {
+					//TODO: send to utils folder
+					fa: {
+						calendar: "jalali",
+						weekdays: ["ش", "ی", "د", "س", "چ", "پ", "ج"],
+						months: [
+							"فروردین",
+							"اردیبهشت",
+							"خرداد",
+							"تیر",
+							"مرداد",
+							"شهریور",
+							"مهر",
+							"آبان",
+							"آذر",
+							"دی",
+							"بهمن",
+							"اسفند",
+						],
+						dir: {
+							input: "rtl",
+							picker: "rtl",
+						},
+						translations: {
+							label: "شمسی",
+							text: "تقویم شمسی",
+							prevMonth: "ماه قبل",
+							nextMonth: "ماه بعد",
+							today: "امروز",
+							submit: "تایید",
+						},
+					},
+					en: {
+						calendar: "gregorian",
+						weekdays: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
+						months: [
+							"January",
+							"February",
+							"March",
+							"April",
+							"May",
+							"June",
+							"July",
+							"August",
+							"September",
+							"October",
+							"November",
+							"December",
+						],
+						dir: {
+							input: "rtl",
+							picker: "ltr",
+						},
+						translations: {
+							label: "میلادی",
+							text: "Gregorian Calendar",
+							prevMonth: "prev Month",
+							nextMonth: "next Month",
+							today: "Today",
+							submit: "Submit",
+						},
+					},
+				},
+				currentLocale: this.locale.split(",")[0],
 			};
 		},
 		computed: {
@@ -441,7 +548,7 @@
 					emptyCells = +this.onDisplay
 						.clone()
 						.parse(selectedYear, selectedMonth, 1)
-						.toString("jd");
+						.toString(this.lang.calendar == "jalali" ? "jd" : "d");
 					let daysOfMonthNumber = this.onDisplay.getDaysInMonth(
 						selectedYear,
 						selectedMonth
@@ -490,11 +597,9 @@
 											.date(showDay),
 										"date"
 									),
-									today: new PersianDate().isSame(
-										selectedYear,
-										selectedMonth,
-										showDay
-									),
+									today: this.core
+										.clone()
+										.isSame(selectedYear, selectedMonth, showDay),
 									val: showDay++,
 								};
 								--daysOfMonthNumber;
@@ -503,14 +608,13 @@
 					}
 					months.push(month);
 				}
-
 				return months;
 			},
 			months() {
 				let months = {};
 				for (let i = 1; i <= 12; i++) {
 					months[i] = {
-						label: CALENDAR["jalali"]["months"][i],
+						label: this.lang.months[i - 1],
 						selected: this.onDisplay.month() == i,
 						disabled: !this.checkDate(this.onDisplay.clone().month(i), "month"),
 					};
@@ -521,25 +625,39 @@
 				if (typeof this.column == "number") return this.column;
 				let column;
 				Object.keys(this.column)
-					.sort((a, b) => b - a)
+					.sort((a, b) => a - b)
 					.some((breakpoint) => {
 						if (this.documentWidth <= breakpoint)
-							column = this.column[breakpoint];
+							return (column = this.column[breakpoint]);
 					});
 				return column || 2;
 			},
+			lang() {
+				return this.langs[this.currentLocale];
+			},
+			nextLocale() {
+				let locales = this.locale.split(",");
+				let index = locales.indexOf(this.currentLocale);
+				let locale = locales[index + 1] || locales[0];
+				return this.langs[locale].translations.label;
+			},
 		},
-		async created() {
+		async mounted() {
+			let calendar = this.lang.calendar;
+			this.core.calendar(calendar);
+			this.fromDate.calendar(calendar);
+			this.toDate.calendar(calendar);
 			let val = this.$attrs.value;
 			if (val && this.checkDate(val)) {
-				this.startRange = new PersianDate(val);
+				this.startRange = this.core.clone().parse(val);
 				this.onDisplay = this.startRange.clone();
 				this.setModel();
 			} else {
 				this.setModel();
-				let today = new PersianDate().startOf("date");
-				if (await this.checkDate(today.toString())) this.onDisplay = today;
-				else {
+				let today = this.core.clone().startOf("date");
+				if (await this.checkDate(today.toString())) {
+					this.onDisplay = today;
+				} else {
 					this.onDisplay = this.nearestDate(today);
 				}
 			}
@@ -589,6 +707,7 @@
 					.addMonth(column || 0)
 					.date(date);
 				if (date) {
+					onDisplay.startOf("date");
 					if (this.mode === "range") {
 						if (this.endRange) {
 							this.startRange = onDisplay;
@@ -605,13 +724,13 @@
 							this.startRange.toString(this.inputFormat) + " - ",
 							""
 						);
-						date = new PersianDate().parse(endRangeDate);
+						date = this.core.clone().parse(endRangeDate);
 						if (date.isValid() && this.checkDate(date)) {
 							this.endRange = date;
 							this.submitDate(false);
 						}
 					} else {
-						date = new PersianDate().parse(this.displayValue);
+						date = this.core.clone().parse(this.displayValue);
 						if (date.isValid() && this.checkDate(date)) {
 							this.startRange = date;
 							this.submitDate(false);
@@ -645,7 +764,8 @@
 				this.$emit("setDate", date);
 			},
 			goToToday() {
-				this.onDisplay = new PersianDate();
+				this.showMonthSelect = this.showYearSelect = false;
+				this.onDisplay = this.core.clone();
 				this.$nextTick(() => {
 					document.querySelector(".pdp-day.today").classList.add("tada");
 				});
@@ -656,16 +776,21 @@
 			checkDate(date, part) {
 				let from, to;
 				if (part == "year") {
-					from = this.fromDate.toString("jYYYY");
-					to = this.toDate.toString("jYYYY");
+					let format = this.lang.calendar == "jalali" ? "jYYYY" : "YYYY";
+					from = this.fromDate.toString(format);
+					to = this.toDate.toString(format);
 				} else if (part == "month") {
-					from = this.fromDate.toString("jYYYY/jMM");
-					to = this.toDate.toString("jYYYY/jMM");
+					let format = this.lang.calendar == "jalali" ? "jYYYY" : "YYYY/MM";
+					from = this.fromDate.toString(format);
+					to = this.toDate.toString(format);
 				} else {
 					from = this.fromDate.toString();
 					to = this.toDate.toString();
 				}
-				return new PersianDate().parse(date).isBetween(from, to, "[]");
+				return this.core
+					.clone()
+					.parse(date)
+					.isBetween(from, to, "[]");
 			},
 			showPicker(el) {
 				if (this.clickOn == "all" || this.clickOn == el) {
@@ -683,11 +808,14 @@
 				// [37, 38, 39, 40] are key codes of arrow keys
 				if ([37, 38, 39, 40].includes(e.keyCode)) {
 					let arrow = {
-						37: 1, // for left arrow must one day add
-						38: -7, // for up arrow must seven day subtract
-						39: -1, // for right arrow must one day subtract
-						40: 7, // for down arrow must seven day add
+						37: 1, // for left arrow must one day add in rtl picker
+						38: -7, // for up arrow must seven day subtract in rtl picker
+						39: -1, // for right arrow must one day subtract in rtl picker
+						40: 7, // for down arrow must seven day add in rtl picker
 					};
+					let numberOfDay = arrow[e.keyCode];
+					if (this.lang.dir.picker == "ltr" && [37, 39].includes(e.keyCode))
+						numberOfDay = -numberOfDay;
 					let focusedDay = document.querySelectorAll(".pdp .pdp-day.hover");
 					if (!focusedDay.length) {
 						focusedDay = document.querySelectorAll(
@@ -702,7 +830,7 @@
 						let focusedMonth = this.onDisplay.clone().addMonth(column);
 						let nextElementValue = focusedMonth
 							.date(focusedDay.innerText)
-							.addDay(arrow[e.keyCode]);
+							.addDay(numberOfDay);
 						if (!this.checkDate(nextElementValue))
 							return focusedDay.classList.add("hover");
 						nextElementValue = nextElementValue.date();
@@ -721,7 +849,9 @@
 							focusedDay.classList.add("hover");
 						});
 					} else {
-						focusedDay = document.querySelector(".pdp .pdp-day:not(.empty)");
+						focusedDay = document.querySelector(
+							".pdp .pdp-day:not(.empty):not(.disabled)"
+						);
 						focusedDay.classList.add("hover");
 					}
 					if (this.mode === "range" && this.startRange && !this.endRange) {
@@ -811,6 +941,18 @@
 				if (inputOffset < pickerOffset) this.showTopOfInput = false;
 				else if (window.innerHeight - (inputOffset + pickerOffset) < 0)
 					this.showTopOfInput = true;
+			},
+			changeLocale() {
+				let locales = this.locale.split(",");
+				let index = locales.indexOf(this.currentLocale);
+				this.currentLocale = locales[index + 1] || locales[0];
+				let calendar = this.lang.calendar;
+				this.core.calendar(calendar);
+				this.fromDate.calendar(calendar);
+				this.toDate.calendar(calendar);
+				this.onDisplay.calendar(calendar);
+				if (this.startRange) this.startRange.calendar(calendar);
+				if (this.endRange) this.endRange.calendar(calendar);
 			},
 		},
 	};
