@@ -95,6 +95,11 @@
 			*:last-child {
 				border-radius: 0 $radius $radius 0;
 			}
+
+			.pdp-clear {
+				left: unset;
+				right: 0.45rem;
+			}
 		}
 
 		.pdp-picker::after {
@@ -165,19 +170,22 @@
 		}
 
 		.pdp-icon {
-			display: flex;
 			padding: 0.375rem 0.75rem;
-			display: flex;
-			align-items: center;
-			margin-bottom: 0;
-			font-size: 1rem;
-			font-weight: 400;
 			line-height: 1.5;
+			font-size: 1rem;
 			color: $text-color;
-			text-align: center;
-			white-space: nowrap;
 			background: $icon-background-color;
 			border: 1px solid $border-color;
+		}
+
+		.pdp-clear {
+			border: none;
+			background-color: transparent;
+			position: absolute;
+			left: 0.45rem;
+			top: 0.45rem;
+			z-index: 1;
+			cursor: pointer;
 		}
 	}
 
@@ -256,17 +264,13 @@
 				padding: 0.75rem 0.3rem 1rem 0.3rem;
 				display: flex;
 				justify-content: space-between;
-				font-size: 90%;
+				font-size: 0.9rem;
 
 				button {
 					border: 0;
 					background: inherit;
 					cursor: pointer;
 					color: $primary-color;
-
-					&:focus {
-						outline: 0;
-					}
 				}
 			}
 

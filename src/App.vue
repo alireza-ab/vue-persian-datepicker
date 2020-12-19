@@ -9,9 +9,11 @@
 				format="YYYY-MM-DD"
 				input-format="jYYYY/jMM/jDD"
 				display-format="jDD jMMMM"
-				:auto-submit="true"
+				:auto-submit="false"
+				label="Please select the date:"
+				:clearable="true"
 				:show="show"
-				mode="single"
+				mode="range"
 				id="date"
 				:modal="false"
 				locale="fa,en"
@@ -29,7 +31,7 @@
 			<div class="show">date is: {{ date }}</div>
 
 			<date-picker locale="en,fa"></date-picker>
-			<button type="submit">submit</button>
+			<button type="reset">submit</button>
 		</form>
 	</div>
 </template>
@@ -56,7 +58,7 @@
 			},
 			blur(e) {
 				e.preventDefault();
-				console.log("blured");
+				// console.log("blured");
 			},
 			input(e) {
 				e.preventDefault();
@@ -64,10 +66,10 @@
 			},
 			focus(e) {
 				e.preventDefault();
-				console.log("focused");
+				// console.log("focused");
 			},
 			change(e) {
-				console.log(e, "changed");
+				// console.log(e, "changed");
 			},
 			select(e) {
 				console.log(e, "selected");
@@ -117,6 +119,7 @@
 		margin: 1px;
 		padding: 30rem 0;
 		direction: rtl;
+		font-size: 16px;
 	}
 
 	.show {

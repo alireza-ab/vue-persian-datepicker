@@ -46,11 +46,11 @@ Cypress.Commands.add('changeSlots', (slot, value) => {
 
 Cypress.Commands.add('selectDate', () => {
     cy.get('.pdp-input').focus()
-    cy.contains('10').click()
+    cy.get('.pdp-day').contains('10').click()
 })
 
 Cypress.Commands.add('selectRangeDate', () => {
     cy.get('.pdp-input').focus()
     cy.contains('10').click()
-    cy.contains('15').click()
+    cy.get('.pdp-day').contains('15').click()
 })

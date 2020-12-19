@@ -24,6 +24,11 @@
 					<calendar-icon width="20" height="20"></calendar-icon>
 				</slot>
 			</div>
+			<button class="pdp-clear" type="button" @click="clear" v-if="clearable">
+				<slot name="close">
+					<close-icon></close-icon>
+				</slot>
+			</button>
 			<input
 				type="text"
 				autocomplete="off"
@@ -72,7 +77,11 @@
 				<div class="pdp-header">
 					<div class="top" v-if="locale.includes(',')">
 						<div>{{ lang.translations.text }}</div>
-						<button type="button" @click="changeLocale">
+						<button
+							type="button"
+							@click="changeLocale"
+							:tabindex="+attrs.tabindex + 1 || undefined"
+						>
 							{{ nextLocale }}
 						</button>
 					</div>
@@ -207,7 +216,7 @@
 							v-if="this.checkDate(this.core)"
 							type="button"
 							class="pdp-today"
-							@click="goToToday()"
+							@click="goToToday"
 							:tabindex="+attrs.tabindex + 1 || undefined"
 						>
 							{{ lang.translations.today }}
@@ -229,8 +238,12 @@
 </template>
 
 <script>
-	//FIXME: use en numbers in gregorian calendar
-	//FIXME: when the type the date, the submit event not fire.
+	//TODO: add nuxt support - locale and clearable prop - close slot in doc
+	//TODO: change "change event" to "submit event" in doc
+	//TODO: do better the select with arrows
+	//TODO: when the date select with type focus on date that selected and clear the input
+	//TODO: move the before and after slots to group div --> if this is better
+	//TODO: instead of startRange and endRange use array
 	//TODO: alt field
 	//TODO: add select time
 	//TODO: add attrs for div and other elements
@@ -246,6 +259,7 @@
 	// components
 	import arrowIcon from "./utils/ArrowIcon.vue";
 	import calendarIcon from "./utils/CalendarIcon.vue";
+	import closeIcon from "./utils/CloseIcon.vue";
 
 	export { PersianDate };
 	export default {
@@ -254,6 +268,7 @@
 		components: {
 			arrowIcon,
 			calendarIcon,
+			closeIcon,
 		},
 		props: {
 			/**
@@ -418,6 +433,16 @@
 			locale: {
 				default: "fa",
 				type: String,
+			},
+
+			/**
+			 * The user can clear the selected dates or not
+			 * @default false
+			 * @type Boolean
+			 */
+			clearable: {
+				default: false,
+				type: Boolean,
 			},
 		},
 		model: {
@@ -780,7 +805,7 @@
 					from = this.fromDate.toString(format);
 					to = this.toDate.toString(format);
 				} else if (part == "month") {
-					let format = this.lang.calendar == "jalali" ? "jYYYY" : "YYYY/MM";
+					let format = this.lang.calendar == "jalali" ? "jYYYY/jMM" : "YYYY/MM";
 					from = this.fromDate.toString(format);
 					to = this.toDate.toString(format);
 				} else {
@@ -852,7 +877,10 @@
 						focusedDay = document.querySelector(
 							".pdp .pdp-day:not(.empty):not(.disabled)"
 						);
-						focusedDay.classList.add("hover");
+						if (focusedDay) focusedDay.classList.add("hover");
+						else if ([37, 39].includes(e.keyCode)) {
+							this.onDisplay.addMonth(numberOfDay);
+						}
 					}
 					if (this.mode === "range" && this.startRange && !this.endRange) {
 						this.selectInRangeDate({ target: focusedDay });
@@ -953,6 +981,10 @@
 				this.onDisplay.calendar(calendar);
 				if (this.startRange) this.startRange.calendar(calendar);
 				if (this.endRange) this.endRange.calendar(calendar);
+			},
+			clear() {
+				this.displayValue = "";
+				this.$emit("setDate", "");
 			},
 		},
 	};

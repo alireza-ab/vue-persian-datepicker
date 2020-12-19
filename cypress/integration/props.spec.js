@@ -309,6 +309,31 @@ describe('mode prop', () => {
     })
 })
 
+describe('clearable prop', () => {
+    it('without clearable', () => {
+        cy.visit('/')
+        cy.get('.pdp-input').focus()
+        cy.get('.pdp-clear').should('not.exist')
+    })
+    it('with clearable', () => {
+        cy.changeProps('clearable', true)
+        cy.changeProps('mode', 'single')
+        cy.visit('/')
+        cy.selectDate()
+        cy.get('.pdp-input').should('have.value', '99/6/10')
+        cy.get('.pdp-clear').click()
+        cy.get('.pdp-input').should('not.have.value')
+        cy.changeProps('mode', 'range')
+        cy.reload()
+        cy.get('.pdp-input').focus()
+        cy.get('.pdp-clear').should('exist')
+        cy.selectRangeDate()
+        cy.get('.pdp-input').should('have.value', '99/6/10 - 99/6/15')
+        cy.get('.pdp-clear').click()
+        cy.get('.pdp-input').should('not.have.value')
+    })
+})
+
 describe('autoSubmit prop', () => {
     it('true value', () => {
         cy.changeProps('auto-submit', true)
