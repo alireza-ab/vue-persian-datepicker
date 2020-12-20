@@ -13,6 +13,7 @@
 				label="Please select the date:"
 				:clearable="true"
 				:show="show"
+				name="date"
 				mode="range"
 				id="date"
 				:modal="false"
@@ -30,8 +31,8 @@
 			</date-picker>
 			<div class="show">date is: {{ date }}</div>
 
-			<date-picker locale="en,fa"></date-picker>
-			<button type="reset">submit</button>
+			<date-picker locale="en,fa" alt-name="date" alt-format="jy"></date-picker>
+			<button type="submit">submit</button>
 		</form>
 	</div>
 </template>

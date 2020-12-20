@@ -293,6 +293,46 @@ describe('column prop', () => {
     })
 })
 
+describe('alternative field', () => {
+    it('not exist', () => {
+        cy.visit('/')
+        cy.get('input[type="hidden"]').should('not.exist')
+    })
+
+    it('exist - String', () => {
+        cy.changeProps('alt-name', 'date')
+        cy.visit('/')
+        cy.get('input[type="hidden"]').should('exist')
+        cy.selectRangeDate()
+        cy.get('input[type="hidden"]').should('have.value', '20-8-31,20-9-5')
+    })
+
+    it('exist - Array', () => {
+        cy.changeProps('alt-name', 'date[]')
+        cy.visit('/')
+        cy.selectRangeDate()
+        cy.get('input[type="hidden"]').first().should('have.value', '20-8-31')
+        cy.get('input[type="hidden"]').last().should('have.value', '20-9-5')
+    })
+
+    it('without alt-format', () => {
+        cy.changeProps('format', 'YYYY MM')
+        cy.visit('/')
+        cy.selectRangeDate()
+        cy.get('input[type="hidden"]').first().should('have.value', '2020 08')
+        cy.get('input[type="hidden"]').last().should('have.value', '2020 09')
+    })
+
+
+    it('with alt-format', () => {
+        cy.changeProps('alt-format', 'MM YYYY DD')
+        cy.visit('/')
+        cy.selectRangeDate()
+        cy.get('input[type="hidden"]').first().should('have.value', '08 2020 31')
+        cy.get('input[type="hidden"]').last().should('have.value', '09 2020 05')
+    })
+})
+
 describe('mode prop', () => {
     it('single', () => {
         cy.changeProps('mode', 'single')

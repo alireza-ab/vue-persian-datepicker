@@ -62,4 +62,6 @@ describe('others', () => {
         cy.contains('شهریور')
         cy.get('.start-range').should('contain.text', '20')
     })
+
+
 })

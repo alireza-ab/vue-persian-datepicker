@@ -8,7 +8,7 @@
 		]"
 	>
 		<slot name="before">
-			<label v-if="label" :for="attrs.id" class="pdp-label">
+			<label v-if="label" :for="attrs.input.id" class="pdp-label">
 				{{ label }}
 			</label>
 		</slot>
@@ -24,22 +24,43 @@
 					<calendar-icon width="20" height="20"></calendar-icon>
 				</slot>
 			</div>
-			<button class="pdp-clear" type="button" @click="clear" v-if="clearable">
-				<slot name="close">
-					<close-icon></close-icon>
-				</slot>
-			</button>
 			<input
 				type="text"
 				autocomplete="off"
 				ref="pdpInput"
 				v-model="displayValue"
 				:class="inputClass"
-				v-bind="attrs"
+				v-bind="attrs.input"
 				v-on="$listeners"
 				@focus="showPicker('input')"
 				@keydown="selectWithArrow"
 			/>
+			<div v-if="attrs.alt.name" class="d-none">
+				<div v-if="attrs.alt.name.endsWith('[]')">
+					<input
+						v-for="(date, i) in selectedDates"
+						:key="i"
+						type="hidden"
+						:name="attrs.alt.name"
+						:value="date.toString(attrs.alt.format || format)"
+					/>
+				</div>
+				<input
+					v-else
+					type="hidden"
+					:name="attrs.alt.name"
+					:value="
+						selectedDates.map((date) =>
+							date.toString(attrs.alt.format || format)
+						)
+					"
+				/>
+			</div>
+			<button class="pdp-clear" type="button" @click="clear" v-if="clearable">
+				<slot name="close">
+					<close-icon></close-icon>
+				</slot>
+			</button>
 		</div>
 		<slot name="after"></slot>
 		<div v-if="showDatePicker">
@@ -80,7 +101,7 @@
 						<button
 							type="button"
 							@click="changeLocale"
-							:tabindex="+attrs.tabindex + 1 || undefined"
+							:tabindex="+attrs.input.tabindex + 1 || undefined"
 						>
 							{{ nextLocale }}
 						</button>
@@ -204,11 +225,11 @@
 				<div class="pdp-footer">
 					<div>
 						<slot name="footer"></slot>
-						<small v-if="startRange">
-							{{ startRange.toString(displayFormat) }}
+						<small v-if="selectedDates.length">
+							{{ selectedDates[0].toString(displayFormat) }}
 						</small>
-						<small v-if="endRange">
-							- {{ endRange.toString(displayFormat) }}
+						<small v-if="selectedDates.length == 2">
+							- {{ selectedDates[1].toString(displayFormat) }}
 						</small>
 					</div>
 					<div>
@@ -217,7 +238,7 @@
 							type="button"
 							class="pdp-today"
 							@click="goToToday"
-							:tabindex="+attrs.tabindex + 1 || undefined"
+							:tabindex="+attrs.input.tabindex + 1 || undefined"
 						>
 							{{ lang.translations.today }}
 						</button>
@@ -226,7 +247,7 @@
 							type="button"
 							class="pdp-submit"
 							@click="submitDate"
-							:tabindex="+attrs.tabindex + 1 || undefined"
+							:tabindex="+attrs.input.tabindex + 1 || undefined"
 						>
 							{{ lang.translations.submit }}
 						</button>
@@ -238,19 +259,19 @@
 </template>
 
 <script>
-	//TODO: add nuxt support - locale and clearable prop - close slot in doc
-	//TODO: change "change event" to "submit event" in doc
-	//TODO: do better the select with arrows
-	//TODO: when the date select with type focus on date that selected and clear the input
-	//TODO: move the before and after slots to group div --> if this is better
-	//TODO: instead of startRange and endRange use array
 	//TODO: alt field
 	//TODO: add select time
 	//TODO: add attrs for div and other elements
 	//TODO: add props for disable some dates
-	//TODO: add clearable props
-	//TODO: add close button for months and years
-	//TODO: add style must be optional
+	//TODO: change node-sass to sass
+	//TODO: add styles and colors
+	//TODO: add two input for range
+	//TODO: do better the select with arrows
+	//TODO: when the date select with type focus on date that selected and clear the input
+	//TODO: move the before and after slots to group div --> if this is better
+	//TODO: instead of start Range and endRange use array
+	//TODO: add nuxt support - locale and clearable prop - close slot in doc
+	//TODO: change "change event" to "submit event" in doc
 	//TODO: refactor and write comment
 
 	// Core
@@ -469,6 +490,7 @@
 				showMonthSelect: false,
 				showYearSelect: false,
 				onDisplay: "",
+				selectedDates: [],
 				startRange: "",
 				endRange: "",
 				fromDate: new PersianDate().parse(this.from),
@@ -543,9 +565,28 @@
 		},
 		computed: {
 			attrs() {
-				let attrs = { ...this.$attrs };
-				delete attrs.value;
+				let attrs = {
+					div: {},
+					label: {},
+					alt: {},
+					input: {},
+				};
+				let $attrs = { ...this.$attrs };
+				delete $attrs.value;
+				for (const key in $attrs) {
+					//FIXME: change to switch
+					if (key.startsWith("label-"))
+						attrs.label[key.replace("label-", "")] = $attrs[key];
+					else if (key.startsWith("alt-"))
+						attrs.alt[key.replace("alt-", "")] = $attrs[key];
+					else if (key.startsWith("div-"))
+						attrs.div[key.replace("div-", "")] = $attrs[key];
+					else attrs.input[key.replace("input-", "")] = $attrs[key];
+				}
 				return attrs;
+				// let attrs = { ...this.$attrs };
+				// delete attrs.value;
+				// return attrs;
 			},
 			years() {
 				let years = [];
@@ -597,24 +638,35 @@
 										.date(showDay)
 										.toString(),
 									startRange:
-										this.startRange &&
-										this.startRange.isSame(
+										this.selectedDates.length &&
+										this.selectedDates[0].isSame(
 											selectedYear,
 											selectedMonth,
 											showDay
 										),
 									endRange:
-										this.endRange &&
-										this.endRange.isSame(selectedYear, selectedMonth, showDay),
-									inRange:
-										this.startRange &&
-										this.startRange.isBefore(
+										this.selectedDates.length == 2 &&
+										this.selectedDates[1].isSame(
 											selectedYear,
 											selectedMonth,
 											showDay
-										) &&
-										this.endRange &&
-										this.endRange.isAfter(selectedYear, selectedMonth, showDay),
+										),
+									inRange:
+										this.selectedDates.length == 2 &&
+										this.core
+											.clone()
+											.parse(selectedYear, selectedMonth, showDay)
+											.isBetween(...this.selectedDates),
+									// this.selectedDates[0].isBefore(
+									// 	selectedYear,
+									// 	selectedMonth,
+									// 	showDay
+									// ) &&
+									// this.selectedDates[1].isAfter(
+									// 	selectedYear,
+									// 	selectedMonth,
+									// 	showDay
+									// ),
 									disabled: !this.checkDate(
 										this.onDisplay
 											.clone()
@@ -674,8 +726,10 @@
 			this.toDate.calendar(calendar);
 			let val = this.$attrs.value;
 			if (val && this.checkDate(val)) {
-				this.startRange = this.core.clone().parse(val);
-				this.onDisplay = this.startRange.clone();
+				//FIXME: read from val and set (single and range)
+				this.$set(this.selectedDates, 0, this.core.clone().parse(val));
+				// this.selectedDates[0] = this.core.clone().parse(val);
+				this.onDisplay = this.selectedDates[0].clone();
 				this.setModel();
 			} else {
 				this.setModel();
@@ -734,50 +788,69 @@
 				if (date) {
 					onDisplay.startOf("date");
 					if (this.mode === "range") {
-						if (this.endRange) {
-							this.startRange = onDisplay;
-							this.endRange = "";
-						} else if (this.startRange) {
-							if (!onDisplay.isBefore(this.startRange.toString()))
-								this.endRange = onDisplay;
-							else this.startRange = onDisplay;
-						} else this.startRange = onDisplay;
-					} else this.startRange = onDisplay;
+						if (this.selectedDates.length == 2) {
+							this.$set(this.selectedDates, 0, onDisplay);
+							// this.selectedDates[0] = onDisplay;
+							this.$delete(this.selectedDates, 1);
+							// this.selectedDates[1] = "";
+						} else if (this.selectedDates.length) {
+							if (!onDisplay.isBefore(this.selectedDates[0].toString()))
+								this.$set(this.selectedDates, 1, onDisplay);
+							// this.selectedDates[1] = onDisplay;
+							else this.$set(this.selectedDates, 0, onDisplay);
+							// this.selectedDates[0] = onDisplay;
+						} else this.$set(this.selectedDates, 0, onDisplay);
+						// this.selectedDates[0] = onDisplay;
+					} else this.$set(this.selectedDates, 0, onDisplay);
+					// this.selectedDates[0] = onDisplay;
 				} else if (this.displayValue) {
-					if (this.mode === "range" && this.startRange) {
-						let endRangeDate = this.displayValue.replace(
-							this.startRange.toString(this.inputFormat) + " - ",
-							""
-						);
-						date = this.core.clone().parse(endRangeDate);
+					if (this.mode === "range" && this.selectedDates.length) {
+						// let endRangeDate = this.displayValue.replace(
+						// 	this.selectedDates[0].toString(this.inputFormat) + " - ",
+						// 	""
+						// );
+						date = this.core.clone().parse(this.displayValue);
 						if (date.isValid() && this.checkDate(date)) {
-							this.endRange = date;
-							this.submitDate(false);
+							let diff = date.diff(this.onDisplay, "month");
+							if (diff < 0 || diff >= this.columnCount)
+								this.onDisplay = date.clone();
+							this.$set(this.selectedDates, 1, date.clone());
+							this.displayValue = "";
+							// // this.selectedDates[1] = date;
+							// this.submitDate(false);
 						}
 					} else {
 						date = this.core.clone().parse(this.displayValue);
 						if (date.isValid() && this.checkDate(date)) {
-							this.startRange = date;
-							this.submitDate(false);
+							let diff = date.diff(this.onDisplay, "month");
+							if (diff < 0 || diff >= this.columnCount)
+								this.onDisplay = date.clone();
+							this.$set(this.selectedDates, 0, date.clone());
+							this.displayValue = "";
+							// // this.selectedDates[0] = date;
+							// this.submitDate(false);
 						}
 					}
-				} else this.startRange = "";
-				if (!this.checkDate(this.startRange, "date"))
-					return (this.startRange = "");
+				} else this.$delete(this.selectedDates, 0);
+				// this.selectedDates[0] = "";
+				if (!this.checkDate(this.selectedDates[0], "date"))
+					return this.$delete(this.selectedDates, 0);
+				// (this.selectedDates[0] = "");
 				else if (
 					this.autoSubmit &&
-					(this.mode !== "range" || (this.mode === "range" && this.endRange))
+					(this.mode !== "range" ||
+						(this.mode === "range" && this.selectedDates.length == 2))
 				) {
 					this.submitDate();
 				}
 				if (date) {
 					this.$emit("select", onDisplay);
-					if (this.mode === "range" && !this.endRange) {
+					if (this.mode === "range" && this.selectedDates.length != 2) {
 						this.$refs.pdpMain.addEventListener(
 							"mouseover",
 							this.selectInRangeDate
 						);
-					} else if (this.endRange) {
+					} else if (this.selectedDates.length == 2) {
 						this.$refs.pdpMain.removeEventListener(
 							"mouseover",
 							this.selectInRangeDate
@@ -882,7 +955,7 @@
 							this.onDisplay.addMonth(numberOfDay);
 						}
 					}
-					if (this.mode === "range" && this.startRange && !this.endRange) {
+					if (this.mode === "range" && this.selectedDates.length == 1) {
 						this.selectInRangeDate({ target: focusedDay });
 					}
 				} else if (e.keyCode == 13) {
@@ -907,7 +980,7 @@
 						.clone()
 						.addMonth(i)
 						.date(date);
-					if (onDisplay.isAfter(this.startRange.toString())) {
+					if (onDisplay.isAfter(this.selectedDates[0].toString())) {
 						for (let j = +date; j > 0; j--) {
 							if (this.checkDate(onDisplay.date(j))) {
 								target = document.querySelector(
@@ -926,27 +999,27 @@
 			},
 			submitDate(close = true) {
 				let date, displayDate;
-				if (this.mode !== "range") {
-					displayDate = this.startRange.toString(this.inputFormat);
-					date = this.startRange.toString(this.format);
-				} else {
-					displayDate =
-						this.startRange.toString(this.inputFormat) +
-						" - " +
-						this.endRange.toString(this.inputFormat);
-					date = [
-						this.startRange.toString(this.format),
-						this.endRange.toString(this.format),
-					];
-				}
-				this.displayValue = displayDate;
+				// if (this.mode !== "range") {
+				// 	displayDate = this.selectedDates[0].toString(this.inputFormat);
+				// 	date = this.selectedDates[0].toString(this.format);
+				// } else {
+				displayDate = this.selectedDates.map((el) => {
+					return el.toString(this.inputFormat);
+				});
+				date = this.selectedDates.map((el) => {
+					return el.toString(this.format);
+				});
+				// [
+				// 	this.selectedDates[0].toString(this.format),
+				// 	this.selectedDates[1].toString(this.format),
+				// ];
+				// }
+				this.displayValue = displayDate.join(" - ");
 				this.setModel(date);
 				if (close) {
 					this.$emit(
 						"submit",
-						this.mode === "range"
-							? [this.startRange, this.endRange]
-							: this.startRange
+						this.mode === "range" ? this.selectedDates : this.selectedDates[0]
 					);
 					this.showDatePicker = false;
 				}
@@ -979,8 +1052,11 @@
 				this.fromDate.calendar(calendar);
 				this.toDate.calendar(calendar);
 				this.onDisplay.calendar(calendar);
-				if (this.startRange) this.startRange.calendar(calendar);
-				if (this.endRange) this.endRange.calendar(calendar);
+				for (let i = 0; i < this.selectedDates.length; i++) {
+					this.selectedDates[i].calendar(calendar);
+				}
+				// if (this.selectedDates[0]) this.selectedDates[0].calendar(calendar);
+				// if (this.selectedDates[1]) this.selectedDates[1].calendar(calendar);
 			},
 			clear() {
 				this.displayValue = "";

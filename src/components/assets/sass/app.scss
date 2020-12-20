@@ -67,12 +67,12 @@
 		text-align: right;
 
 		.pdp-group {
-			*:first-child {
+			:first-child {
 				border-radius: 0 $radius $radius 0;
 				margin-left: -1px;
 			}
 
-			*:last-child {
+			input[type="text"] {
 				border-radius: $radius 0 0 $radius;
 			}
 		}
@@ -87,12 +87,12 @@
 		text-align: left;
 
 		.pdp-group {
-			*:first-child {
+			:first-child {
 				border-radius: $radius 0 0 $radius;
 				margin-right: -1px;
 			}
 
-			*:last-child {
+			input[type="text"] {
 				border-radius: 0 $radius $radius 0;
 			}
 
@@ -186,6 +186,10 @@
 			top: 0.45rem;
 			z-index: 1;
 			cursor: pointer;
+		}
+
+		.d-none {
+			display: none;
 		}
 	}
 

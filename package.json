@@ -10,8 +10,8 @@
 		"build:common": "cross-env NODE_ENV=common webpack",
 		"build:unpkg": "cross-env NODE_ENV=unpkg webpack",
 		"build:all": "npm run build:prod && npm run build:common && npm run build:unpkg",
-		"cypress:open": "cypress open",
-		"cypress:run": "cypress run",
+		"cy:open": "cypress open",
+		"cy:run": "cypress run",
 		"test": "cross-env NODE_ENV=test webpack-dev-server --hot --watch --port 8081"
 	},
 	"repository": {
