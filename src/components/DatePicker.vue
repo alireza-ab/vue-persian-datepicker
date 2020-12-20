@@ -8,11 +8,11 @@
 		]"
 	>
 		<slot name="before">
-			<label v-if="label" :for="attrs.input.id" class="pdp-label">
+			<label v-if="label" :for="attrs.input.id" v-bind="attrs.label">
 				{{ label }}
 			</label>
 		</slot>
-		<div :class="divClass">
+		<div v-bind="attrs.div">
 			<div
 				:class="[
 					'pdp-icon',
@@ -29,7 +29,6 @@
 				autocomplete="off"
 				ref="pdpInput"
 				v-model="displayValue"
-				:class="inputClass"
 				v-bind="attrs.input"
 				v-on="$listeners"
 				@focus="showPicker('input')"
@@ -181,7 +180,6 @@
 						</button>
 					</div>
 				</div>
-
 				<div class="pdp-main" ref="pdpMain">
 					<div
 						class="pdp-column"
@@ -259,7 +257,6 @@
 </template>
 
 <script>
-	//TODO: alt field
 	//TODO: add select time
 	//TODO: add attrs for div and other elements
 	//TODO: add props for disable some dates
@@ -269,8 +266,7 @@
 	//TODO: do better the select with arrows
 	//TODO: when the date select with type focus on date that selected and clear the input
 	//TODO: move the before and after slots to group div --> if this is better
-	//TODO: instead of start Range and endRange use array
-	//TODO: add nuxt support - locale and clearable prop - close slot in doc
+	//TODO: add nuxt support - locale and clearable prop - close slot - alternative field in doc
 	//TODO: change "change event" to "submit event" in doc
 	//TODO: refactor and write comment
 
@@ -365,26 +361,6 @@
 			 */
 			clickOn: {
 				default: "all",
-				type: String,
-			},
-
-			/**
-			 * the classes for the div parent of input
-			 * @default "pdp-group"
-			 * @type String
-			 */
-			divClass: {
-				default: "pdp-group",
-				type: String,
-			},
-
-			/**
-			 * the classes for the input
-			 * @default "pdp-input"
-			 * @type String
-			 */
-			inputClass: {
-				default: "pdp-input",
 				type: String,
 			},
 
@@ -566,10 +542,16 @@
 		computed: {
 			attrs() {
 				let attrs = {
-					div: {},
-					label: {},
+					div: {
+						class: "pdp-group",
+					},
+					label: {
+						class: "pdp-label",
+					},
 					alt: {},
-					input: {},
+					input: {
+						class: "pdp-input",
+					},
 				};
 				let $attrs = { ...this.$attrs };
 				delete $attrs.value;
