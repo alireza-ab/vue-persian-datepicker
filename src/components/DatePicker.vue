@@ -258,16 +258,16 @@
 
 <script>
 	//TODO: add select time
-	//TODO: add attrs for div and other elements
 	//TODO: add props for disable some dates
-	//TODO: change node-sass to sass
 	//TODO: add styles and colors
 	//TODO: add two input for range
 	//TODO: do better the select with arrows
-	//TODO: when the date select with type focus on date that selected and clear the input
 	//TODO: move the before and after slots to group div --> if this is better
-	//TODO: add nuxt support - locale and clearable prop - close slot - alternative field in doc
+	//TODO: add nuxt support - locale and clearable prop - close slot -
+	// 				alternative field - div and label attributes in doc
 	//TODO: change "change event" to "submit event" in doc
+	//TODO: remove additional comments
+	//TODO: remove iran-sans font
 	//TODO: refactor and write comment
 
 	// Core

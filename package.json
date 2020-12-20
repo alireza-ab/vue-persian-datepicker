@@ -38,7 +38,8 @@
 	"author": "Alireza Alibeiki <alibeikialireza@gmail.com>",
 	"license": "MIT",
 	"dependencies": {
-		"@alireza-ab/persian-date": "^2.0.0"
+		"@alireza-ab/persian-date": "^2.0.0",
+		"sass": "^1.30.0"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.12.7",
@@ -49,7 +50,6 @@
 		"css-loader": "^4.3.0",
 		"cypress": "^6.1.0",
 		"cypress-plugin-tab": "^1.0.5",
-		"node-sass": "^4.12.0",
 		"postcss-loader": "^4.1.0",
 		"sass-loader": "^8.0.2",
 		"style-loader": "^1.3.0",
