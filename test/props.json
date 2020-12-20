@@ -1,5 +1,6 @@
 {
   "from": "1399",
   "to": "1399/06/31",
-  "clearable": true
+  "mode": "range",
+  "locale": "en"
 }

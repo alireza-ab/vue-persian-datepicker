@@ -11,6 +11,8 @@
 				display-format="jDD jMMMM"
 				:auto-submit="false"
 				label="Please select the date:"
+				label-id="label"
+				div-id="div"
 				:clearable="true"
 				:show="show"
 				name="date"

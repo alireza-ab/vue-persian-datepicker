@@ -228,7 +228,7 @@ describe('clickOn prop', () => {
     })
 })
 
-describe('divClass prop', () => {
+describe('div class attribute', () => {
     it('remove class', () => {
         cy.changeProps('div-class', '')
         cy.visit('/')
@@ -248,7 +248,7 @@ describe('divClass prop', () => {
     })
 })
 
-describe('inputClass prop', () => {
+describe('input class attribute', () => {
     it('remove class', () => {
         cy.changeProps('input-class', '')
         cy.visit('/')
@@ -402,28 +402,46 @@ describe('modal prop', () => {
 })
 
 describe('attributes', () => {
-    it('required', () => {
+    it('required for input', () => {
         cy.changeProps('required', 'required')
         cy.visit('/')
         cy.get('.pdp-input').should('have.attr', 'required')
     })
 
-    it('placeholder', () => {
+    it('placeholder for input', () => {
         cy.changeProps('placeholder', 'تاریخ تولد')
         cy.visit('/')
         cy.get('.pdp-input').should('have.attr', 'placeholder')
     })
 
-    it('readonly', () => {
+    it('readonly for input', () => {
         cy.changeProps('readonly', 'readonly')
         cy.visit('/')
         cy.get('.pdp-input').should('have.attr', 'readonly')
     })
 
-    it('disabled', () => {
+    it('disabled for input', () => {
         cy.changeProps('readonly', undefined)
         cy.changeProps('disabled', 'disabled')
         cy.visit('/')
         cy.get('.pdp-input').should('have.attr', 'disabled')
+    })
+
+    it('id for input', () => {
+        cy.changeProps('id', 'input')
+        cy.visit('/')
+        cy.get('.pdp-input').should('have.attr', 'id')
+    })
+
+    it('id for label', () => {
+        cy.changeProps('label-id', 'label')
+        cy.visit('/')
+        cy.get('.pdp-label').should('have.attr', 'id')
+    })
+
+    it('id for div', () => {
+        cy.changeProps('div-id', 'div')
+        cy.visit('/')
+        cy.get('.pdp-group').should('have.attr', 'id')
     })
 })
