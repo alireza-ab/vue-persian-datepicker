@@ -333,6 +333,45 @@ describe('alternative field', () => {
     })
 })
 
+describe('disable prop', () => {
+    it('String', () => {
+        cy.changeProps('disable', '1399/6/15')
+        cy.visit('/')
+        cy.get('.pdp-input').focus()
+        cy.get('.pdp-day[value="15"]').should('have.attr', 'class', 'pdp-day disabled')
+    })
+
+    it('RegExp', () => {
+        cy.changeProps('disableR', '1399/5/*/')
+        cy.visit('/')
+        cy.get('.pdp-input').focus()
+        cy.get('.pdp-arrow').first().click();
+        for (let i = 1; i <= 31; i++) {
+            cy.get(`[data-column="0"] .pdp-day[value="${i}"]`).should('have.attr', 'class').and('match', /disabled/)
+        }
+    })
+
+    it('Array', () => {
+        cy.changeProps('disable', ['1399/6/10', '1399/6/15', '1399/6/20'])
+        cy.changeProps('disableR', undefined)
+        cy.visit('/')
+        cy.get('.pdp-input').focus()
+        cy.get('[data-column="0"] .pdp-day[value="10"]').should('have.attr', 'class').and('match', /disabled/)
+        cy.get('[data-column="0"] .pdp-day[value="15"]').should('have.attr', 'class').and('match', /disabled/)
+        cy.get('[data-column="0"] .pdp-day[value="20"]').should('have.attr', 'class').and('match', /disabled/)
+    })
+
+    it('Function', () => {
+        cy.changeProps('disableF', '(date)=>date.date()==5')
+        cy.visit('/')
+        cy.get('.pdp-input').focus()
+        for (let i = 0; i < 5; i++) {
+            cy.get('[data-column="0"] .pdp-day[value="5"]').should('have.attr', 'class').and('match', /disabled/)
+            cy.get('.pdp-arrow').first().click();
+        }
+    })
+})
+
 describe('mode prop', () => {
     it('single', () => {
         cy.changeProps('mode', 'single')

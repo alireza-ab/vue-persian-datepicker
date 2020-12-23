@@ -4,7 +4,7 @@
 			<date-picker
 				v-model="date"
 				tabindex="1"
-				from="1399/01/01"
+				from="1398/11/30"
 				to="1399/6/31"
 				format="YYYY-MM-DD"
 				input-format="jYYYY/jMM/jDD"
@@ -17,6 +17,7 @@
 				:show="show"
 				name="date"
 				mode="range"
+				disable="1398/11/30"
 				id="date"
 				:modal="false"
 				locale="fa,en"
@@ -33,7 +34,7 @@
 			</date-picker>
 			<div class="show">date is: {{ date }}</div>
 
-			<date-picker locale="en,fa" alt-name="date" alt-format="jy"></date-picker>
+			<date-picker locale="en,fa"></date-picker>
 			<button type="submit">submit</button>
 		</form>
 	</div>

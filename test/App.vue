@@ -41,6 +41,15 @@
 				slots: require("./slots.json"),
 			};
 		},
+		beforeMount() {
+			if (this.props.disableR) {
+				this.props.disable = new RegExp(this.props.disableR);
+				delete this.props.disableR;
+			} else if (this.props.disableF) {
+				this.props.disable = eval(this.props.disableF);
+				delete this.props.disableF;
+			}
+		},
 		methods: {
 			open() {
 				this.status += "open";

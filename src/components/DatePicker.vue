@@ -258,17 +258,16 @@
 
 <script>
 	//TODO: add select time
-	//TODO: add props for disable some dates
 	//TODO: add styles and colors
 	//TODO: add two input for range
-	//TODO: do better the select with arrows
+	//TODO: in select date, select date before and after
 	//TODO: move the before and after slots to group div --> if this is better
-	//TODO: add nuxt support - locale and clearable prop - close slot -
-	// 				alternative field - div and label attributes in doc
-	//TODO: change "change event" to "submit event" in doc
 	//TODO: remove additional comments
 	//TODO: remove iran-sans font
 	//TODO: refactor and write comment
+	//TODO: add nuxt support - locale and clearable and disable prop - close slot -
+	// 				alternative field - div and label attributes in doc
+	//TODO: change "change event" to "submit event" in doc
 
 	// Core
 	import PersianDate from "@alireza-ab/persian-date/src/PersianDate";
@@ -425,7 +424,7 @@
 			 * the locale of datepicker
 			 * @default "fa"
 			 * @type String
-			 * @values fa | en | fa,en
+			 * @values fa | en | fa,en |  en,fa
 			 */
 			locale: {
 				default: "fa",
@@ -440,6 +439,15 @@
 			clearable: {
 				default: false,
 				type: Boolean,
+			},
+
+			/**
+			 * The user can clear the selected dates or not
+			 * @default false
+			 * @type Boolean
+			 */
+			disable: {
+				type: [Array, String, Function, RegExp],
 			},
 		},
 		model: {
@@ -635,27 +643,34 @@
 										),
 									inRange:
 										this.selectedDates.length == 2 &&
-										this.core
-											.clone()
-											.parse(selectedYear, selectedMonth, showDay)
-											.isBetween(...this.selectedDates),
-									// this.selectedDates[0].isBefore(
-									// 	selectedYear,
-									// 	selectedMonth,
-									// 	showDay
-									// ) &&
-									// this.selectedDates[1].isAfter(
-									// 	selectedYear,
-									// 	selectedMonth,
-									// 	showDay
-									// ),
-									disabled: !this.checkDate(
-										this.onDisplay
-											.clone()
-											.addMonth(i)
-											.date(showDay),
-										"date"
-									),
+										// this.core
+										// 	.clone()
+										// 	.parse(selectedYear, selectedMonth, showDay)
+										// 	.isBetween(...this.selectedDates),
+										this.selectedDates[0].isBefore(
+											selectedYear,
+											selectedMonth,
+											showDay
+										) &&
+										this.selectedDates[1].isAfter(
+											selectedYear,
+											selectedMonth,
+											showDay
+										),
+									disabled:
+										!this.checkDate(
+											this.onDisplay
+												.clone()
+												.addMonth(i)
+												.date(showDay),
+											"date"
+										) ||
+										this.isInDisable(
+											this.onDisplay
+												.clone()
+												.addMonth(i)
+												.date(showDay)
+										),
 									today: this.core
 										.clone()
 										.isSame(selectedYear, selectedMonth, showDay),
@@ -763,6 +778,7 @@
 				this.showYearSelect = false;
 			},
 			selectDate(date, column) {
+				//FIXME: first validate the date
 				let onDisplay = this.onDisplay
 					.clone()
 					.addMonth(column || 0)
@@ -786,13 +802,18 @@
 					} else this.$set(this.selectedDates, 0, onDisplay);
 					// this.selectedDates[0] = onDisplay;
 				} else if (this.displayValue) {
+					//FIXME: when type date, betweens should not the disable dates
 					if (this.mode === "range" && this.selectedDates.length) {
 						// let endRangeDate = this.displayValue.replace(
 						// 	this.selectedDates[0].toString(this.inputFormat) + " - ",
 						// 	""
 						// );
 						date = this.core.clone().parse(this.displayValue);
-						if (date.isValid() && this.checkDate(date)) {
+						if (
+							date.isValid() &&
+							this.checkDate(date) &&
+							!this.isInDisable(date)
+						) {
 							let diff = date.diff(this.onDisplay, "month");
 							if (diff < 0 || diff >= this.columnCount)
 								this.onDisplay = date.clone();
@@ -803,7 +824,11 @@
 						}
 					} else {
 						date = this.core.clone().parse(this.displayValue);
-						if (date.isValid() && this.checkDate(date)) {
+						if (
+							date.isValid() &&
+							this.checkDate(date) &&
+							!this.isInDisable(date)
+						) {
 							let diff = date.diff(this.onDisplay, "month");
 							if (diff < 0 || diff >= this.columnCount)
 								this.onDisplay = date.clone();
@@ -815,8 +840,22 @@
 					}
 				} else this.$delete(this.selectedDates, 0);
 				// this.selectedDates[0] = "";
-				if (!this.checkDate(this.selectedDates[0], "date"))
-					return this.$delete(this.selectedDates, 0);
+
+				if (this.mode == "range" && this.selectedDates.length == 2) {
+					let inRangeDate = this.selectedDates[1].clone().subDay();
+					while (!inRangeDate.isSame(this.selectedDates[0])) {
+						if (this.isInDisable(inRangeDate))
+							return this.$delete(this.selectedDates, 1);
+						inRangeDate.subDay();
+					}
+				}
+
+				let lastIndex = this.selectedDates.length - 1;
+				if (
+					!this.checkDate(this.selectedDates[lastIndex], "date") ||
+					this.isInDisable(this.selectedDates[lastIndex])
+				)
+					return this.$delete(this.selectedDates, lastIndex);
 				// (this.selectedDates[0] = "");
 				else if (
 					this.autoSubmit &&
@@ -855,22 +894,46 @@
 			},
 			checkDate(date, part) {
 				let from, to;
+				//FIXME: refactor
+				if (!this.core.isPersianDate(date))
+					date = this.core.clone().parse(date);
 				if (part == "year") {
 					let format = this.lang.calendar == "jalali" ? "jYYYY" : "YYYY";
 					from = this.fromDate.toString(format);
 					to = this.toDate.toString(format);
+					return date.isBetween(from, to, "[]");
 				} else if (part == "month") {
 					let format = this.lang.calendar == "jalali" ? "jYYYY/jMM" : "YYYY/MM";
 					from = this.fromDate.toString(format);
 					to = this.toDate.toString(format);
+					return date.isBetween(from, to, "[]");
 				} else {
 					from = this.fromDate.toString();
 					to = this.toDate.toString();
+					return date.isBetween(from, to, "[]");
 				}
-				return this.core
-					.clone()
-					.parse(date)
-					.isBetween(from, to, "[]");
+			},
+			isInDisable(date, disable) {
+				if (!this.disable) return false;
+				disable = disable || this.disable;
+				date = this.core.isPersianDate(date)
+					? date.clone()
+					: this.core.clone().parse(date);
+				if (typeof disable == "string") {
+					return date.calendar("j").isSame(this.disable);
+				} else if (disable instanceof RegExp) {
+					return disable.test(date.toString("jYYYY/jM/jD"));
+				} else if (typeof disable == "function") {
+					return disable(date);
+				} else if (Array.isArray(disable)) {
+					return disable.some((val) => {
+						if (typeof val == "string") {
+							return date.calendar("j").isSame(val);
+						} else if (val instanceof RegExp) {
+							return val.test(date.toString("jYYYY/jM/jD"));
+						}
+					});
+				}
 			},
 			showPicker(el) {
 				if (this.clickOn == "all" || this.clickOn == el) {
@@ -885,6 +948,8 @@
 				}
 			},
 			async selectWithArrow(e) {
+				//FIXME: refactor
+				//FIXME: when up arraw press go to last date
 				// [37, 38, 39, 40] are key codes of arrow keys
 				if ([37, 38, 39, 40].includes(e.keyCode)) {
 					let arrow = {
@@ -933,8 +998,11 @@
 							".pdp .pdp-day:not(.empty):not(.disabled)"
 						);
 						if (focusedDay) focusedDay.classList.add("hover");
-						else if ([37, 39].includes(e.keyCode)) {
-							this.onDisplay.addMonth(numberOfDay);
+						else {
+							focusedDay = document.querySelector(
+								`.pdp .pdp-main .pdp-column[data-column="0"] .pdp-day[value='${this.fromDate.date()}']`
+							);
+							focusedDay.classList.add("hover");
 						}
 					}
 					if (this.mode === "range" && this.selectedDates.length == 1) {
@@ -970,6 +1038,12 @@
 								);
 								if (target) target.classList.add("in-range");
 								else break columnLoop;
+								if (this.isInDisable(onDisplay)) {
+									document.querySelectorAll(`.pdp .pdp-day`).forEach((el) => {
+										el.classList.remove("in-range");
+									});
+									// break columnLoop;
+								}
 							}
 						}
 						date = this.onDisplay
