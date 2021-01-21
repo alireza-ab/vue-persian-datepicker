@@ -1,51 +1,96 @@
 /// <reference types="Cypress" />
 
-describe('events', () => {
+const types = ['date', 'time', 'datetime'];
+
+describe('focus', () => {
     beforeEach(() => {
-        cy.changeProps()
+        cy.changeProps('from', undefined)
+        cy.changeProps('to', undefined)
         cy.changeSlots()
     })
 
-    it('focus', () => {
-        cy.visit('/')
-        cy.get('.pdp-input').focus()
-        cy.get('.status').should('contain.text', 'focus')
-    })
+    for (let i = 0; i < types.length; i++) {
+        it(`${types[i]} type`, () => {
+            cy.changeProps('type', types[i]);
+            cy.visit('/')
+            cy.get('.pdp-input').focus()
+            cy.get('.status').should('contain.text', 'focus')
+        })
+    }
+})
 
-    it('open', () => {
-        cy.visit('/')
-        cy.get('.pdp-input').focus()
-        cy.get('.status').should('contain.text', 'open')
-    })
+describe('open', () => {
+    for (let i = 0; i < types.length; i++) {
+        it(`${types[i]} type`, () => {
+            cy.changeProps('type', types[i]);
+            cy.visit('/')
+            cy.get('.pdp-input').focus()
+            cy.get('.status').should('contain.text', 'open')
+        })
+    }
+})
 
-    it('blur', () => {
-        cy.visit('/')
-        cy.get('.pdp-input').focus()
-        cy.get('.pdp-overlay').click({ force: true })
-        cy.get('.status').should('contain.text', 'blur')
-    })
+describe('blur', () => {
+    for (let i = 0; i < types.length; i++) {
+        it(`${types[i]} type`, () => {
+            cy.changeProps('type', types[i]);
+            cy.visit('/')
+            cy.get('.pdp-input').focus()
+            cy.get('.pdp-overlay').click({ force: true })
+            cy.get('.status').should('contain.text', 'blur')
+        })
+    }
+})
 
-    it('close', () => {
-        cy.visit('/')
-        cy.get('.pdp-input').focus()
-        cy.get('.pdp-overlay').click({ force: true })
-        cy.get('.status').should('contain.text', 'close')
-    })
+describe('close', () => {
+    for (let i = 0; i < types.length; i++) {
+        it(`${types[i]} type`, () => {
+            cy.changeProps('type', types[i]);
+            cy.visit('/')
+            cy.get('.pdp-input').focus()
+            cy.get('.pdp-overlay').click({ force: true })
+            cy.get('.status').should('contain.text', 'close')
+        })
+    }
+})
 
-    it('input', () => {
-        cy.visit('/')
-        cy.get('.pdp-input').type('1')
-        cy.get('.status').should('contain.text', 'input')
-    })
+describe('input', () => {
+    for (let i = 0; i < types.length; i++) {
+        it(`${types[i]} type`, () => {
+            cy.changeProps('type', types[i]);
+            cy.visit('/')
+            cy.get('.pdp-input').type('1')
+            cy.get('.status').should('contain.text', 'input')
+        })
+    }
+})
 
-    it('select & submit', () => {
-        cy.visit('/')
-        cy.get('.pdp-input').focus()
-        cy.get('.pdp-day').contains('1').click()
-        cy.get('.status').should('contain.text', 'select:1399/06/01')
-        cy.get('.pdp-input').focus()
-        cy.get('.pdp-day').contains('10').click()
-        cy.get('.status').should('contain.text', 'select:1399/06/10')
-        cy.get('.status').should('contain.text', 'submit:1399/06/01,1399/06/10')
-    })
+describe('select & submit', () => {
+    for (let i = 0; i < types.length; i++) {
+        it(`${types[i]} type`, () => {
+            cy.changeProps('type', types[i]);
+            cy.visit('/')
+            if (types[i] == 'date') {
+                cy.get('.pdp-input').type('1399/06/01{enter}')
+                cy.get('.status').should('contain.text', 'select:1399/06/01')
+                cy.get('.pdp-input').type('1399/06/02{enter}')
+                cy.get('.status').should('contain.text', 'select:1399/06/02')
+                cy.get('.status').should('contain.text', 'submit:1399/06/01,1399/06/02')
+            }
+            else if (types[i] == 'time') {
+                cy.get('.pdp-input').type('20:18{enter}')
+                cy.get('.status').should('contain.text', 'select:20:18')
+                cy.get('.pdp-input').type('15:12{enter}')
+                cy.get('.status').should('contain.text', 'select:15:12')
+                cy.get('.status').should('contain.text', 'submit:20:18,15:12')
+            }
+            else if (types[i] == 'datetime') {
+                cy.get('.pdp-input').type('1399/06/01 20:18{enter}')
+                cy.get('.status').should('contain.text', 'select:1399/06/01 20:18')
+                cy.get('.pdp-input').type('1399/06/02 15:12{enter}')
+                cy.get('.status').should('contain.text', 'select:1399/06/02 15:12')
+                cy.get('.status').should('contain.text', 'submit:1399/06/01 20:18,1399/06/02 15:12')
+            }
+        })
+    }
 })

@@ -41,7 +41,9 @@
 						:key="i"
 						type="hidden"
 						:name="attrs.alt.name"
-						:value="date.toString(attrs.alt.format || format)"
+						:value="
+							date.toString(attrs.alt.format || format || defaultFormats.format)
+						"
 					/>
 				</div>
 				<input
@@ -50,7 +52,7 @@
 					:name="attrs.alt.name"
 					:value="
 						selectedDates.map((date) =>
-							date.toString(attrs.alt.format || format)
+							date.toString(attrs.alt.format || format || defaultFormats.format)
 						)
 					"
 				/>
@@ -71,30 +73,36 @@
 					langs[currentLocale].dir.picker,
 				]"
 			>
-				<ul class="pdp-select-month" v-show="showMonthSelect">
-					<li
-						v-for="(month, index) in months"
-						:key="index"
-						:class="[
-							{ selected: month.selected },
-							{ disabled: month.disabled },
-						]"
-						@click="changeSelectedMonth(index)"
+				<div v-if="type.includes('date')">
+					<ul class="pdp-select-month" v-show="showMonthSelect">
+						<li
+							v-for="(month, index) in months"
+							:key="index"
+							:class="[
+								{ selected: month.selected },
+								{ disabled: month.disabled },
+							]"
+							@click="changeSelectedMonth(index)"
+						>
+							{{ month.label }}
+						</li>
+					</ul>
+					<ul
+						class="pdp-select-year"
+						v-show="showYearSelect"
+						ref="pdpSelectYear"
 					>
-						{{ month.label }}
-					</li>
-				</ul>
-				<ul class="pdp-select-year" v-show="showYearSelect" ref="pdpSelectYear">
-					<li
-						v-for="(year, index) in years"
-						:key="index"
-						:class="{ selected: onDisplay.year() == year }"
-						@click="changeSelectedYear(year)"
-					>
-						{{ year }}
-					</li>
-				</ul>
-				<div class="pdp-header">
+						<li
+							v-for="(year, index) in years"
+							:key="index"
+							:class="{ selected: onDisplay.year() == year }"
+							@click="changeSelectedYear(year)"
+						>
+							{{ year }}
+						</li>
+					</ul>
+				</div>
+				<div class="pdp-header" v-if="type.includes('date')">
 					<div class="top" v-if="locale.includes(',')">
 						<div>{{ lang.translations.text }}</div>
 						<button
@@ -181,40 +189,154 @@
 					</div>
 				</div>
 				<div class="pdp-main" ref="pdpMain">
-					<div
-						class="pdp-column"
-						v-for="(item, i) in columnCount"
-						:key="i"
-						:data-column="i"
-					>
-						<div class="pdp-week">
-							<div
-								class="pdp-weekday"
-								v-for="(weekday, index) in langs[currentLocale].weekdays"
-								:key="index"
-							>
-								{{ weekday }}
+					<div class="pdp-date" v-if="type.includes('date')">
+						<div
+							class="pdp-column"
+							v-for="(item, i) in columnCount"
+							:key="i"
+							:data-column="i"
+						>
+							<div class="pdp-week">
+								<div
+									class="pdp-weekday"
+									v-for="(weekday, index) in langs[currentLocale].weekdays"
+									:key="index"
+								>
+									{{ weekday }}
+								</div>
+							</div>
+							<div class="pdp-days">
+								<div v-for="(week, wIndex) in monthDays[i]" :key="wIndex">
+									<div
+										v-for="day in week"
+										:key="day.key"
+										:class="[
+											'pdp-day',
+											{ empty: day.empty },
+											{ friday: day.friday },
+											{ today: day.today },
+											{ 'start-range': day.startRange },
+											{ 'end-range': day.endRange },
+											{ disabled: day.disabled },
+											{ 'in-range': day.inRange },
+										]"
+										@click="selectDate(day.val, i)"
+										:value="day.val"
+									>
+										{{ day.val }}
+									</div>
+								</div>
 							</div>
 						</div>
-						<div class="pdp-days">
-							<div v-for="(week, wIndex) in monthDays[i]" :key="wIndex">
-								<div
-									v-for="day in week"
-									:key="day.key"
-									:class="[
-										'pdp-day',
-										{ empty: day.empty },
-										{ friday: day.friday },
-										{ today: day.today },
-										{ 'start-range': day.startRange },
-										{ 'end-range': day.endRange },
-										{ disabled: day.disabled },
-										{ 'in-range': day.inRange },
-									]"
-									@click="selectDate(day.val, i)"
-									:value="day.val"
-								>
-									{{ day.val }}
+					</div>
+					<div class="pdp-time inline" v-if="type.includes('time')">
+						<div class="pdp-column" v-if="type == 'time'">
+							<div v-for="(c, i) in columnCount" :key="i"></div>
+						</div>
+						<div class="pdp-moment">
+							<div
+								v-for="(n, i) in mode == 'range' ? 2 : 1"
+								:key="n"
+								:class="[
+									{
+										disabled:
+											(type != 'time' && !selectedDates[i]) ||
+											(selectedDates[i] &&
+												!checkDate(selectedDates[i], 'time')) ||
+											isInDisable(selectedDates[i]),
+									}, // FIXME: go to method
+								]"
+							>
+								<div class="hour">
+									<button
+										type="button"
+										@touchstart.prevent="
+											startChangeTime(selectedDates[i], 'hour', 'add')
+										"
+										@mousedown.prevent="
+											startChangeTime(selectedDates[i], 'hour', 'add')
+										"
+										@keydown.enter.prevent="
+											startChangeTime(selectedDates[i], 'hour', 'add')
+										"
+										@touchend.prevent="stopChangeTime"
+										@mouseup.prevent="stopChangeTime"
+										@keyup.enter.prevent="stopChangeTime"
+									>
+										<slot name="up-arrow">
+											<arrow-icon width="8"></arrow-icon>
+										</slot>
+									</button>
+									{{
+										selectedDates[i]
+											? selectedDates[i].hour("HH")
+											: core.hour("HH")
+									}}
+									<button
+										type="button"
+										@touchstart.prevent="
+											startChangeTime(selectedDates[i], 'hour', 'sub')
+										"
+										@mousedown.prevent="
+											startChangeTime(selectedDates[i], 'hour', 'sub')
+										"
+										@keydown.enter.prevent="
+											startChangeTime(selectedDates[i], 'hour', 'sub')
+										"
+										@touchend.prevent="stopChangeTime"
+										@mouseup.prevent="stopChangeTime"
+										@keyup.enter.prevent="stopChangeTime"
+									>
+										<slot name="down-arrow">
+											<arrow-icon width="8" direction="down"></arrow-icon>
+										</slot>
+									</button>
+								</div>
+								:
+								<div class="minute">
+									<button
+										type="button"
+										@touchstart.prevent="
+											startChangeTime(selectedDates[i], 'minute', 'add')
+										"
+										@mousedown.prevent="
+											startChangeTime(selectedDates[i], 'minute', 'add')
+										"
+										@keydown.enter.prevent="
+											startChangeTime(selectedDates[i], 'minute', 'add')
+										"
+										@touchend.prevent="stopChangeTime"
+										@mouseup.prevent="stopChangeTime"
+										@keyup.enter.prevent="stopChangeTime"
+									>
+										<slot name="up-arrow">
+											<arrow-icon width="8"></arrow-icon>
+										</slot>
+									</button>
+									{{
+										selectedDates[i]
+											? selectedDates[i].minute("mm")
+											: core.minute("mm")
+									}}
+									<button
+										type="button"
+										@touchstart.prevent="
+											startChangeTime(selectedDates[i], 'minute', 'sub')
+										"
+										@mousedown.prevent="
+											startChangeTime(selectedDates[i], 'minute', 'sub')
+										"
+										@keydown.enter.prevent="
+											startChangeTime(selectedDates[i], 'minute', 'sub')
+										"
+										@touchend.prevent="stopChangeTime"
+										@mouseup.prevent="stopChangeTime"
+										@keyup.enter.prevent="stopChangeTime"
+									>
+										<slot name="down-arrow">
+											<arrow-icon width="8" direction="down"></arrow-icon>
+										</slot>
+									</button>
 								</div>
 							</div>
 						</div>
@@ -224,15 +346,24 @@
 					<div>
 						<slot name="footer"></slot>
 						<small v-if="selectedDates.length">
-							{{ selectedDates[0].toString(displayFormat) }}
+							{{
+								selectedDates[0].toString(
+									displayFormat || defaultFormats.displayFormat
+								)
+							}}
 						</small>
 						<small v-if="selectedDates.length == 2">
-							- {{ selectedDates[1].toString(displayFormat) }}
+							-
+							{{
+								selectedDates[1].toString(
+									displayFormat || defaultFormats.displayFormat
+								)
+							}}
 						</small>
 					</div>
 					<div>
 						<button
-							v-if="this.checkDate(this.core)"
+							v-if="this.checkDate(this.core, 'date')"
 							type="button"
 							class="pdp-today"
 							@click="goToToday"
@@ -257,16 +388,24 @@
 </template>
 
 <script>
-	//TODO: add select time
+	//TODO: add locale config and time config
 	//TODO: add styles and colors
+	//TODO: fix size of time
 	//TODO: add two input for range
+	//TODO: the first time must less than second time
 	//TODO: in select date, select date before and after
+	//TODO: fix show months and years
+	//TODO: when change from and to prop, change the fromDate and toDate --> with write the test
 	//TODO: move the before and after slots to group div --> if this is better
+	//TODO: let to const
+	//TODO: test the project with attention
 	//TODO: remove additional comments
 	//TODO: remove iran-sans font
-	//TODO: refactor and write comment
-	//TODO: add nuxt support - locale and clearable and disable prop - close slot -
-	// 				alternative field - div and label attributes in doc
+	//TODO: remove console.log()
+	//TODO: refactor and write comment --> pay a high attention
+	//TODO: add nuxt support - locale and clearable and type and disable prop -
+	// 			close and up-arrow and down-arrow slot - alternative field -
+	// 			div and label attributes in doc
 	//TODO: change "change event" to "submit event" in doc
 
 	// Core
@@ -289,56 +428,53 @@
 		props: {
 			/**
 			 * the format of the model value
-			 * @default "YYYY-MM-DD"
 			 * @type String
 			 * @see https://alireza-ab.ir/persian-date/formats#
+			 * @desc default value in "date" type is "YYYY-MM-DD"
+			 * 		default value in "datetime" type is "YYYY-MM-DD HH:mm"
+			 * 		default value in "time" type is "HH:mm"
 			 */
 			format: {
-				default: "YYYY-MM-DD",
 				type: String,
 			},
 
 			/**
 			 * the format of the input value
-			 * @default "date"
 			 * @type String
 			 * @see https://alireza-ab.ir/persian-date/formats#
+			 * @desc default value equal to the value of "type" prop
 			 */
 			inputFormat: {
-				default: "date",
 				type: String,
 			},
 
 			/**
 			 * the format of the value that shows in the footer of picker
-			 * @default "jD jMMMM"
 			 * @type String
 			 * @see https://alireza-ab.ir/persian-date/formats#
+			 * @desc default value in "date" type is "?D ?MMMM"
+			 * 		default value in "datetime" type is "?D ?MMMM HH:mm"
+			 * 		default value in "time" type is "HH:mm"
 			 */
 			displayFormat: {
-				default: "jD jMMMM",
 				type: String,
 			},
 
 			/**
 			 * the date of start of the picker
-			 * @default "1300"
 			 * @type String
 			 * @example 1400/7/1 | 1400-7
 			 */
 			from: {
-				default: "1300",
 				type: String,
 			},
 
 			/**
 			 * the date of end of the picker
-			 * @default "1500"
 			 * @type String
 			 * @example 1400/7/1 | 1400-7
 			 */
 			to: {
-				default: "1500",
 				type: String,
 			},
 
@@ -449,6 +585,16 @@
 			disable: {
 				type: [Array, String, Function, RegExp],
 			},
+
+			/**
+			 * the type of picker
+			 * @default "date"
+			 * @type String
+			 */
+			type: {
+				type: String,
+				default: "date",
+			},
 		},
 		model: {
 			prop: "value",
@@ -477,8 +623,8 @@
 				selectedDates: [],
 				startRange: "",
 				endRange: "",
-				fromDate: new PersianDate().parse(this.from),
-				toDate: new PersianDate().parse(this.to),
+				fromDate: null,
+				toDate: null,
 				displayValue: "",
 				documentWidth: this.$isServer ? 0 : window.innerWidth,
 				langs: {
@@ -545,6 +691,7 @@
 					},
 				},
 				currentLocale: this.locale.split(",")[0],
+				interval: null,
 			};
 		},
 		computed: {
@@ -643,20 +790,22 @@
 										),
 									inRange:
 										this.selectedDates.length == 2 &&
-										// this.core
-										// 	.clone()
-										// 	.parse(selectedYear, selectedMonth, showDay)
-										// 	.isBetween(...this.selectedDates),
-										this.selectedDates[0].isBefore(
-											selectedYear,
-											selectedMonth,
-											showDay
-										) &&
-										this.selectedDates[1].isAfter(
-											selectedYear,
-											selectedMonth,
-											showDay
-										),
+										this.core
+											.clone()
+											.parse(selectedYear, selectedMonth, showDay)
+											.isBetween(
+												...this.selectedDates.map((date) => date.toString())
+											),
+									// this.selectedDates[0].isBefore(
+									// 	selectedYear,
+									// 	selectedMonth,
+									// 	showDay
+									// ) &&
+									// this.selectedDates[1].isAfter(
+									// 	selectedYear,
+									// 	selectedMonth,
+									// 	showDay
+									// ),
 									disabled:
 										!this.checkDate(
 											this.onDisplay
@@ -715,14 +864,51 @@
 				let locale = locales[index + 1] || locales[0];
 				return this.langs[locale].translations.label;
 			},
+			defaultFormats() {
+				let format = {
+					date: "YYYY-MM-DD",
+					datetime: "YYYY-MM-DD HH:mm",
+					time: "HH:mm",
+				};
+				let displayFormat = {
+					date: "?D ?MMMM",
+					datetime: "?D ?MMMM HH:mm",
+					time: "HH:mm",
+				};
+				return {
+					format: format[this.type],
+					displayFormat: displayFormat[this.type],
+				};
+			},
+			defaultDate() {
+				return {
+					from: this.from ? this.from : this.type == "time" ? "" : "1300",
+					to: this.to ? this.to : this.type == "time" ? "23:59" : "1499/12/29",
+				};
+			},
 		},
 		async mounted() {
 			let calendar = this.lang.calendar;
+			//FIXME: in the time type, not use the default value of from and to prop
+			this.fromDate = this.core
+				.clone()
+				.parse(
+					(this.type == "time"
+						? this.core.toString("jYYYY/jMM/jDD") + " "
+						: "") + this.defaultDate.from
+				)
+				.calendar(calendar);
+			this.toDate = this.core
+				.clone()
+				.parse(
+					(this.type == "time"
+						? this.core.toString("jYYYY/jMM/jDD") + " "
+						: "") + this.defaultDate.to
+				)
+				.calendar(calendar);
 			this.core.calendar(calendar);
-			this.fromDate.calendar(calendar);
-			this.toDate.calendar(calendar);
 			let val = this.$attrs.value;
-			if (val && this.checkDate(val)) {
+			if (val && this.checkDate(val, "date")) {
 				//FIXME: read from val and set (single and range)
 				this.$set(this.selectedDates, 0, this.core.clone().parse(val));
 				// this.selectedDates[0] = this.core.clone().parse(val);
@@ -730,8 +916,9 @@
 				this.setModel();
 			} else {
 				this.setModel();
-				let today = this.core.clone().startOf("date");
-				if (await this.checkDate(today.toString())) {
+				let today = this.core.clone();
+				if (this.type == "date") today.startOf("date");
+				if (await this.checkDate(today.toString(), "date")) {
 					this.onDisplay = today;
 				} else {
 					this.onDisplay = this.nearestDate(today);
@@ -740,6 +927,10 @@
 			window.addEventListener("resize", () => {
 				this.documentWidth = window.innerWidth;
 			});
+			if (this.type != "date") {
+				this.onDisplay.hour(this.core.hour());
+				this.onDisplay.minute(this.core.minute());
+			}
 		},
 		methods: {
 			showPart(part) {
@@ -773,18 +964,21 @@
 			},
 			changeSelectedYear(year) {
 				this.onDisplay.year(year);
-				if (!this.checkDate(this.onDisplay))
+				if (!this.checkDate(this.onDisplay, "date"))
 					this.onDisplay = this.nearestDate(this.onDisplay);
 				this.showYearSelect = false;
 			},
 			selectDate(date, column) {
 				//FIXME: first validate the date
+				//FIXME: if time disable not submit
+				//FIXME: check date --> if time not currect go to from date
+				//FIXME: remove startOf functin in time and datetime type
 				let onDisplay = this.onDisplay
 					.clone()
 					.addMonth(column || 0)
 					.date(date);
 				if (date) {
-					onDisplay.startOf("date");
+					if (this.type == "date") onDisplay.startOf("date");
 					if (this.mode === "range") {
 						if (this.selectedDates.length == 2) {
 							this.$set(this.selectedDates, 0, onDisplay);
@@ -802,48 +996,78 @@
 					} else this.$set(this.selectedDates, 0, onDisplay);
 					// this.selectedDates[0] = onDisplay;
 				} else if (this.displayValue) {
-					//FIXME: when type date, betweens should not the disable dates
-					if (this.mode === "range" && this.selectedDates.length) {
-						// let endRangeDate = this.displayValue.replace(
-						// 	this.selectedDates[0].toString(this.inputFormat) + " - ",
-						// 	""
-						// );
-						date = this.core.clone().parse(this.displayValue);
+					//FIXME: refactor
+					if (this.type == "time") {
+						let time = this.displayValue.split(/[/ -.,:\\]/);
+						if (this.checkDate(this.core.clone(), "time"))
+							onDisplay = this.core.clone();
+						else onDisplay = this.fromDate.clone();
+						onDisplay.hour(time[0] || 0).minute(time[1] || 0);
 						if (
-							date.isValid() &&
-							this.checkDate(date) &&
-							!this.isInDisable(date)
+							onDisplay.isValid() &&
+							this.checkDate(onDisplay, "time") &&
+							!this.isInDisable(onDisplay)
 						) {
-							let diff = date.diff(this.onDisplay, "month");
-							if (diff < 0 || diff >= this.columnCount)
-								this.onDisplay = date.clone();
-							this.$set(this.selectedDates, 1, date.clone());
+							if (this.mode === "range") {
+								this.selectedDates.push(onDisplay);
+								if (this.selectedDates.length == 2 && this.autoSubmit)
+									this.submitDate();
+							} else {
+								this.selectedDates[0] = onDisplay;
+								if (this.autoSubmit) this.submitDate();
+							}
+							this.$emit("select", onDisplay);
 							this.displayValue = "";
-							// // this.selectedDates[1] = date;
-							// this.submitDate(false);
+						} else {
+							return;
 						}
 					} else {
-						date = this.core.clone().parse(this.displayValue);
-						if (
-							date.isValid() &&
-							this.checkDate(date) &&
-							!this.isInDisable(date)
-						) {
-							let diff = date.diff(this.onDisplay, "month");
-							if (diff < 0 || diff >= this.columnCount)
-								this.onDisplay = date.clone();
-							this.$set(this.selectedDates, 0, date.clone());
-							this.displayValue = "";
-							// // this.selectedDates[0] = date;
-							// this.submitDate(false);
+						if (this.mode === "range" && this.selectedDates.length) {
+							//FIXME: when type date, betweens should not the disable dates
+							// let endRangeDate = this.displayValue.replace(
+							// 	this.selectedDates[0].toString(this.inputFormat) + " - ",
+							// 	""
+							// );
+							date = this.core.clone().parse(this.displayValue);
+							if (
+								date.isValid() &&
+								this.checkDate(date, this.type == "date" ? "date" : "time") &&
+								!this.isInDisable(date)
+							) {
+								let diff = date.diff(this.onDisplay, "month");
+								if (diff < 0 || diff >= this.columnCount)
+									this.onDisplay = date.clone();
+								this.$set(this.selectedDates, 1, date.clone());
+								this.displayValue = "";
+								// // this.selectedDates[1] = date;
+								// this.submitDate(false);
+							}
+						} else {
+							date = this.core.clone().parse(this.displayValue);
+							if (
+								date.isValid() &&
+								this.checkDate(date, this.type == "date" ? "date" : "time") &&
+								!this.isInDisable(date)
+							) {
+								let diff = date.diff(this.onDisplay, "month");
+								if (diff < 0 || diff >= this.columnCount)
+									this.onDisplay = date.clone();
+								this.$set(this.selectedDates, 0, date.clone());
+								this.displayValue = "";
+								// // this.selectedDates[0] = date;
+								// this.submitDate(false);
+							}
 						}
 					}
 				} else this.$delete(this.selectedDates, 0);
 				// this.selectedDates[0] = "";
 
 				if (this.mode == "range" && this.selectedDates.length == 2) {
+					//FIXME: write this currect
 					let inRangeDate = this.selectedDates[1].clone().subDay();
-					while (!inRangeDate.isSame(this.selectedDates[0])) {
+					while (
+						!inRangeDate.isSameOrBefore(this.selectedDates[0].toString())
+					) {
 						if (this.isInDisable(inRangeDate))
 							return this.$delete(this.selectedDates, 1);
 						inRangeDate.subDay();
@@ -865,7 +1089,10 @@
 					this.submitDate();
 				}
 				if (date) {
-					this.$emit("select", onDisplay);
+					this.$emit(
+						"select",
+						this.selectedDates[this.selectedDates.length - 1]
+					);
 					if (this.mode === "range" && this.selectedDates.length != 2) {
 						this.$refs.pdpMain.addEventListener(
 							"mouseover",
@@ -883,14 +1110,27 @@
 				this.$emit("setDate", date);
 			},
 			goToToday() {
+				//FIXME: fix for time
 				this.showMonthSelect = this.showYearSelect = false;
-				this.onDisplay = this.core.clone();
-				this.$nextTick(() => {
-					document.querySelector(".pdp-day.today").classList.add("tada");
-				});
-				setTimeout(() => {
-					document.querySelector(".pdp-day.today").classList.remove("tada");
-				}, 1000);
+				this.onDisplay = this.core.now().clone();
+				if (this.type.includes("time") && this.selectedDates.length) {
+					let time = this.selectedDates[this.selectedDates.length - 1];
+					time.hour(this.onDisplay.hour());
+					time.minute(this.onDisplay.minute());
+					if (
+						this.autoSubmit &&
+						this.checkDate(time, "time") &&
+						!this.isInDisable(time)
+					)
+						this.submitDate(false);
+				}
+				if (this.type.includes("date"))
+					this.$nextTick(() => {
+						document.querySelector(".pdp-day.today").classList.add("tada");
+						setTimeout(() => {
+							document.querySelector(".pdp-day.today").classList.remove("tada");
+						}, 1000);
+					});
 			},
 			checkDate(date, part) {
 				let from, to;
@@ -907,9 +1147,17 @@
 					from = this.fromDate.toString(format);
 					to = this.toDate.toString(format);
 					return date.isBetween(from, to, "[]");
-				} else {
+				} else if (part == "date") {
 					from = this.fromDate.toString();
 					to = this.toDate.toString();
+					return date.isBetween(from, to, "[]");
+				} else if (part == "time") {
+					from = this.fromDate.toString(
+						this.type.includes("time") ? "datetime" : "date"
+					);
+					to = this.toDate.toString(
+						this.type.includes("time") ? "datetime" : "date"
+					);
 					return date.isBetween(from, to, "[]");
 				}
 			},
@@ -920,17 +1168,29 @@
 					? date.clone()
 					: this.core.clone().parse(date);
 				if (typeof disable == "string") {
-					return date.calendar("j").isSame(this.disable);
+					if (this.type == "time") disable = date.toString() + " " + disable;
+					return date.calendar("j").isSame(disable);
 				} else if (disable instanceof RegExp) {
-					return disable.test(date.toString("jYYYY/jM/jD"));
+					let format = {
+						date: "jYYYY/jM/jD",
+						datetime: "jYYYY/jM/jD H:m",
+						time: "H:m",
+					};
+					return disable.test(date.toString(format[this.type]));
 				} else if (typeof disable == "function") {
 					return disable(date);
 				} else if (Array.isArray(disable)) {
 					return disable.some((val) => {
 						if (typeof val == "string") {
+							if (this.type == "time") val = date.toString() + " " + val;
 							return date.calendar("j").isSame(val);
 						} else if (val instanceof RegExp) {
-							return val.test(date.toString("jYYYY/jM/jD"));
+							let format = {
+								date: "jYYYY/jM/jD",
+								datetime: "jYYYY/jM/jD H:m",
+								time: "H:m",
+							};
+							return val.test(date.toString(format[this.type]));
 						}
 					});
 				}
@@ -976,7 +1236,7 @@
 						let nextElementValue = focusedMonth
 							.date(focusedDay.innerText)
 							.addDay(numberOfDay);
-						if (!this.checkDate(nextElementValue))
+						if (!this.checkDate(nextElementValue, "date"))
 							return focusedDay.classList.add("hover");
 						nextElementValue = nextElementValue.date();
 						column = focusedMonth.diff(firstColumnMonth, "month");
@@ -1032,7 +1292,7 @@
 						.date(date);
 					if (onDisplay.isAfter(this.selectedDates[0].toString())) {
 						for (let j = +date; j > 0; j--) {
-							if (this.checkDate(onDisplay.date(j))) {
+							if (this.checkDate(onDisplay.date(j), "date")) {
 								target = document.querySelector(
 									`.pdp .pdp-main .pdp-column[data-column='${i}'] .pdp-day[value='${j}']:not(.start-range)`
 								);
@@ -1060,23 +1320,24 @@
 				// 	date = this.selectedDates[0].toString(this.format);
 				// } else {
 				displayDate = this.selectedDates.map((el) => {
-					return el.toString(this.inputFormat);
+					return el.toString(this.inputFormat || this.type);
 				});
 				date = this.selectedDates.map((el) => {
-					return el.toString(this.format);
+					return el.toString(this.format || this.defaultFormats.format);
 				});
 				// [
 				// 	this.selectedDates[0].toString(this.format),
 				// 	this.selectedDates[1].toString(this.format),
 				// ];
 				// }
+				console.log(displayDate, date);
 				this.displayValue = displayDate.join(" - ");
 				this.setModel(date);
+				this.$emit(
+					"submit",
+					this.mode === "range" ? this.selectedDates : this.selectedDates[0]
+				);
 				if (close) {
-					this.$emit(
-						"submit",
-						this.mode === "range" ? this.selectedDates : this.selectedDates[0]
-					);
 					this.showDatePicker = false;
 				}
 			},
@@ -1117,6 +1378,42 @@
 			clear() {
 				this.displayValue = "";
 				this.$emit("setDate", "");
+			},
+			startChangeTime(date, unit, operator) {
+				if (this.type != "time" && !date) return;
+				else if (!date) {
+					date = this.core.clone();
+					this.selectedDates.push(date);
+				}
+				this.stopChangeTime();
+				let maxAmount = unit == "hour" ? 23 : 59;
+				let currentAmount = date[unit]();
+				const changeTime = () => {
+					if (operator == "add") {
+						currentAmount++;
+						if (currentAmount > maxAmount) currentAmount = 0;
+					} else {
+						currentAmount--;
+						if (currentAmount < 0) currentAmount = maxAmount;
+					}
+					console.log(
+						this.checkDate(date.clone()[unit](currentAmount), "time")
+					);
+					if (this.checkDate(date.clone()[unit](currentAmount), "time")) {
+						date[unit](currentAmount);
+					} else
+						date.parse(
+							operator == "add" ? this.toDate.clone() : this.fromDate.clone()
+						);
+					this.$emit("select", date);
+					if (this.autoSubmit && !this.isInDisable(date))
+						this.submitDate(false);
+				};
+				changeTime();
+				this.interval = setInterval(changeTime, 100);
+			},
+			stopChangeTime() {
+				clearInterval(this.interval);
 			},
 		},
 	};

@@ -48,4 +48,22 @@ describe('slots', () => {
         cy.visit('/')
         cy.get('.pdp-clear').should('contain.text', 'بستن')
     })
+
+    it('up arrow', () => {
+        cy.changeProps('from', undefined)
+        cy.changeProps('to', undefined)
+        cy.changeProps('type', 'time')
+        cy.changeSlots('up-arrow', 'افزایش')
+        cy.visit('/')
+        cy.get('.pdp-input').focus().get('.hour button:first-child,.minute button:first-child')
+            .should('contain.text', 'افزایش')
+    })
+
+    it('down arrow', () => {
+        cy.changeProps('type', 'datetime')
+        cy.changeSlots('down-arrow', 'کاهش')
+        cy.visit('/')
+        cy.get('.pdp-input').focus().get('.hour button:last-child,.minute button:last-child')
+            .should('contain.text', 'کاهش')
+    })
 })

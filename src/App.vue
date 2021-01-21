@@ -5,7 +5,7 @@
 				v-model="date"
 				tabindex="1"
 				from="1398/11/30"
-				to="1399/6/31"
+				to="1399/6/30"
 				format="YYYY-MM-DD"
 				input-format="jYYYY/jMM/jDD"
 				display-format="jDD jMMMM"
@@ -34,7 +34,6 @@
 			</date-picker>
 			<div class="show">date is: {{ date }}</div>
 
-			<date-picker locale="en,fa"></date-picker>
 			<button type="submit">submit</button>
 		</form>
 	</div>
@@ -62,28 +61,31 @@
 			},
 			blur(e) {
 				e.preventDefault();
-				// console.log("blured");
+				console.log("blured");
 			},
 			input(e) {
 				e.preventDefault();
-				// console.log("input");
+				console.log("input");
 			},
 			focus(e) {
 				e.preventDefault();
-				// console.log("focused");
+				console.log("focused");
 			},
 			change(e) {
-				// console.log(e, "changed");
+				console.log(e, "changed");
 			},
 			select(e) {
-				console.log(e, "selected");
+				console.log(e.toString("datetime"), "selected");
 			},
 			submit(e) {
 				console.log(e, "submited");
 			},
 			keydown(e) {
-				// console.log(e, "keydowned");
+				console.log(e, "keydowned");
 			},
+		},
+		mounted() {
+			window.PersianDate = PersianDate;
 		},
 	};
 </script>

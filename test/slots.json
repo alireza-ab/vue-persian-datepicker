@@ -5,5 +5,7 @@
   "right-arrow": "ماه قبل",
   "left-arrow": "ماه بعد",
   "footer": "تاریخ انتخابی:",
-  "close": "بستن"
+  "close": "بستن",
+  "up-arrow": "افزایش",
+  "down-arrow": "کاهش"
 }

@@ -70,10 +70,11 @@
 				this.status += "input";
 			},
 			submit(e) {
-				this.status += "submit:" + e;
+				this.status +=
+					"submit:" + e.map((date) => date.toString(this.props.type || "date"));
 			},
 			select(e) {
-				this.status += "select:" + e.toString();
+				this.status += "select:" + e.toString(this.props.type || "date");
 			},
 		},
 	};
