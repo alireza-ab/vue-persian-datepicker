@@ -4,7 +4,7 @@
 			'pdp',
 			{ 'pdp-range': mode === 'range' },
 			{ 'pdp-modal': modal },
-			langs[currentLocale].dir.input,
+			lang.dir.input,
 		]"
 	>
 		<slot name="before">
@@ -41,9 +41,7 @@
 						:key="i"
 						type="hidden"
 						:name="attrs.alt.name"
-						:value="
-							date.toString(attrs.alt.format || format || defaultFormats.format)
-						"
+						:value="date.toString(attrs.alt.format || format || defaultFormat)"
 					/>
 				</div>
 				<input
@@ -52,7 +50,7 @@
 					:name="attrs.alt.name"
 					:value="
 						selectedDates.map((date) =>
-							date.toString(attrs.alt.format || format || defaultFormats.format)
+							date.toString(attrs.alt.format || format || defaultFormat)
 						)
 					"
 				/>
@@ -67,11 +65,7 @@
 		<div v-if="showDatePicker">
 			<div class="pdp-overlay" @click="showDatePicker = false"></div>
 			<div
-				:class="[
-					'pdp-picker',
-					{ 'pdp-top': showTopOfInput },
-					langs[currentLocale].dir.picker,
-				]"
+				:class="['pdp-picker', { 'pdp-top': showTopOfInput }, lang.dir.picker]"
 			>
 				<div v-if="type.includes('date')">
 					<ul class="pdp-select-month" v-show="showMonthSelect">
@@ -131,7 +125,7 @@
 									direction="right"
 									width="10"
 									height="10"
-									:inverse="langs[currentLocale].dir.picker == 'ltr'"
+									:inverse="lang.dir.picker == 'ltr'"
 								></arrow-icon>
 							</slot>
 						</button>
@@ -182,7 +176,7 @@
 									direction="left"
 									width="10"
 									height="10"
-									:inverse="langs[currentLocale].dir.picker == 'ltr'"
+									:inverse="lang.dir.picker == 'ltr'"
 								></arrow-icon>
 							</slot>
 						</button>
@@ -199,7 +193,7 @@
 							<div class="pdp-week">
 								<div
 									class="pdp-weekday"
-									v-for="(weekday, index) in langs[currentLocale].weekdays"
+									v-for="(weekday, index) in lang.weekdays"
 									:key="index"
 								>
 									{{ weekday }}
@@ -348,15 +342,15 @@
 						<small v-if="selectedDates.length">
 							{{
 								selectedDates[0].toString(
-									displayFormat || defaultFormats.displayFormat
+									displayFormat || lang.displayFormat[type]
 								)
 							}}
 						</small>
 						<small v-if="selectedDates.length == 2">
-							-
+							&nbsp;-
 							{{
 								selectedDates[1].toString(
-									displayFormat || defaultFormats.displayFormat
+									displayFormat || lang.displayFormat[type]
 								)
 							}}
 						</small>
@@ -388,12 +382,13 @@
 </template>
 
 <script>
-	//TODO: add locale config and time config
+	//TODO: add time config
 	//TODO: add styles and colors
 	//TODO: fix size of time
 	//TODO: add two input for range
 	//TODO: the first time must less than second time
 	//TODO: in select date, select date before and after
+	//TODO: add test for default formats
 	//TODO: fix show months and years
 	//TODO: when change from and to prop, change the fromDate and toDate --> with write the test
 	//TODO: move the before and after slots to group div --> if this is better
@@ -403,18 +398,18 @@
 	//TODO: remove iran-sans font
 	//TODO: remove console.log()
 	//TODO: refactor and write comment --> pay a high attention
-	//TODO: add nuxt support - locale and clearable and type and disable prop -
+	//TODO: add nuxt support - locale and locale config and clearable and type and disable prop -
 	// 			close and up-arrow and down-arrow slot - alternative field -
 	// 			div and label attributes in doc
 	//TODO: change "change event" to "submit event" in doc
 
 	// Core
 	import PersianDate from "@alireza-ab/persian-date/src/PersianDate";
-	import { CALENDAR } from "@alireza-ab/persian-date/src/utils";
+	import { Core } from "./utils/modules/core.js";
 	// components
-	import arrowIcon from "./utils/ArrowIcon.vue";
-	import calendarIcon from "./utils/CalendarIcon.vue";
-	import closeIcon from "./utils/CloseIcon.vue";
+	import arrowIcon from "./utils/components/ArrowIcon.vue";
+	import calendarIcon from "./utils/components/CalendarIcon.vue";
+	import closeIcon from "./utils/components/CloseIcon.vue";
 
 	export { PersianDate };
 	export default {
@@ -561,6 +556,9 @@
 			 * @default "fa"
 			 * @type String
 			 * @values fa | en | fa,en |  en,fa
+			 * @desc Except for the above values, you can add
+			 *  	the language in "localeConfig" prop and use it.
+			 * @since 2.0.0
 			 */
 			locale: {
 				default: "fa",
@@ -571,6 +569,7 @@
 			 * The user can clear the selected dates or not
 			 * @default false
 			 * @type Boolean
+			 * @since 2.0.0
 			 */
 			clearable: {
 				default: false,
@@ -581,19 +580,30 @@
 			 * The user can clear the selected dates or not
 			 * @default false
 			 * @type Boolean
+			 * @since 2.0.0
 			 */
 			disable: {
 				type: [Array, String, Function, RegExp],
 			},
 
 			/**
-			 * the type of picker
+			 * The type of picker
 			 * @default "date"
 			 * @type String
+			 * @since 2.0.0
 			 */
 			type: {
 				type: String,
 				default: "date",
+			},
+
+			/**
+			 * The config for locales
+			 * @type Object
+			 * @since 2.0.0
+			 */
+			localeConfig: {
+				type: Object,
 			},
 		},
 		model: {
@@ -658,6 +668,16 @@
 							today: "امروز",
 							submit: "تایید",
 						},
+						inputFormat: {
+							date: "date",
+							datetime: "datetime",
+							time: "time",
+						},
+						displayFormat: {
+							date: "?D ?MMMM",
+							datetime: "?D ?MMMM HH:mm",
+							time: "HH:mm",
+						},
 					},
 					en: {
 						calendar: "gregorian",
@@ -687,6 +707,16 @@
 							nextMonth: "next Month",
 							today: "Today",
 							submit: "Submit",
+						},
+						inputFormat: {
+							date: "date",
+							datetime: "datetime",
+							time: "time",
+						},
+						displayFormat: {
+							date: "?D ?MMMM",
+							datetime: "?D ?MMMM HH:mm",
+							time: "HH:mm",
 						},
 					},
 				},
@@ -864,21 +894,13 @@
 				let locale = locales[index + 1] || locales[0];
 				return this.langs[locale].translations.label;
 			},
-			defaultFormats() {
+			defaultFormat() {
 				let format = {
 					date: "YYYY-MM-DD",
 					datetime: "YYYY-MM-DD HH:mm",
 					time: "HH:mm",
 				};
-				let displayFormat = {
-					date: "?D ?MMMM",
-					datetime: "?D ?MMMM HH:mm",
-					time: "HH:mm",
-				};
-				return {
-					format: format[this.type],
-					displayFormat: displayFormat[this.type],
-				};
+				return format[this.type];
 			},
 			defaultDate() {
 				return {
@@ -886,6 +908,9 @@
 					to: this.to ? this.to : this.type == "time" ? "23:59" : "1499/12/29",
 				};
 			},
+		},
+		beforeMount() {
+			Core.mergeObject(this.langs, this.localeConfig);
 		},
 		async mounted() {
 			let calendar = this.lang.calendar;
@@ -1320,10 +1345,12 @@
 				// 	date = this.selectedDates[0].toString(this.format);
 				// } else {
 				displayDate = this.selectedDates.map((el) => {
-					return el.toString(this.inputFormat || this.type);
+					return el.toString(
+						this.inputFormat || this.lang.inputFormat[this.type]
+					);
 				});
 				date = this.selectedDates.map((el) => {
-					return el.toString(this.format || this.defaultFormats.format);
+					return el.toString(this.format || this.defaultFormat);
 				});
 				// [
 				// 	this.selectedDates[0].toString(this.format),
@@ -1372,6 +1399,7 @@
 				for (let i = 0; i < this.selectedDates.length; i++) {
 					this.selectedDates[i].calendar(calendar);
 				}
+				this.submitDate(false);
 				// if (this.selectedDates[0]) this.selectedDates[0].calendar(calendar);
 				// if (this.selectedDates[1]) this.selectedDates[1].calendar(calendar);
 			},

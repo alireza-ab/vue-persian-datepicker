@@ -4,11 +4,10 @@
 			<date-picker
 				v-model="date"
 				tabindex="1"
+				:locale-config="localeConfig"
+				type="datetime"
 				from="1398/11/30"
 				to="1399/6/30"
-				format="YYYY-MM-DD"
-				input-format="jYYYY/jMM/jDD"
-				display-format="jDD jMMMM"
 				:auto-submit="false"
 				label="Please select the date:"
 				label-id="label"
@@ -20,7 +19,7 @@
 				disable="1398/11/30"
 				id="date"
 				:modal="false"
-				locale="fa,en"
+				locale="fa,ar,en"
 				@input="input"
 				@close="close"
 				@blur="blur"
@@ -50,6 +49,65 @@
 				date: "",
 				show: false,
 				core: new PersianDate(),
+				localeConfig: {
+					fa: {
+						inputFormat: {
+							date: "jYYYY/jMM",
+							datetime: "jYYYY/jMM",
+							time: "jYYYY/jMM",
+						},
+						translations: {
+							label: "فارسی",
+						},
+					},
+					en: {
+						inputFormat: {
+							date: "YYYY",
+							datetime: "YYYY",
+							time: "YYYY",
+						},
+					},
+					ar: {
+						calendar: "gregorian",
+						weekdays: "ح_ن_ث_ر_خ_ج_س".split("_"),
+						months: [
+							"يناير",
+							"فبراير",
+							"مارس",
+							"أبريل",
+							"مايو",
+							"يونيو",
+							"يوليو",
+							"أغسطس",
+							"سبتمبر",
+							"أكتوبر",
+							"نوفمبر",
+							"ديسمبر",
+						],
+						dir: {
+							input: "rtl",
+							picker: "ltr",
+						},
+						translations: {
+							label: "قمری",
+							text: "تقویم قمری",
+							prevMonth: "الماه قبل",
+							nextMonth: "الماه بعد",
+							today: "بوم",
+							submit: "التایید",
+						},
+						inputFormat: {
+							date: "date",
+							datetime: "datetime",
+							time: "time",
+						},
+						displayFormat: {
+							date: "?D ?MMMM",
+							datetime: "?D ?MMMM HH:mm",
+							time: "HH:mm",
+						},
+					},
+				},
 			};
 		},
 		methods: {

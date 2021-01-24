@@ -235,6 +235,10 @@
 			}
 		}
 
+		&.rtl {
+			direction: rtl;
+		}
+
 		&.pdp-top {
 			bottom: calc(1.5em + 0.75rem + 2px);
 			margin-top: unset;

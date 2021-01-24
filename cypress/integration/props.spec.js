@@ -149,6 +149,97 @@ describe('locale prop', () => {
     })
 })
 
+describe('localeConfig prop', () => {
+    it('change default properties', () => {
+        cy.changeProps('locale-config', {
+            fa: {
+                inputFormat: {
+                    date: "jMM/jDD",
+                    datetime: "jYYYY/jMM",
+                    time: "jYYYY/jMM",
+                },
+                translations: {
+                    label: "فارسی",
+                },
+            },
+            en: {
+                inputFormat: {
+                    date: "YYYY",
+                    datetime: "YYYY",
+                    time: "YYYY",
+                },
+                translations: {
+                    label: "انگلیسی",
+                },
+            },
+        })
+        cy.changeProps('locale', 'fa,en')
+        cy.visit('/')
+        cy.selectRangeDate();
+        cy.get('.pdp-input').should('have.value', '06/10 - 06/15')
+        cy.get('.pdp-input').focus()
+        cy.get('.pdp-header .top div').should('contain.text', 'تقویم شمسی')
+        cy.get('.pdp-header .top button').should('contain.text', 'انگلیسی').click()
+        cy.get('.pdp-input').should('have.value', '2020 - 2020')
+        cy.get('.pdp-header .top div').should('contain.text', 'Gregorian Calendar')
+        cy.get('.pdp-header .top button').should('contain.text', 'فارسی')
+    })
+
+    it('add arabic language', () => {
+        cy.changeProps('locale-config', {
+            ar: {
+                calendar: "gregorian",
+                weekdays: ["ح ", "ن ", "ث ", "ر ", "خ ", "ج ", "س"],
+                months: [
+                    "الفروردین",
+                    "الاردیبهشت",
+                    "الخرداد",
+                    "التیر",
+                    "المرداد",
+                    "الشهریور",
+                    "المهر",
+                    "الآبان",
+                    "الآذر",
+                    "الدی",
+                    "البهمن",
+                    "الاسفند",
+                ],
+                dir: {
+                    input: "rtl",
+                    picker: "ltr",
+                },
+                translations: {
+                    label: "قمری",
+                    text: "التقویم القمری",
+                    prevMonth: "الماه قبل",
+                    nextMonth: "الماه بعد",
+                    today: "یوم",
+                    submit: "التایید",
+                },
+                inputFormat: {
+                    date: "date",
+                    datetime: "datetime",
+                    time: "time",
+                },
+                displayFormat: {
+                    date: "?D ?MMMM",
+                    datetime: "?D ?MMMM HH:mm",
+                    time: "HH:mm",
+                },
+            },
+        })
+        cy.changeProps('locale', 'fa,ar')
+        cy.visit('/')
+        cy.get('.pdp-input').focus()
+        cy.get('.pdp-header .top button').should('contain.text', 'قمری').click()
+        cy.get('.pdp-header .top div').should('contain.text', 'التقویم القمری')
+        cy.get('.pdp-weekday').each(el => {
+            ["ح ", "ن ", "ث ", "ر ", "خ ", "ج ", "س"].includes(el.text())
+        })
+        cy.get('.pdp-month').first().should('contain.text', 'الآذر')
+    })
+})
+
 describe('formats', () => {
     it('format prop', () => {
         cy.changeProps('format', 'YYYY-MM-DD')
