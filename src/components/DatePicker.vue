@@ -6,6 +6,7 @@
 			{ 'pdp-modal': modal },
 			lang.dir.input,
 		]"
+		ref="root"
 	>
 		<slot name="before">
 			<label v-if="label" :for="attrs.input.id" v-bind="attrs.label">
@@ -605,6 +606,15 @@
 			localeConfig: {
 				type: Object,
 			},
+
+			/**
+			 * The styles of the picker
+			 * @type Object
+			 * @since 2.0.0
+			 */
+			styles: {
+				type: Object,
+			},
 		},
 		model: {
 			prop: "value",
@@ -913,6 +923,9 @@
 			Core.mergeObject(this.langs, this.localeConfig);
 		},
 		async mounted() {
+			for (const name in this.styles) {
+				this.$refs.root.style.setProperty("--" + name, this.styles[name]);
+			}
 			let calendar = this.lang.calendar;
 			//FIXME: in the time type, not use the default value of from and to prop
 			this.fromDate = this.core
@@ -1429,10 +1442,11 @@
 					);
 					if (this.checkDate(date.clone()[unit](currentAmount), "time")) {
 						date[unit](currentAmount);
-					} else
+					} else {
 						date.parse(
 							operator == "add" ? this.toDate.clone() : this.fromDate.clone()
 						);
+					}
 					this.$emit("select", date);
 					if (this.autoSubmit && !this.isInDisable(date))
 						this.submitDate(false);

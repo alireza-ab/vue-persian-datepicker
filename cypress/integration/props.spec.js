@@ -779,6 +779,25 @@ describe('autoSubmit prop', () => {
     })
 })
 
+describe('change styles', () => {
+    it('with styles prop', () => {
+        cy.changeProps('styles', { 'primary-color': 'red', 'secondary-color': 'blue' })
+        cy.visit('/')
+        cy.get('.pdp-input').focus()
+        cy.get('.pdp-month').should('have.css', 'color', 'rgb(255, 0, 0)')
+        cy.get('.pdp-submit').should('have.css', 'background-color', 'rgb(0, 0, 255)')
+    })
+
+    it('with style attribute', () => {
+        cy.changeProps('styles', undefined)
+        cy.changeProps('style', '--primary-color:red; --secondary-color: blue;')
+        cy.visit('/')
+        cy.get('.pdp-input').focus()
+        cy.get('.pdp-month').should('have.css', 'color', 'rgb(255, 0, 0)')
+        cy.get('.pdp-submit').should('have.css', 'background-color', 'rgb(0, 0, 255)')
+    })
+})
+
 describe('modal prop', () => {
     it('modal mode', () => {
         cy.changeProps('modal', true)

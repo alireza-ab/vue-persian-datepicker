@@ -20,6 +20,7 @@
 				id="date"
 				:modal="false"
 				locale="fa,ar,en"
+				:styles="styles"
 				@input="input"
 				@close="close"
 				@blur="blur"
@@ -108,6 +109,7 @@
 						},
 					},
 				},
+				styles: { "primary-color": "blue", "secondary-color": "red" },
 			};
 		},
 		methods: {

@@ -26,8 +26,10 @@
 	}
 	&::-webkit-scrollbar-thumb {
 		border-radius: $radius;
+		border-radius: var(--radius);
 		border: 0.1rem solid white; /* should match background, can't be transparent */
 		background: $border-color;
+		background: var(--border-color);
 	}
 }
 
@@ -36,30 +38,37 @@
 
 	&:not(.pdp-range) .pdp-day.start-range {
 		border-radius: $radius !important;
+		border-radius: var(--radius) !important;
 	}
 
 	&.pdp-range .pdp-picker.rtl .pdp-day.start-range {
 		border-radius: 0 $radius $radius 0 !important;
+		border-radius: 0 var(--radius) var(--radius) 0 !important;
 	}
 
 	&.pdp-range .pdp-picker.rtl .pdp-day.end-range {
 		border-radius: $radius 0 0 $radius !important;
+		border-radius: var(--radius) 0 0 var(--radius) !important;
 	}
 
 	&.pdp-range .pdp-picker.rtl .pdp-day.end-range.start-range {
 		border-radius: $radius !important;
+		border-radius: var(--radius) !important;
 	}
 
 	&.pdp-range .pdp-picker.ltr .pdp-day.start-range {
 		border-radius: $radius 0 0 $radius !important;
+		border-radius: var(--radius) 0 0 var(--radius) !important;
 	}
 
 	&.pdp-range .pdp-picker.ltr .pdp-day.end-range {
 		border-radius: 0 $radius $radius 0 !important;
+		border-radius: 0 var(--radius) var(--radius) 0 !important;
 	}
 
 	&.pdp-range .pdp-picker.ltr .pdp-day.end-range.start-range {
 		border-radius: $radius !important;
+		border-radius: var(--radius) !important;
 	}
 
 	&.rtl {
@@ -69,11 +78,13 @@
 		.pdp-group {
 			:first-child {
 				border-radius: 0 $radius $radius 0;
+				border-radius: 0 var(--radius) var(--radius) 0;
 				margin-left: -1px;
 			}
 
 			input[type="text"] {
 				border-radius: $radius 0 0 $radius;
+				border-radius: var(--radius) 0 0 var(--radius);
 			}
 		}
 
@@ -89,11 +100,13 @@
 		.pdp-group {
 			:first-child {
 				border-radius: $radius 0 0 $radius;
+				border-radius: var(--radius) 0 0 var(--radius);
 				margin-right: -1px;
 			}
 
 			input[type="text"] {
 				border-radius: 0 $radius $radius 0;
+				border-radius: 0 var(--radius) var(--radius) 0;
 			}
 
 			.pdp-clear {
@@ -159,6 +172,7 @@
 			line-height: 1.5;
 			background-clip: padding-box;
 			border: 1px solid $border-color;
+			border: 1px solid var(--border-color);
 			transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 			position: relative;
 			flex: 1 1 auto;
@@ -169,8 +183,11 @@
 			line-height: 1.5;
 			font-size: 1rem;
 			color: $text-color;
+			color: var(--text-color);
 			background: $icon-background-color;
+			background: var(--icon-background-color);
 			border: 1px solid $border-color;
+			border: 1px solid var(--border-color);
 		}
 
 		.pdp-clear {
@@ -195,7 +212,9 @@
 		right: 0;
 		left: 0;
 		z-index: $z-index;
+		z-index: var(--z-index);
 		background: $overlay-color;
+		background: var(--overlay-color);
 	}
 
 	.pdp-pointer {
@@ -205,10 +224,15 @@
 	.pdp-picker {
 		position: absolute;
 		color: $text-color;
+		color: var(--text-color);
 		background: $background-color;
+		background: var(--background-color);
 		box-shadow: $main-box-shadow;
+		box-shadow: var(--main-box-shadow);
 		z-index: $z-index + 1;
+		z-index: calc(var(--z-index) + 1);
 		border-radius: $radius;
+		border-radius: var(--radius);
 		transition: all 1s ease;
 		margin-top: 0.5rem;
 		padding: 0.3rem 0.6rem;
@@ -296,7 +320,9 @@
 
 				&:not(.disabled):hover {
 					border-radius: $radius;
+					border-radius: var(--radius);
 					border: 2px solid $primary-color;
+					border: 2px solid var(--primary-color);
 				}
 
 				&.disabled {
@@ -308,9 +334,13 @@
 
 				&.selected {
 					border: 2px solid $primary-color;
+					border: 2px solid var(--primary-color);
 					border-radius: $radius;
+					border-radius: var(--radius);
 					background: $primary-color !important;
+					background: var(--primary-color) !important;
 					color: $hover-color;
+					color: var(--hover-color);
 				}
 			}
 
@@ -320,6 +350,7 @@
 		.pdp-header {
 			& > div:first-child {
 				border-bottom: 1px solid $border-color;
+				border-bottom: 1px solid var(--border-color);
 				margin-bottom: 0.5rem;
 			}
 
@@ -334,6 +365,7 @@
 					background: inherit;
 					cursor: pointer;
 					color: $primary-color;
+					color: var(--primary-color);
 				}
 			}
 
@@ -352,6 +384,7 @@
 					.pdp-month,
 					.pdp-year {
 						color: $primary-color;
+						color: var(--primary-color);
 						font-size: 1rem;
 					}
 				}
@@ -394,8 +427,11 @@
 
 						.pdp-weekday {
 							width: $day-width-and-height;
+							width: var(--day-width-and-height);
 							height: $day-width-and-height;
+							height: var(--day-width-and-height);
 							line-height: $day-width-and-height;
+							line-height: var(--day-width-and-height);
 							font-size: 0.8rem;
 							text-align: center;
 						}
@@ -411,9 +447,13 @@
 							margin: 0.1rem 0;
 							font-size: 0.8rem;
 							width: $day-width-and-height;
+							width: var(--day-width-and-height);
 							height: $day-width-and-height;
+							height: var(--day-width-and-height);
 							// border: 1px solid $border-color;
+							// border: 1px solid var(--border-color);
 							border-radius: $radius;
+							border-radius: var(--radius);
 							padding: 0;
 							cursor: pointer;
 							transition-property: background-color, box-shadow;
@@ -422,6 +462,7 @@
 
 							&.friday {
 								color: $primary-color;
+								color: var(--primary-color);
 							}
 
 							&.empty {
@@ -431,7 +472,9 @@
 							&.start-range,
 							&.end-range {
 								background: $primary-color;
+								background: var(--primary-color);
 								color: $hover-color;
+								color: var(--hover-color);
 							}
 
 							&.disabled {
@@ -444,24 +487,31 @@
 
 							&.hover {
 								background: $secondary-color !important;
+								background: var(--secondary-color) !important;
 								color: $hover-color;
+								color: var(--hover-color);
 							}
 
 							&.in-range {
 								background: $in-range-background-color;
+								background: var(--in-range-background-color);
 								color: $hover-color;
+								color: var(--hover-color);
 								border-radius: 0 !important;
 							}
 
 							&:not(.disabled):hover,
 							&.today {
 								border: 2px solid $primary-color;
+								border: 2px solid var(--primary-color);
 							}
 
 							&.tada {
 								animation: tada 1s;
 								background: $secondary-color;
+								background: var(--secondary-color);
 								box-shadow: $hover-and-selected-box-shadow;
+								box-shadow: var(--hover-and-selected-box-shadow);
 								color: #000;
 								position: relative;
 								z-index: 1;
@@ -533,6 +583,7 @@
 			align-items: center;
 			justify-content: space-between;
 			border-top: 1px solid $border-color;
+			border-top: 1px solid var(--border-color);
 			padding: 0.3rem;
 
 			.pdp-today,
@@ -542,14 +593,18 @@
 				margin: 0 0.3rem;
 				line-height: 1.5;
 				color: $text-color;
+				color: var(--text-color);
 				text-decoration: none;
 				border: none;
 				border-radius: $radius;
+				border-radius: var(--radius);
 				background: $secondary-color;
+				background: var(--secondary-color);
 				cursor: pointer;
 
 				&:hover {
 					background: $primary-color;
+					background: var(--primary-color);
 				}
 			}
 

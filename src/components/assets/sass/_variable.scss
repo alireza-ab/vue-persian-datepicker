@@ -29,3 +29,37 @@ $hover-and-selected-text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
 $hover-and-selected-box-shadow: inset 0 4px 9px rgba(0, 0, 0, 0.24);
 
 $day-width-and-height: 2.08rem;
+
+.pdp {
+	--primary-color: #{$primary-color}; // #26baee - #c7004c
+
+	--secondary-color: #{$secondary-color}; // #9fe8fa - #ffaaaa
+
+	--in-range-background-color: #{$in-range-background-color}; // #c9f1fb - #ffd2d2
+
+	--radius: #{$radius};
+
+	--text-color: #{$text-color};
+
+	--hover-color: #{$hover-color};
+
+	--background-color: #{$background-color};
+
+	--border-color: #{$border-color};
+
+	--z-index: #{$z-index};
+
+	--disabled-color: #{$disabled-color};
+
+	--icon-background-color: #{$icon-background-color};
+
+	--overlay-color: #{$overlay-color};
+
+	--main-box-shadow: #{$main-box-shadow};
+
+	--hover-and-selected-text-shadow: #{$hover-and-selected-text-shadow};
+
+	--hover-and-selected-box-shadow: #{$hover-and-selected-box-shadow};
+
+	--day-width-and-height: #{$day-width-and-height};
+}
