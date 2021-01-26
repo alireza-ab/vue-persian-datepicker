@@ -30,6 +30,8 @@ $hover-and-selected-box-shadow: inset 0 4px 9px rgba(0, 0, 0, 0.24);
 
 $day-width-and-height: 2.08rem;
 
+$time-scale: 1;
+
 .pdp {
 	--primary-color: #{$primary-color}; // #26baee - #c7004c
 
@@ -62,4 +64,6 @@ $day-width-and-height: 2.08rem;
 	--hover-and-selected-box-shadow: #{$hover-and-selected-box-shadow};
 
 	--day-width-and-height: #{$day-width-and-height};
+
+	--time-scale: #{$time-scale};
 }

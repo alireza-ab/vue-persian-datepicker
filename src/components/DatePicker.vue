@@ -228,7 +228,12 @@
 						<div class="pdp-column" v-if="type == 'time'">
 							<div v-for="(c, i) in columnCount" :key="i"></div>
 						</div>
-						<div class="pdp-moment">
+						<div
+							:class="[
+								'pdp-moment',
+								{ 'column-direction': mode == 'range' && columnCount == 1 },
+							]"
+						>
 							<div
 								v-for="(n, i) in mode == 'range' ? 2 : 1"
 								:key="n"
@@ -259,7 +264,7 @@
 										@keyup.enter.prevent="stopChangeTime"
 									>
 										<slot name="up-arrow">
-											<arrow-icon width="8"></arrow-icon>
+											<arrow-icon></arrow-icon>
 										</slot>
 									</button>
 									{{
@@ -283,7 +288,7 @@
 										@keyup.enter.prevent="stopChangeTime"
 									>
 										<slot name="down-arrow">
-											<arrow-icon width="8" direction="down"></arrow-icon>
+											<arrow-icon direction="down"></arrow-icon>
 										</slot>
 									</button>
 								</div>
@@ -305,7 +310,7 @@
 										@keyup.enter.prevent="stopChangeTime"
 									>
 										<slot name="up-arrow">
-											<arrow-icon width="8"></arrow-icon>
+											<arrow-icon></arrow-icon>
 										</slot>
 									</button>
 									{{
@@ -329,7 +334,7 @@
 										@keyup.enter.prevent="stopChangeTime"
 									>
 										<slot name="down-arrow">
-											<arrow-icon width="8" direction="down"></arrow-icon>
+											<arrow-icon direction="down"></arrow-icon>
 										</slot>
 									</button>
 								</div>
@@ -364,7 +369,7 @@
 							@click="goToToday"
 							:tabindex="+attrs.input.tabindex + 1 || undefined"
 						>
-							{{ lang.translations.today }}
+							{{ lang.translations.now }}
 						</button>
 						<button
 							v-if="!autoSubmit"
@@ -384,7 +389,7 @@
 
 <script>
 	//TODO: add time config
-	//TODO: add styles and colors
+	//TODO: add colors
 	//TODO: fix size of time
 	//TODO: add two input for range
 	//TODO: the first time must less than second time
@@ -394,14 +399,15 @@
 	//TODO: when change from and to prop, change the fromDate and toDate --> with write the test
 	//TODO: move the before and after slots to group div --> if this is better
 	//TODO: let to const
-	//TODO: test the project with attention
+	//TODO: test the project with attention and test in nuxt
 	//TODO: remove additional comments
 	//TODO: remove iran-sans font
 	//TODO: remove console.log()
 	//TODO: refactor and write comment --> pay a high attention
-	//TODO: add nuxt support - locale and locale config and clearable and type and disable prop -
+	//TODO: add nuxt support -
+	// 			locale and locale config and clearable and type and disable and styles prop -
 	// 			close and up-arrow and down-arrow slot - alternative field -
-	// 			div and label attributes in doc
+	// 			div and label and style attributes in doc
 	//TODO: change "change event" to "submit event" in doc
 
 	// Core
@@ -675,7 +681,7 @@
 							text: "تقویم شمسی",
 							prevMonth: "ماه قبل",
 							nextMonth: "ماه بعد",
-							today: "امروز",
+							now: "هم اکنون",
 							submit: "تایید",
 						},
 						inputFormat: {
@@ -713,9 +719,9 @@
 						translations: {
 							label: "میلادی",
 							text: "Gregorian Calendar",
-							prevMonth: "prev Month",
-							nextMonth: "next Month",
-							today: "Today",
+							prevMonth: "Prev Month",
+							nextMonth: "Next Month",
+							now: "Now",
 							submit: "Submit",
 						},
 						inputFormat: {
@@ -885,15 +891,23 @@
 				return months;
 			},
 			columnCount() {
-				if (typeof this.column == "number") return this.column;
-				let column;
-				Object.keys(this.column)
-					.sort((a, b) => a - b)
-					.some((breakpoint) => {
-						if (this.documentWidth <= breakpoint)
-							return (column = this.column[breakpoint]);
-					});
-				return column || 2;
+				let column = 2;
+				if (typeof this.column == "number") column = this.column;
+				else
+					Object.keys(this.column)
+						.sort((a, b) => a - b)
+						.some((breakpoint) => {
+							if (this.documentWidth <= breakpoint)
+								return (column = this.column[breakpoint]);
+						});
+				if (this.type.includes("time")) {
+					const scale = column / (this.mode == "single" ? 1 : 2);
+					this.$refs.root.style.setProperty(
+						"--time-scale",
+						scale >= 1 ? scale : 1
+					);
+				}
+				return column;
 			},
 			lang() {
 				return this.langs[this.currentLocale];

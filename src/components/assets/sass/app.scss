@@ -159,7 +159,6 @@
 	.pdp-group {
 		position: relative;
 		display: flex;
-		flex-wrap: wrap;
 		align-items: stretch;
 		width: 100%;
 
@@ -542,10 +541,15 @@
 
 				.pdp-moment {
 					margin-bottom: 1rem;
-					font-size: 2rem;
+					font-size: calc(2rem * $time-scale);
+					font-size: calc(2rem * var(--time-scale));
 					display: flex;
 					justify-content: space-around;
 					height: 100%;
+
+					&.column-direction {
+						flex-direction: column;
+					}
 
 					> div {
 						display: flex;
@@ -569,6 +573,11 @@
 								border: none;
 								background: none;
 								cursor: pointer;
+
+								svg {
+									width: calc(8px * $time-scale);
+									width: calc(8px * var(--time-scale));
+								}
 							}
 						}
 					}

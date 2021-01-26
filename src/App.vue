@@ -32,6 +32,13 @@
 				@keydown="keydown"
 			>
 			</date-picker>
+
+			<date-picker
+				type="datetime"
+				mode="range"
+				clearable
+				alt-name="hello"
+			></date-picker>
 			<div class="show">date is: {{ date }}</div>
 
 			<button type="submit">submit</button>
