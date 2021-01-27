@@ -338,8 +338,8 @@
 					border-radius: var(--radius);
 					background: $primary-color !important;
 					background: var(--primary-color) !important;
-					color: $hover-color;
-					color: var(--hover-color);
+					color: $background-color;
+					color: var(--background-color);
 				}
 			}
 
@@ -472,8 +472,8 @@
 							&.end-range {
 								background: $primary-color;
 								background: var(--primary-color);
-								color: $hover-color;
-								color: var(--hover-color);
+								color: $background-color;
+								color: var(--background-color);
 							}
 
 							&.disabled {
@@ -601,19 +601,18 @@
 				padding: 0.25rem 0.5rem;
 				margin: 0 0.3rem;
 				line-height: 1.5;
-				color: $text-color;
-				color: var(--text-color);
+				color: $background-color;
+				color: var(--background-color);
 				text-decoration: none;
 				border: none;
 				border-radius: $radius;
 				border-radius: var(--radius);
-				background: $secondary-color;
-				background: var(--secondary-color);
+				background: $primary-color;
+				background: var(--primary-color);
 				cursor: pointer;
 
 				&:hover {
-					background: $primary-color;
-					background: var(--primary-color);
+					filter: brightness(0.9);
 				}
 			}
 

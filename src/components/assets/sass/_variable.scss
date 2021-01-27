@@ -1,8 +1,8 @@
-$primary-color: #26baee; // #26baee - #c7004c
+$primary-color: #26baee; // #c7004c
 
-$secondary-color: #9fe8fa; // #9fe8fa - #ffaaaa
+$secondary-color: #9fe8fa; // #ffaaaa
 
-$in-range-background-color: #c9f1fb; // #c9f1fb - #ffd2d2
+$in-range-background-color: #c9f1fb; // #ffd2d2
 
 $radius: 0.25rem;
 
@@ -33,11 +33,11 @@ $day-width-and-height: 2.08rem;
 $time-scale: 1;
 
 .pdp {
-	--primary-color: #{$primary-color}; // #26baee - #c7004c
+	--primary-color: #{$primary-color};
 
-	--secondary-color: #{$secondary-color}; // #9fe8fa - #ffaaaa
+	--secondary-color: #{$secondary-color};
 
-	--in-range-background-color: #{$in-range-background-color}; // #c9f1fb - #ffd2d2
+	--in-range-background-color: #{$in-range-background-color};
 
 	--radius: #{$radius};
 

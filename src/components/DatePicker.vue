@@ -390,7 +390,6 @@
 <script>
 	//TODO: add time config
 	//TODO: add colors
-	//TODO: fix size of time
 	//TODO: add two input for range
 	//TODO: the first time must less than second time
 	//TODO: in select date, select date before and after
@@ -411,8 +410,7 @@
 	//TODO: change "change event" to "submit event" in doc
 
 	// Core
-	import PersianDate from "@alireza-ab/persian-date/src/PersianDate";
-	import { Core } from "./utils/modules/core.js";
+	import { PersianDate, Core } from "./utils/modules/core.js";
 	// components
 	import arrowIcon from "./utils/components/ArrowIcon.vue";
 	import calendarIcon from "./utils/components/CalendarIcon.vue";
@@ -621,6 +619,16 @@
 			styles: {
 				type: Object,
 			},
+
+			/**
+			 * The color of the picker
+			 * @type String
+			 * @values red
+			 * @since 2.0.0
+			 */
+			color: {
+				type: String,
+			},
 		},
 		model: {
 			prop: "value",
@@ -641,7 +649,7 @@
 		data() {
 			return {
 				core: new PersianDate(),
-				showDatePicker: this.show,
+				showDatePicker: false,
 				showTopOfInput: false,
 				showMonthSelect: false,
 				showYearSelect: false,
@@ -937,9 +945,8 @@
 			Core.mergeObject(this.langs, this.localeConfig);
 		},
 		async mounted() {
-			for (const name in this.styles) {
-				this.$refs.root.style.setProperty("--" + name, this.styles[name]);
-			}
+			Core.setColor(this.color, this.$refs.root);
+			Core.setStyles(this.styles, this.$refs.root);
 			let calendar = this.lang.calendar;
 			//FIXME: in the time type, not use the default value of from and to prop
 			this.fromDate = this.core
@@ -983,6 +990,7 @@
 				this.onDisplay.hour(this.core.hour());
 				this.onDisplay.minute(this.core.minute());
 			}
+			this.showDatePicker = this.show;
 		},
 		methods: {
 			showPart(part) {

@@ -1,6 +1,6 @@
 <template>
 	<div id="app" class="rtl">
-		<form action="">
+		<!-- <form action="">
 			<date-picker
 				v-model="date"
 				tabindex="1"
@@ -20,7 +20,7 @@
 				id="date"
 				:modal="false"
 				locale="fa,ar,en"
-				:styles="styles"
+				color="indigo"
 				@input="input"
 				@close="close"
 				@blur="blur"
@@ -32,17 +32,17 @@
 				@keydown="keydown"
 			>
 			</date-picker>
-
-			<date-picker
-				type="datetime"
-				mode="range"
-				clearable
-				alt-name="hello"
-			></date-picker>
 			<div class="show">date is: {{ date }}</div>
 
 			<button type="submit">submit</button>
-		</form>
+		</form> -->
+		<date-picker style="margin-bottom:2rem;"></date-picker>
+		<date-picker color="red" style="margin-bottom:2rem;"></date-picker>
+		<date-picker color="pink" style="margin-bottom:2rem;"></date-picker>
+		<date-picker color="green" style="margin-bottom:2rem;"></date-picker>
+		<date-picker color="orange" style="margin-bottom:2rem;"></date-picker>
+		<date-picker color="purple" style="margin-bottom:2rem;"></date-picker>
+		<date-picker color="gray" style="margin-bottom:2rem;"></date-picker>
 	</div>
 </template>
 
@@ -158,37 +158,22 @@
 </script>
 
 <style lang="scss">
-	@font-face {
-		font-family: iran-b;
-		font-style: normal;
-		font-weight: 500;
-		src: url(https://cdn.raadina.com/raadina/fonts/IRANSansWeb_Medium.5a25001.eot);
-		src: url(https://cdn.raadina.com/raadina/fonts/IRANSansWeb_Medium.5a25001.eot?#iefix)
-				format("embedded-opentype"),
-			url(https://cdn.raadina.com/raadina/fonts/IRANSansWeb_Medium.8451859.woff2)
-				format("woff2"),
-			url(https://cdn.raadina.com/raadina/fonts/IRANSansWeb_Medium.32cc237.woff)
-				format("woff"),
-			url(https://cdn.raadina.com/raadina/fonts/IRANSansWeb_Medium.caa93b1.ttf)
-				format("truetype");
-	}
-	@font-face {
-		font-family: iran;
-		font-style: normal;
-		font-weight: 300;
-		src: url(https://cdn.raadina.com/raadina/fonts/IRANSansWeb_Light.fe61680.eot);
-		src: url(https://cdn.raadina.com/raadina/fonts/IRANSansWeb_Light.fe61680.eot?#iefix)
-				format("embedded-opentype"),
-			url(https://cdn.raadina.com/raadina/fonts/IRANSansWeb_Light.d11c490.woff2)
-				format("woff2"),
-			url(https://cdn.raadina.com/raadina/fonts/IRANSansWeb_Light.74955f1.woff)
-				format("woff"),
-			url(https://cdn.raadina.com/raadina/fonts/IRANSansWeb_Light.1604933.ttf)
-				format("truetype");
-	}
+	// @font-face {
+	// 	font-family: Shabnam;
+	// 	src: url("file:///home/alireza/Downloads/shabnam-font-5.0.1/dist/Shabnam.eot");
+	// 	src: url("file:///home/alireza/Downloads/shabnam-font-5.0.1/dist/Shabnam.eot?#iefix")
+	// 			format("embedded-opentype"),
+	// 		url("file:///home/alireza/Downloads/shabnam-font-5.0.1/dist/Shabnam.woff2")
+	// 			format("woff2"),
+	// 		url("file:///home/alireza/Downloads/shabnam-font-5.0.1/dist/Shabnam.woff")
+	// 			format("woff"),
+	// 		url("file:///home/alireza/Downloads/shabnam-font-5.0.1/dist/Shabnam.ttf")
+	// 			format("truetype");
+	// 	font-weight: normal;
+	// }
 
 	#app {
-		font-family: iran-b !important;
+		font-family: Shabnam !important;
 		margin: 1px;
 		padding: 30rem 0;
 		direction: rtl;

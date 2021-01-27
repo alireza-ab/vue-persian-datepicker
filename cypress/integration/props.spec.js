@@ -784,8 +784,7 @@ describe('change styles', () => {
         cy.changeProps('styles', { 'primary-color': 'red', 'secondary-color': 'blue' })
         cy.visit('/')
         cy.get('.pdp-input').focus()
-        cy.get('.pdp-month').should('have.css', 'color', 'rgb(255, 0, 0)')
-        cy.get('.pdp-submit').should('have.css', 'background-color', 'rgb(0, 0, 255)')
+        cy.get('.pdp-submit').should('have.css', 'background-color', 'rgb(255, 0, 0)')
     })
 
     it('with style attribute', () => {
@@ -793,8 +792,15 @@ describe('change styles', () => {
         cy.changeProps('style', '--primary-color:red; --secondary-color: blue;')
         cy.visit('/')
         cy.get('.pdp-input').focus()
-        cy.get('.pdp-month').should('have.css', 'color', 'rgb(255, 0, 0)')
-        cy.get('.pdp-submit').should('have.css', 'background-color', 'rgb(0, 0, 255)')
+        cy.get('.pdp-submit').should('have.css', 'background-color', 'rgb(255, 0, 0)')
+    })
+
+    it('with color prop', () => {
+        cy.changeProps('style', undefined)
+        cy.changeProps('color', 'red')
+        cy.visit('/')
+        cy.get('.pdp-input').focus()
+        cy.get('.pdp-submit').should('have.css', 'background-color', 'rgb(199, 0, 76)')
     })
 })
 
