@@ -69,11 +69,12 @@ module.exports = {
         minimize: true
     },
     plugins: [new VueLoaderPlugin()],
-    devtool: '#eval-source-map'
+    devtool: 'eval-source-map',
+    mode: 'development'
 }
 
 if (process.env.NODE_ENV === 'production') {
-    module.exports.devtool = '#source-map'
+    module.exports.devtool = 'source-map'
     // http://vue-loader.vuejs.org/en/workflow/production.html
     module.exports.plugins = (module.exports.plugins || []).concat([
         new webpack.DefinePlugin({
@@ -86,9 +87,7 @@ if (process.env.NODE_ENV === 'production') {
         })
     ])
     module.exports.optimization.minimizer = [new TerserPlugin({
-        sourceMap: false,
         terserOptions: {
-            warnings: false,
             compress: {
             }
         }
@@ -106,7 +105,7 @@ if (process.env.NODE_ENV === 'common') {
         libraryTarget: 'umd'
     }
 
-    module.exports.devtool = ''
+    module.exports.devtool = false
 
     module.exports.plugins = (module.exports.plugins || []).concat([
         new webpack.DefinePlugin({
@@ -120,10 +119,8 @@ if (process.env.NODE_ENV === 'common') {
     ])
 
     module.exports.optimization.minimizer = [new TerserPlugin({
-        sourceMap: false,
         terserOptions: {
             mangle: true,
-            warnings: false,
             compress: {}
         }
     })]
@@ -138,7 +135,7 @@ if (process.env.NODE_ENV === 'unpkg') {
         library: 'datePicker',
         libraryExport: 'default',
     }
-    module.exports.devtool = ''
+    module.exports.devtool = false
     module.exports.plugins = (module.exports.plugins || []).concat([
         new webpack.DefinePlugin({
             'process.env': {
@@ -151,7 +148,6 @@ if (process.env.NODE_ENV === 'unpkg') {
     ])
 
     module.exports.optimization.minimizer = [new TerserPlugin({
-        sourceMap: false,
         terserOptions: {
             mangle: true,
             warnings: false,

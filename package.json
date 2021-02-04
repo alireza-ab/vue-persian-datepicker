@@ -1,18 +1,18 @@
 {
 	"name": "@alireza-ab/vue-persian-datepicker",
 	"description": "A datepicker component for select persian date",
-	"version": "1.1.2",
+	"version": "2.0.0-beta",
 	"main": "./dist/datepicker.common.js",
 	"unpkg": "./dist/datepicker.min.js",
 	"scripts": {
-		"serve": "webpack-dev-server --hot --watch",
+		"serve": "webpack serve --hot --watch-content-base",
 		"build:prod": "cross-env NODE_ENV=production webpack",
 		"build:common": "cross-env NODE_ENV=common webpack",
 		"build:unpkg": "cross-env NODE_ENV=unpkg webpack",
 		"build:all": "npm run build:prod && npm run build:common && npm run build:unpkg",
 		"cy:open": "cypress open",
 		"cy:run": "cypress run",
-		"serve:test": "cross-env NODE_ENV=test webpack-dev-server --hot --watch --port 8081",
+		"serve:test": "cross-env NODE_ENV=test webpack serve --hot --watch-content-base --port 8081",
 		"test": "npm run serve:test > /dev/null 2>&1 & npm run cy:run"
 	},
 	"repository": {
@@ -39,28 +39,28 @@
 	"author": "Alireza Alibeiki <alibeikialireza@gmail.com>",
 	"license": "MIT",
 	"dependencies": {
-		"@alireza-ab/persian-date": "^2.1.0"
+		"@alireza-ab/persian-date": "^2.2.0"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.12.10",
-		"@vue/cli-plugin-babel": "^4.5.10",
+		"@babel/core": "^7.12.13",
+		"@vue/cli-plugin-babel": "^4.5.11",
 		"babel-loader": "^8.2.2",
-		"core-js": "^3.8.2",
+		"core-js": "^3.8.3",
 		"cross-env": "^7.0.3",
-		"css-loader": "^4.3.0",
-		"cypress": "^6.2.1",
+		"css-loader": "^5.0.1",
+		"cypress": "^6.4.0",
 		"cypress-plugin-tab": "^1.0.5",
-		"postcss-loader": "^4.1.0",
-		"sass": "^1.32.0",
-		"sass-loader": "^8.0.2",
-		"style-loader": "^1.3.0",
-		"terser-webpack-plugin": "^4.2.3",
+		"postcss-loader": "^5.0.0",
+		"sass": "^1.32.6",
+		"sass-loader": "^10.1.1",
+		"style-loader": "^2.0.0",
+		"terser-webpack-plugin": "^5.1.1",
 		"vue": "^2.6.12",
 		"vue-loader": "^15.9.6",
 		"vue-template-compiler": "^2.6.12",
-		"webpack": "^4.44.2",
-		"webpack-cli": "^3.3.12",
-		"webpack-dev-server": "^3.11.1"
+		"webpack": "^5.20.1",
+		"webpack-cli": "^4.5.0",
+		"webpack-dev-server": "^3.11.2"
 	},
 	"browserslist": [
 		"> 1%",

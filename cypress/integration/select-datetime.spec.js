@@ -1,6 +1,6 @@
 /// <reference types="Cypress" />
 
-describe('select date - range', () => {
+describe('select date and time - range', () => {
     beforeEach(() => {
         cy.changeProps()
         cy.changeSlots()
@@ -90,7 +90,7 @@ describe('select date - range', () => {
     })
 })
 
-describe('select date - single', () => {
+describe('select date and time - single', () => {
     beforeEach(() => {
         cy.changeProps('mode', 'single')
     })
@@ -148,7 +148,7 @@ describe('select date - single', () => {
     })
 })
 
-describe('select date with disable date - single', () => {
+describe('select date and time with disable date - single', () => {
     beforeEach(() => {
         cy.changeProps('disable', '1399/6/5 20:18')
     })
@@ -219,7 +219,7 @@ describe('select date with disable date - single', () => {
     })
 })
 
-describe('select date with disable date - range', () => {
+describe('select date and time with disable date - range', () => {
     beforeEach(() => {
         cy.changeProps('disable', '1399/6/5 20:18')
         cy.changeProps('mode', 'range')
@@ -332,7 +332,7 @@ describe('select date with disable date - range', () => {
     })
 })
 
-describe('select date in en locale - range', () => {
+describe('select date and time in en locale - range', () => {
     beforeEach(() => {
         cy.changeProps('locale', 'en')
     })
@@ -420,7 +420,7 @@ describe('select date in en locale - range', () => {
     })
 })
 
-describe('select date in en locale - single', () => {
+describe('select date and time in en locale - single', () => {
     beforeEach(() => {
         cy.changeProps('mode', 'single')
     })

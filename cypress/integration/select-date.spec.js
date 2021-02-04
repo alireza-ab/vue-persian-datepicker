@@ -137,7 +137,7 @@ describe('select date with disable date - range', () => {
         cy.get('.pdp-input').should('have.value', '')
         cy.get('.pdp-day.start-range').should('contain.text', '3')
         cy.get('.pdp-input').type('1399/06/06{enter}')
-        cy.get('.pdp-input').should('have.value', '')
+        cy.get('.pdp-input').should('have.value', '1399/06/06')
         cy.get('.pdp-input').clear().type('1399/06/05{enter}')
         cy.get('.pdp-input').should('have.value', '1399/06/05')
         cy.get('.pdp-input').clear().type('1399/06/04{enter}')

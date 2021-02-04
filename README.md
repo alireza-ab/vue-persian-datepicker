@@ -1,12 +1,18 @@
 # Vue Persian Datepicker
 
 A datepicker component for select persian date.
-
-This supports **single dates** and **date range selections**. It's very customizable and easily for use.
-
-Also, you can select the date with **keyboard**. use **arrows keys** or **typing** the date.
+It's very customizable and easily for use.
 
 [![npm version](https://img.shields.io/npm/v/@alireza-ab/vue-persian-datepicker)](https://www.npmjs.com/package/@alireza-ab/vue-persian-datepicker)
+
+## Features
+
+- **nuxt** support
+- **single and range selection**
+- select **date** and **time**
+- select with **keyboard**
+- customizable **style**
+- localization
 
 ## Documentation
 

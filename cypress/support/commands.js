@@ -59,14 +59,16 @@ Cypress.Commands.add('selectTime', (hour = 0, minute = 0, child = 'first') => {
     nowHour = hour - nowHour;
     if (nowHour < 0)
         nowHour += 24
+    let button = cy.get(`.pdp-time .pdp-moment > div:${child}-child .hour button:first-child`);
     for (let i = 0; i < nowHour; i++) {
-        cy.get(`.pdp-time .pdp-moment > div:${child}-child .hour button:first-child`).click()
+        button.click()
     }
     let nowMinute = new Date().getMinutes();
     nowMinute = minute - nowMinute;
     if (nowMinute < 0)
         nowMinute += 60
+    button = cy.get(`.pdp-time .pdp-moment > div:${child}-child .minute button:first-child`);
     for (let i = 0; i < nowMinute; i++) {
-        cy.get(`.pdp-time .pdp-moment > div:${child}-child .minute button:first-child`).click()
+        button.click()
     }
 })

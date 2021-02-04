@@ -144,4 +144,20 @@ describe('arrow keys in "en" locale', () => {
     })
 })
 
-// TODO: add arrow keys in disable date
+describe('arrow keys in "en" locale', () => {
+    beforeEach(() => {
+        cy.changeProps('locale', 'fa')
+        cy.changeProps('disable', '1399/6/10')
+    })
+
+    it('with select date', () => {
+        cy.visit('/')
+        cy.get('.pdp-input').focus().type('{downarrow}{downarrow}{enter}')
+        cy.get('.start-range').should('contain.text', '1')
+        cy.get('.pdp-input').type('{downarrow}{downarrow}{leftarrow}{leftarrow}{enter}')
+            .type('{uparrow}{enter}{rightarrow}{enter}')
+        cy.get('.pdp-input').should('have.value', '1399/06/01 - 1399/06/09')
+        cy.get('.pdp-input').focus().get('.end-range').should('contain.text', '9')
+
+    })
+})

@@ -78,11 +78,11 @@ describe('select & submit', () => {
                 cy.get('.status').should('contain.text', 'submit:1399/06/01,1399/06/02')
             }
             else if (types[i] == 'time') {
-                cy.get('.pdp-input').type('20:18{enter}')
-                cy.get('.status').should('contain.text', 'select:20:18')
                 cy.get('.pdp-input').type('15:12{enter}')
                 cy.get('.status').should('contain.text', 'select:15:12')
-                cy.get('.status').should('contain.text', 'submit:20:18,15:12')
+                cy.get('.pdp-input').type('20:18{enter}')
+                cy.get('.status').should('contain.text', 'select:20:18')
+                cy.get('.status').should('contain.text', 'submit:15:12,20:18')
             }
             else if (types[i] == 'datetime') {
                 cy.get('.pdp-input').type('1399/06/01 20:18{enter}')

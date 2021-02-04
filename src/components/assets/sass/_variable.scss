@@ -1,8 +1,8 @@
-$primary-color: #26baee; // #c7004c
+$primary-color: #26baee;
 
-$secondary-color: #9fe8fa; // #ffaaaa
+$secondary-color: #9fe8fa;
 
-$in-range-background-color: #c9f1fb; // #ffd2d2
+$in-range-background: #c9f1fb;
 
 $radius: 0.25rem;
 
@@ -10,25 +10,21 @@ $text-color: #495057;
 
 $hover-color: #000;
 
-$background-color: #fff;
+$background: #fff;
 
 $border-color: #ced4da;
 
 $z-index: 1000;
 
-$disabled-color: lightgray;
+$disabled-opacity: 0.3;
 
-$icon-background-color: #e9ecef;
+$icon-background: #e9ecef;
 
 $overlay-color: transparent;
 
-$main-box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.5);
+$main-box-shadow: 1px 1px 8px 1px rgba(116, 116, 116, 0.5);
 
-$hover-and-selected-text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
-
-$hover-and-selected-box-shadow: inset 0 4px 9px rgba(0, 0, 0, 0.24);
-
-$day-width-and-height: 2.08rem;
+$day-dimensions: 2.08rem;
 
 $time-scale: 1;
 
@@ -37,7 +33,7 @@ $time-scale: 1;
 
 	--secondary-color: #{$secondary-color};
 
-	--in-range-background-color: #{$in-range-background-color};
+	--in-range-background: #{$in-range-background};
 
 	--radius: #{$radius};
 
@@ -45,25 +41,21 @@ $time-scale: 1;
 
 	--hover-color: #{$hover-color};
 
-	--background-color: #{$background-color};
+	--background: #{$background};
 
 	--border-color: #{$border-color};
 
 	--z-index: #{$z-index};
 
-	--disabled-color: #{$disabled-color};
+	--disabled-opacity: #{$disabled-opacity};
 
-	--icon-background-color: #{$icon-background-color};
+	--icon-background: #{$icon-background};
 
 	--overlay-color: #{$overlay-color};
 
 	--main-box-shadow: #{$main-box-shadow};
 
-	--hover-and-selected-text-shadow: #{$hover-and-selected-text-shadow};
-
-	--hover-and-selected-box-shadow: #{$hover-and-selected-box-shadow};
-
-	--day-width-and-height: #{$day-width-and-height};
+	--day-dimensions: #{$day-dimensions};
 
 	--time-scale: #{$time-scale};
 }

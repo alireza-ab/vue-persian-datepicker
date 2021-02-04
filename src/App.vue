@@ -1,13 +1,14 @@
 <template>
-	<div id="app" class="rtl">
-		<!-- <form action="">
+	<div id="app">
+		<form action="">
 			<date-picker
 				v-model="date"
 				tabindex="1"
 				:locale-config="localeConfig"
-				type="datetime"
-				from="1398/11/30"
-				to="1399/6/30"
+				type="date"
+				from="1399/6/1"
+				to="1399/11/30"
+				disable="1399/11/10"
 				:auto-submit="false"
 				label="Please select the date:"
 				label-id="label"
@@ -15,12 +16,12 @@
 				:clearable="true"
 				:show="show"
 				name="date"
-				mode="range"
-				disable="1398/11/30"
+				:mode="mode"
 				id="date"
 				:modal="false"
-				locale="fa,ar,en"
-				color="indigo"
+				locale="fa"
+				:color="color"
+				:styles="styles"
 				@input="input"
 				@close="close"
 				@blur="blur"
@@ -35,14 +36,7 @@
 			<div class="show">date is: {{ date }}</div>
 
 			<button type="submit">submit</button>
-		</form> -->
-		<date-picker style="margin-bottom:2rem;"></date-picker>
-		<date-picker color="red" style="margin-bottom:2rem;"></date-picker>
-		<date-picker color="pink" style="margin-bottom:2rem;"></date-picker>
-		<date-picker color="green" style="margin-bottom:2rem;"></date-picker>
-		<date-picker color="orange" style="margin-bottom:2rem;"></date-picker>
-		<date-picker color="purple" style="margin-bottom:2rem;"></date-picker>
-		<date-picker color="gray" style="margin-bottom:2rem;"></date-picker>
+		</form>
 	</div>
 </template>
 
@@ -73,6 +67,9 @@
 							date: "YYYY",
 							datetime: "YYYY",
 							time: "YYYY",
+						},
+						dir: {
+							input: "ltr",
 						},
 					},
 					ar: {
@@ -116,7 +113,9 @@
 						},
 					},
 				},
-				styles: { "primary-color": "blue", "secondary-color": "red" },
+				styles: null,
+				mode: "range",
+				color: "green",
 			};
 		},
 		methods: {
@@ -158,29 +157,19 @@
 </script>
 
 <style lang="scss">
-	// @font-face {
-	// 	font-family: Shabnam;
-	// 	src: url("file:///home/alireza/Downloads/shabnam-font-5.0.1/dist/Shabnam.eot");
-	// 	src: url("file:///home/alireza/Downloads/shabnam-font-5.0.1/dist/Shabnam.eot?#iefix")
-	// 			format("embedded-opentype"),
-	// 		url("file:///home/alireza/Downloads/shabnam-font-5.0.1/dist/Shabnam.woff2")
-	// 			format("woff2"),
-	// 		url("file:///home/alireza/Downloads/shabnam-font-5.0.1/dist/Shabnam.woff")
-	// 			format("woff"),
-	// 		url("file:///home/alireza/Downloads/shabnam-font-5.0.1/dist/Shabnam.ttf")
-	// 			format("truetype");
-	// 	font-weight: normal;
-	// }
-
 	#app {
 		font-family: Shabnam !important;
 		margin: 1px;
 		padding: 30rem 0;
-		direction: rtl;
 		font-size: 16px;
 	}
 
 	.show {
 		margin-top: 1rem;
+	}
+
+	form {
+		margin-right: 40rem;
+		margin-left: 40rem;
 	}
 </style>

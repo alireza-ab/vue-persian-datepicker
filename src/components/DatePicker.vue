@@ -66,7 +66,16 @@
 		<div v-if="showDatePicker">
 			<div class="pdp-overlay" @click="showDatePicker = false"></div>
 			<div
-				:class="['pdp-picker', { 'pdp-top': showTopOfInput }, lang.dir.picker]"
+				:class="[
+					'pdp-picker',
+					{
+						'pdp-top': pickerPlace.top,
+						'pdp-left': pickerPlace.left,
+						'pdp-right': pickerPlace.right,
+					},
+					lang.dir.picker,
+				]"
+				ref="pdpPicker"
 			>
 				<div v-if="type.includes('date')">
 					<ul class="pdp-select-month" v-show="showMonthSelect">
@@ -204,7 +213,7 @@
 								<div v-for="(week, wIndex) in monthDays[i]" :key="wIndex">
 									<div
 										v-for="day in week"
-										:key="day.key"
+										:key="day.raw ? day.raw.toString() : null"
 										:class="[
 											'pdp-day',
 											{ empty: day.empty },
@@ -215,7 +224,7 @@
 											{ disabled: day.disabled },
 											{ 'in-range': day.inRange },
 										]"
-										@click="selectDate(day.val, i)"
+										@click="selectDateRefactor(day.raw, 'date')"
 										:value="day.val"
 									>
 										{{ day.val }}
@@ -250,15 +259,9 @@
 								<div class="hour">
 									<button
 										type="button"
-										@touchstart.prevent="
-											startChangeTime(selectedDates[i], 'hour', 'add')
-										"
-										@mousedown.prevent="
-											startChangeTime(selectedDates[i], 'hour', 'add')
-										"
-										@keydown.enter.prevent="
-											startChangeTime(selectedDates[i], 'hour', 'add')
-										"
+										@touchstart.prevent="startChangeTime(i, 'hour', 'add')"
+										@mousedown.prevent="startChangeTime(i, 'hour', 'add')"
+										@keydown.enter.prevent="startChangeTime(i, 'hour', 'add')"
 										@touchend.prevent="stopChangeTime"
 										@mouseup.prevent="stopChangeTime"
 										@keyup.enter.prevent="stopChangeTime"
@@ -274,15 +277,9 @@
 									}}
 									<button
 										type="button"
-										@touchstart.prevent="
-											startChangeTime(selectedDates[i], 'hour', 'sub')
-										"
-										@mousedown.prevent="
-											startChangeTime(selectedDates[i], 'hour', 'sub')
-										"
-										@keydown.enter.prevent="
-											startChangeTime(selectedDates[i], 'hour', 'sub')
-										"
+										@touchstart.prevent="startChangeTime(i, 'hour', 'sub')"
+										@mousedown.prevent="startChangeTime(i, 'hour', 'sub')"
+										@keydown.enter.prevent="startChangeTime(i, 'hour', 'sub')"
 										@touchend.prevent="stopChangeTime"
 										@mouseup.prevent="stopChangeTime"
 										@keyup.enter.prevent="stopChangeTime"
@@ -296,15 +293,9 @@
 								<div class="minute">
 									<button
 										type="button"
-										@touchstart.prevent="
-											startChangeTime(selectedDates[i], 'minute', 'add')
-										"
-										@mousedown.prevent="
-											startChangeTime(selectedDates[i], 'minute', 'add')
-										"
-										@keydown.enter.prevent="
-											startChangeTime(selectedDates[i], 'minute', 'add')
-										"
+										@touchstart.prevent="startChangeTime(i, 'minute', 'add')"
+										@mousedown.prevent="startChangeTime(i, 'minute', 'add')"
+										@keydown.enter.prevent="startChangeTime(i, 'minute', 'add')"
 										@touchend.prevent="stopChangeTime"
 										@mouseup.prevent="stopChangeTime"
 										@keyup.enter.prevent="stopChangeTime"
@@ -320,15 +311,9 @@
 									}}
 									<button
 										type="button"
-										@touchstart.prevent="
-											startChangeTime(selectedDates[i], 'minute', 'sub')
-										"
-										@mousedown.prevent="
-											startChangeTime(selectedDates[i], 'minute', 'sub')
-										"
-										@keydown.enter.prevent="
-											startChangeTime(selectedDates[i], 'minute', 'sub')
-										"
+										@touchstart.prevent="startChangeTime(i, 'minute', 'sub')"
+										@mousedown.prevent="startChangeTime(i, 'minute', 'sub')"
+										@keydown.enter.prevent="startChangeTime(i, 'minute', 'sub')"
 										@touchend.prevent="stopChangeTime"
 										@mouseup.prevent="stopChangeTime"
 										@keyup.enter.prevent="stopChangeTime"
@@ -372,7 +357,9 @@
 							{{ lang.translations.now }}
 						</button>
 						<button
-							v-if="!autoSubmit"
+							v-if="
+								!autoSubmit && !selectedDates.some((date) => isInDisable(date))
+							"
 							type="button"
 							class="pdp-submit"
 							@click="submitDate"
@@ -389,22 +376,12 @@
 
 <script>
 	//TODO: add time config
-	//TODO: add colors
 	//TODO: add two input for range
-	//TODO: the first time must less than second time
 	//TODO: in select date, select date before and after
-	//TODO: add test for default formats
-	//TODO: fix show months and years
-	//TODO: when change from and to prop, change the fromDate and toDate --> with write the test
-	//TODO: move the before and after slots to group div --> if this is better
-	//TODO: let to const
 	//TODO: test the project with attention and test in nuxt
-	//TODO: remove additional comments
-	//TODO: remove iran-sans font
-	//TODO: remove console.log()
 	//TODO: refactor and write comment --> pay a high attention
 	//TODO: add nuxt support -
-	// 			locale and locale config and clearable and type and disable and styles prop -
+	// 			locale and locale config and clearable and type and disable and styles and color prop -
 	// 			close and up-arrow and down-arrow slot - alternative field -
 	// 			div and label and style attributes in doc
 	//TODO: change "change event" to "submit event" in doc
@@ -635,21 +612,66 @@
 			event: "setDate",
 		},
 		watch: {
-			show(val) {
-				this.showDatePicker = val;
+			show: {
+				handler: function(val) {
+					this.showDatePicker = val;
+				},
 			},
-			showDatePicker(val) {
-				if (val) this.$emit("open");
-				else {
-					if (!this.modal) document.removeEventListener("scroll", this.locate);
-					this.$emit("close");
-				}
+			showDatePicker: {
+				handler: function(val) {
+					if (val) this.$emit("open");
+					else {
+						if (!this.modal)
+							document.removeEventListener("scroll", this.locate);
+						this.$emit("close");
+					}
+				},
+			},
+			from: {
+				handler: function(val) {
+					this.fromDate.fromJalali(val);
+				},
+			},
+			to: {
+				handler: function(val) {
+					this.toDate.fromJalali(val);
+				},
+			},
+			mode: {
+				handler: function(val) {
+					if (val == "single" && this.selectedDates.length == 2)
+						this.$delete(this.selectedDates, 1);
+				},
+			},
+			locale: {
+				handler: function(val, oldVal) {
+					const index = oldVal.split(",").indexOf(this.currentLocale);
+					this.currentLocale = val.split(",")[index];
+				},
+			},
+			localeConfig: {
+				handler: function(val) {
+					Core.mergeObject(this.langs, val);
+				},
+				deep: true,
+			},
+			styles: {
+				handler: function(val) {
+					Core.setStyles(val, this.$refs.root);
+				},
+				deep: true,
+			},
+			color: {
+				handler: function(val) {
+					Core.setColor(val, this.$refs.root);
+				},
 			},
 		},
 		data() {
 			return {
 				core: new PersianDate(),
 				showDatePicker: false,
+				pickerPlace: {},
 				showTopOfInput: false,
 				showMonthSelect: false,
 				showYearSelect: false,
@@ -661,89 +683,7 @@
 				toDate: null,
 				displayValue: "",
 				documentWidth: this.$isServer ? 0 : window.innerWidth,
-				langs: {
-					//TODO: send to utils folder
-					fa: {
-						calendar: "jalali",
-						weekdays: ["ش", "ی", "د", "س", "چ", "پ", "ج"],
-						months: [
-							"فروردین",
-							"اردیبهشت",
-							"خرداد",
-							"تیر",
-							"مرداد",
-							"شهریور",
-							"مهر",
-							"آبان",
-							"آذر",
-							"دی",
-							"بهمن",
-							"اسفند",
-						],
-						dir: {
-							input: "rtl",
-							picker: "rtl",
-						},
-						translations: {
-							label: "شمسی",
-							text: "تقویم شمسی",
-							prevMonth: "ماه قبل",
-							nextMonth: "ماه بعد",
-							now: "هم اکنون",
-							submit: "تایید",
-						},
-						inputFormat: {
-							date: "date",
-							datetime: "datetime",
-							time: "time",
-						},
-						displayFormat: {
-							date: "?D ?MMMM",
-							datetime: "?D ?MMMM HH:mm",
-							time: "HH:mm",
-						},
-					},
-					en: {
-						calendar: "gregorian",
-						weekdays: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
-						months: [
-							"January",
-							"February",
-							"March",
-							"April",
-							"May",
-							"June",
-							"July",
-							"August",
-							"September",
-							"October",
-							"November",
-							"December",
-						],
-						dir: {
-							input: "rtl",
-							picker: "ltr",
-						},
-						translations: {
-							label: "میلادی",
-							text: "Gregorian Calendar",
-							prevMonth: "Prev Month",
-							nextMonth: "Next Month",
-							now: "Now",
-							submit: "Submit",
-						},
-						inputFormat: {
-							date: "date",
-							datetime: "datetime",
-							time: "time",
-						},
-						displayFormat: {
-							date: "?D ?MMMM",
-							datetime: "?D ?MMMM HH:mm",
-							time: "HH:mm",
-						},
-					},
-				},
+				langs: Core.langs,
 				currentLocale: this.locale.split(",")[0],
 				interval: null,
 			};
@@ -765,19 +705,14 @@
 				let $attrs = { ...this.$attrs };
 				delete $attrs.value;
 				for (const key in $attrs) {
-					//FIXME: change to switch
-					if (key.startsWith("label-"))
-						attrs.label[key.replace("label-", "")] = $attrs[key];
-					else if (key.startsWith("alt-"))
-						attrs.alt[key.replace("alt-", "")] = $attrs[key];
-					else if (key.startsWith("div-"))
-						attrs.div[key.replace("div-", "")] = $attrs[key];
-					else attrs.input[key.replace("input-", "")] = $attrs[key];
+					try {
+						const [, group, attr] = key.match(/(div|label|alt|input)-(.*)/);
+						attrs[group][attr] = $attrs[key];
+					} catch {
+						attrs["input"][key] = $attrs[key];
+					}
 				}
 				return attrs;
-				// let attrs = { ...this.$attrs };
-				// delete attrs.value;
-				// return attrs;
 			},
 			years() {
 				let years = [];
@@ -794,11 +729,11 @@
 				let months = [];
 				for (let i = 0; i < this.columnCount; i++) {
 					let emptyCells;
-					let selectedYear = this.onDisplay
+					const selectedYear = this.onDisplay
 						.clone()
 						.addMonth(i)
 						.year();
-					let selectedMonth = this.onDisplay
+					const selectedMonth = this.onDisplay
 						.clone()
 						.addMonth(i)
 						.month();
@@ -810,7 +745,7 @@
 						selectedYear,
 						selectedMonth
 					);
-					let numberOfWeek = Math.ceil((daysOfMonthNumber + emptyCells) / 7);
+					const numberOfWeek = Math.ceil((daysOfMonthNumber + emptyCells) / 7);
 					let month = [];
 					let showDay = 1;
 					for (let week = 0; week < numberOfWeek; week++) {
@@ -823,11 +758,10 @@
 								//FIXME: refactor
 								month[week][day] = {
 									friday: day == 6,
-									key: this.onDisplay
+									raw: this.onDisplay
 										.clone()
 										.addMonth(i)
-										.date(showDay)
-										.toString(),
+										.date(showDay),
 									startRange:
 										this.selectedDates.length &&
 										this.selectedDates[0].isSame(
@@ -850,16 +784,6 @@
 											.isBetween(
 												...this.selectedDates.map((date) => date.toString())
 											),
-									// this.selectedDates[0].isBefore(
-									// 	selectedYear,
-									// 	selectedMonth,
-									// 	showDay
-									// ) &&
-									// this.selectedDates[1].isAfter(
-									// 	selectedYear,
-									// 	selectedMonth,
-									// 	showDay
-									// ),
 									disabled:
 										!this.checkDate(
 											this.onDisplay
@@ -921,13 +845,13 @@
 				return this.langs[this.currentLocale];
 			},
 			nextLocale() {
-				let locales = this.locale.split(",");
-				let index = locales.indexOf(this.currentLocale);
-				let locale = locales[index + 1] || locales[0];
+				const locales = this.locale.split(",");
+				const index = locales.indexOf(this.currentLocale);
+				const locale = locales[index + 1] || locales[0];
 				return this.langs[locale].translations.label;
 			},
 			defaultFormat() {
-				let format = {
+				const format = {
 					date: "YYYY-MM-DD",
 					datetime: "YYYY-MM-DD HH:mm",
 					time: "HH:mm",
@@ -944,40 +868,45 @@
 		beforeMount() {
 			Core.mergeObject(this.langs, this.localeConfig);
 		},
-		async mounted() {
+		mounted() {
 			Core.setColor(this.color, this.$refs.root);
 			Core.setStyles(this.styles, this.$refs.root);
-			let calendar = this.lang.calendar;
-			//FIXME: in the time type, not use the default value of from and to prop
+			const calendar = this.lang.calendar;
+			const prefix =
+				this.type == "time" ? this.core.toString("jYYYY/jMM/jDD") + " " : "";
 			this.fromDate = this.core
 				.clone()
-				.parse(
-					(this.type == "time"
-						? this.core.toString("jYYYY/jMM/jDD") + " "
-						: "") + this.defaultDate.from
-				)
+				.parse(prefix + this.defaultDate.from)
 				.calendar(calendar);
 			this.toDate = this.core
 				.clone()
-				.parse(
-					(this.type == "time"
-						? this.core.toString("jYYYY/jMM/jDD") + " "
-						: "") + this.defaultDate.to
-				)
+				.parse(prefix + this.defaultDate.to)
 				.calendar(calendar);
 			this.core.calendar(calendar);
 			let val = this.$attrs.value;
-			if (val && this.checkDate(val, "date")) {
-				//FIXME: read from val and set (single and range)
-				this.$set(this.selectedDates, 0, this.core.clone().parse(val));
-				// this.selectedDates[0] = this.core.clone().parse(val);
-				this.onDisplay = this.selectedDates[0].clone();
-				this.setModel();
+			if (val) {
+				if (this.mode == "single") val = [val];
+				val.some((date, index) => {
+					date = this.core
+						.clone()
+						.fromGregorian(
+							(this.type == "time"
+								? this.core.toString("YYYY-MM-DD") + " "
+								: "") + date
+						);
+					if (this.core.isPersianDate(date)) {
+						this.selectedDates.push(date);
+						if (index == 0) this.onDisplay = date.clone();
+					} else {
+						this.selectedDates = [];
+						return true;
+					}
+				});
+				if (this.selectedDates.length) this.submitDate();
 			} else {
-				this.setModel();
 				let today = this.core.clone();
 				if (this.type == "date") today.startOf("date");
-				if (await this.checkDate(today.toString(), "date")) {
+				if (this.checkDate(today, "date")) {
 					this.onDisplay = today;
 				} else {
 					this.onDisplay = this.nearestDate(today);
@@ -995,10 +924,11 @@
 		methods: {
 			showPart(part) {
 				if (part == "year") {
+					this.showMonthSelect = false;
 					this.showYearSelect = !this.showYearSelect;
 					if (this.showYearSelect) {
 						this.$nextTick(() => {
-							let selectedYearTop = this.$refs.pdpSelectYear.querySelector(
+							const selectedYearTop = this.$refs.pdpSelectYear.querySelector(
 								"li.selected"
 							).offsetTop;
 							this.$refs.pdpSelectYear.scroll({
@@ -1008,11 +938,12 @@
 						});
 					}
 				} else if (part == "month") {
+					this.showYearSelect = false;
 					this.showMonthSelect = !this.showMonthSelect;
 				}
 			},
 			changeSelectedMonth(month) {
-				let clone = this.onDisplay.clone();
+				const clone = this.onDisplay.clone();
 				if (month == "add") {
 					this.onDisplay.addMonth();
 				} else if (month == "sub") {
@@ -1028,149 +959,59 @@
 					this.onDisplay = this.nearestDate(this.onDisplay);
 				this.showYearSelect = false;
 			},
-			selectDate(date, column) {
-				//FIXME: first validate the date
-				//FIXME: if time disable not submit
-				//FIXME: check date --> if time not currect go to from date
-				//FIXME: remove startOf functin in time and datetime type
-				let onDisplay = this.onDisplay
-					.clone()
-					.addMonth(column || 0)
-					.date(date);
-				if (date) {
-					if (this.type == "date") onDisplay.startOf("date");
-					if (this.mode === "range") {
-						if (this.selectedDates.length == 2) {
-							this.$set(this.selectedDates, 0, onDisplay);
-							// this.selectedDates[0] = onDisplay;
-							this.$delete(this.selectedDates, 1);
-							// this.selectedDates[1] = "";
-						} else if (this.selectedDates.length) {
-							if (!onDisplay.isBefore(this.selectedDates[0].toString()))
-								this.$set(this.selectedDates, 1, onDisplay);
-							// this.selectedDates[1] = onDisplay;
-							else this.$set(this.selectedDates, 0, onDisplay);
-							// this.selectedDates[0] = onDisplay;
-						} else this.$set(this.selectedDates, 0, onDisplay);
-						// this.selectedDates[0] = onDisplay;
-					} else this.$set(this.selectedDates, 0, onDisplay);
-					// this.selectedDates[0] = onDisplay;
-				} else if (this.displayValue) {
-					//FIXME: refactor
-					if (this.type == "time") {
-						let time = this.displayValue.split(/[/ -.,:\\]/);
-						if (this.checkDate(this.core.clone(), "time"))
-							onDisplay = this.core.clone();
-						else onDisplay = this.fromDate.clone();
-						onDisplay.hour(time[0] || 0).minute(time[1] || 0);
-						if (
-							onDisplay.isValid() &&
-							this.checkDate(onDisplay, "time") &&
-							!this.isInDisable(onDisplay)
-						) {
-							if (this.mode === "range") {
-								this.selectedDates.push(onDisplay);
-								if (this.selectedDates.length == 2 && this.autoSubmit)
-									this.submitDate();
-							} else {
-								this.selectedDates[0] = onDisplay;
-								if (this.autoSubmit) this.submitDate();
-							}
-							this.$emit("select", onDisplay);
-							this.displayValue = "";
-						} else {
-							return;
-						}
-					} else {
-						if (this.mode === "range" && this.selectedDates.length) {
-							//FIXME: when type date, betweens should not the disable dates
-							// let endRangeDate = this.displayValue.replace(
-							// 	this.selectedDates[0].toString(this.inputFormat) + " - ",
-							// 	""
-							// );
-							date = this.core.clone().parse(this.displayValue);
-							if (
-								date.isValid() &&
-								this.checkDate(date, this.type == "date" ? "date" : "time") &&
-								!this.isInDisable(date)
-							) {
-								let diff = date.diff(this.onDisplay, "month");
-								if (diff < 0 || diff >= this.columnCount)
-									this.onDisplay = date.clone();
-								this.$set(this.selectedDates, 1, date.clone());
-								this.displayValue = "";
-								// // this.selectedDates[1] = date;
-								// this.submitDate(false);
-							}
-						} else {
-							date = this.core.clone().parse(this.displayValue);
-							if (
-								date.isValid() &&
-								this.checkDate(date, this.type == "date" ? "date" : "time") &&
-								!this.isInDisable(date)
-							) {
-								let diff = date.diff(this.onDisplay, "month");
-								if (diff < 0 || diff >= this.columnCount)
-									this.onDisplay = date.clone();
-								this.$set(this.selectedDates, 0, date.clone());
-								this.displayValue = "";
-								// // this.selectedDates[0] = date;
-								// this.submitDate(false);
-							}
-						}
-					}
-				} else this.$delete(this.selectedDates, 0);
-				// this.selectedDates[0] = "";
-
-				if (this.mode == "range" && this.selectedDates.length == 2) {
-					//FIXME: write this currect
-					let inRangeDate = this.selectedDates[1].clone().subDay();
+			selectDateRefactor(date, part) {
+				if (!this.checkDate(date, part)) return -1;
+				if (this.isInDisable(date)) return -2;
+				if (this.mode == "range" && this.selectedDates.length == 1) {
+					let inRangeDate = date
+						.clone()
+						.startOf("date")
+						.subDay();
 					while (
 						!inRangeDate.isSameOrBefore(this.selectedDates[0].toString())
 					) {
-						if (this.isInDisable(inRangeDate))
-							return this.$delete(this.selectedDates, 1);
+						if (this.isInDisable(inRangeDate)) return -3;
 						inRangeDate.subDay();
 					}
 				}
 
-				let lastIndex = this.selectedDates.length - 1;
+				if (this.type == "date") date.startOf("date");
+				if (this.mode == "single") {
+					this.$set(this.selectedDates, 0, date);
+				} else if (this.mode == "range") {
+					this.$refs.pdpMain.addEventListener(
+						"mouseover",
+						this.selectInRangeDate
+					);
+					if (this.selectedDates.length == 2) {
+						this.selectedDates = [date];
+					} else if (
+						this.selectedDates.length &&
+						!date.isBefore(this.selectedDates[0])
+					) {
+						this.$set(this.selectedDates, 1, date);
+						this.$refs.pdpMain.removeEventListener(
+							"mouseover",
+							this.selectInRangeDate
+						);
+					} else this.$set(this.selectedDates, 0, date);
+				}
+
+				this.$emit("select", date);
 				if (
-					!this.checkDate(this.selectedDates[lastIndex], "date") ||
-					this.isInDisable(this.selectedDates[lastIndex])
-				)
-					return this.$delete(this.selectedDates, lastIndex);
-				// (this.selectedDates[0] = "");
-				else if (
 					this.autoSubmit &&
 					(this.mode !== "range" ||
 						(this.mode === "range" && this.selectedDates.length == 2))
 				) {
 					this.submitDate();
+					return 1;
 				}
-				if (date) {
-					this.$emit(
-						"select",
-						this.selectedDates[this.selectedDates.length - 1]
-					);
-					if (this.mode === "range" && this.selectedDates.length != 2) {
-						this.$refs.pdpMain.addEventListener(
-							"mouseover",
-							this.selectInRangeDate
-						);
-					} else if (this.selectedDates.length == 2) {
-						this.$refs.pdpMain.removeEventListener(
-							"mouseover",
-							this.selectInRangeDate
-						);
-					}
-				}
+				return 0;
 			},
 			setModel(date) {
 				this.$emit("setDate", date);
 			},
 			goToToday() {
-				//FIXME: fix for time
 				this.showMonthSelect = this.showYearSelect = false;
 				this.onDisplay = this.core.now().clone();
 				if (this.type.includes("time") && this.selectedDates.length) {
@@ -1193,33 +1034,34 @@
 					});
 			},
 			checkDate(date, part) {
-				let from, to;
-				//FIXME: refactor
+				let from, to, format;
 				if (!this.core.isPersianDate(date))
 					date = this.core.clone().parse(date);
-				if (part == "year") {
-					let format = this.lang.calendar == "jalali" ? "jYYYY" : "YYYY";
-					from = this.fromDate.toString(format);
-					to = this.toDate.toString(format);
-					return date.isBetween(from, to, "[]");
-				} else if (part == "month") {
-					let format = this.lang.calendar == "jalali" ? "jYYYY/jMM" : "YYYY/MM";
-					from = this.fromDate.toString(format);
-					to = this.toDate.toString(format);
-					return date.isBetween(from, to, "[]");
-				} else if (part == "date") {
-					from = this.fromDate.toString();
-					to = this.toDate.toString();
-					return date.isBetween(from, to, "[]");
-				} else if (part == "time") {
-					from = this.fromDate.toString(
-						this.type.includes("time") ? "datetime" : "date"
-					);
-					to = this.toDate.toString(
-						this.type.includes("time") ? "datetime" : "date"
-					);
-					return date.isBetween(from, to, "[]");
+				switch (part) {
+					case "year":
+						format = this.lang.calendar == "jalali" ? "jYYYY" : "YYYY";
+						from = this.fromDate.toString(format);
+						to = this.toDate.toString(format);
+						break;
+					case "month":
+						format = this.lang.calendar == "jalali" ? "jYYYY/jMM" : "YYYY/MM";
+						from = this.fromDate.toString(format);
+						to = this.toDate.toString(format);
+						break;
+					case "date":
+						from = this.fromDate.toString();
+						to = this.toDate.toString();
+						break;
+					case "time":
+						from = this.fromDate.toString(
+							this.type.includes("time") ? "datetime" : "date"
+						);
+						to = this.toDate.toString(
+							this.type.includes("time") ? "datetime" : "date"
+						);
+						break;
 				}
+				return date.isBetween(from, to, "[]");
 			},
 			isInDisable(date, disable) {
 				if (!this.disable) return false;
@@ -1231,7 +1073,7 @@
 					if (this.type == "time") disable = date.toString() + " " + disable;
 					return date.calendar("j").isSame(disable);
 				} else if (disable instanceof RegExp) {
-					let format = {
+					const format = {
 						date: "jYYYY/jM/jD",
 						datetime: "jYYYY/jM/jD H:m",
 						time: "H:m",
@@ -1245,7 +1087,7 @@
 							if (this.type == "time") val = date.toString() + " " + val;
 							return date.calendar("j").isSame(val);
 						} else if (val instanceof RegExp) {
-							let format = {
+							const format = {
 								date: "jYYYY/jM/jD",
 								datetime: "jYYYY/jM/jD H:m",
 								time: "H:m",
@@ -1272,7 +1114,7 @@
 				//FIXME: when up arraw press go to last date
 				// [37, 38, 39, 40] are key codes of arrow keys
 				if ([37, 38, 39, 40].includes(e.keyCode)) {
-					let arrow = {
+					const arrow = {
 						37: 1, // for left arrow must one day add in rtl picker
 						38: -7, // for up arrow must seven day subtract in rtl picker
 						39: -1, // for right arrow must one day subtract in rtl picker
@@ -1291,7 +1133,7 @@
 					if (focusedDay) {
 						let column = this.getColumn(focusedDay);
 						focusedDay.classList.remove("hover");
-						let firstColumnMonth = this.onDisplay.toString();
+						const firstColumnMonth = this.onDisplay.toString();
 						let focusedMonth = this.onDisplay.clone().addMonth(column);
 						let nextElementValue = focusedMonth
 							.date(focusedDay.innerText)
@@ -1331,15 +1173,38 @@
 				} else if (e.keyCode == 13) {
 					e.preventDefault();
 					// 13 is key code of Enter key
-					let focusedDay = document.querySelector(".pdp .pdp-day.hover");
-					if (focusedDay)
-						this.selectDate(focusedDay.innerText, this.getColumn(focusedDay));
-					else this.selectDate();
+					const focusedDay = document.querySelector(".pdp .pdp-day.hover");
+					if (focusedDay) {
+						this.selectDateRefactor(
+							this.onDisplay
+								.clone()
+								.addMonth(this.getColumn(focusedDay) || 0)
+								.date(focusedDay.innerText),
+							"date"
+						);
+					} else {
+						let onDisplay;
+						if (this.type == "time") {
+							const time = this.displayValue.split(/[/ -.,:\\]/);
+							if (this.checkDate(this.core.clone(), "time"))
+								onDisplay = this.core.clone();
+							else onDisplay = this.fromDate.clone();
+							onDisplay.hour(time[0] || 0).minute(time[1] || 0);
+						} else {
+							onDisplay = this.core.clone().parse(this.displayValue);
+						}
+						if (this.selectDateRefactor(onDisplay, "time") === 0) {
+							const diff = onDisplay.diff(this.onDisplay, "month");
+							if (diff < 0 || diff >= this.columnCount)
+								this.onDisplay = onDisplay.clone();
+							this.displayValue = "";
+						}
+					}
 				}
 			},
 			selectInRangeDate({ target }) {
 				if (!target.classList.contains("pdp-day")) return;
-				let column = this.getColumn(target);
+				const column = this.getColumn(target);
 				let date = target.innerText;
 				document.querySelectorAll(`.pdp .pdp-day`).forEach((el) => {
 					el.classList.remove("in-range");
@@ -1362,7 +1227,6 @@
 									document.querySelectorAll(`.pdp .pdp-day`).forEach((el) => {
 										el.classList.remove("in-range");
 									});
-									// break columnLoop;
 								}
 							}
 						}
@@ -1375,10 +1239,6 @@
 			},
 			submitDate(close = true) {
 				let date, displayDate;
-				// if (this.mode !== "range") {
-				// 	displayDate = this.selectedDates[0].toString(this.inputFormat);
-				// 	date = this.selectedDates[0].toString(this.format);
-				// } else {
 				displayDate = this.selectedDates.map((el) => {
 					return el.toString(
 						this.inputFormat || this.lang.inputFormat[this.type]
@@ -1387,13 +1247,8 @@
 				date = this.selectedDates.map((el) => {
 					return el.toString(this.format || this.defaultFormat);
 				});
-				// [
-				// 	this.selectedDates[0].toString(this.format),
-				// 	this.selectedDates[1].toString(this.format),
-				// ];
-				// }
-				console.log(displayDate, date);
 				this.displayValue = displayDate.join(" - ");
+				if (this.mode == "single") date = date[0];
 				this.setModel(date);
 				this.$emit(
 					"submit",
@@ -1413,20 +1268,33 @@
 					: this.toDate.clone();
 			},
 			locate() {
-				let input = this.$refs.pdpInput;
-				let inputOffset =
-					input.offsetHeight + input.getBoundingClientRect().top;
-				let picker = document.querySelector(".pdp-picker");
-				let pickerOffset = picker.offsetHeight + 10;
-				if (inputOffset < pickerOffset) this.showTopOfInput = false;
-				else if (window.innerHeight - (inputOffset + pickerOffset) < 0)
-					this.showTopOfInput = true;
+				this.pickerPlace = {
+					top: false,
+					left: false,
+					right: false,
+				};
+				this.$nextTick(() => {
+					const input = this.$refs.pdpInput;
+					const inputOffset =
+						input.offsetHeight + input.getBoundingClientRect().top;
+					const picker = this.$refs.pdpPicker;
+					const pickerHeight = picker.offsetHeight + 10;
+					const pickerOffset = picker.getBoundingClientRect();
+					this.pickerPlace = {
+						top:
+							inputOffset >= pickerHeight &&
+							window.innerHeight - (inputOffset + pickerHeight) < 0,
+						left: pickerOffset.left <= 0,
+						right:
+							window.innerWidth - (pickerOffset.left + pickerOffset.width) <= 0,
+					};
+				});
 			},
 			changeLocale() {
-				let locales = this.locale.split(",");
-				let index = locales.indexOf(this.currentLocale);
+				const locales = this.locale.split(",");
+				const index = locales.indexOf(this.currentLocale);
 				this.currentLocale = locales[index + 1] || locales[0];
-				let calendar = this.lang.calendar;
+				const calendar = this.lang.calendar;
 				this.core.calendar(calendar);
 				this.fromDate.calendar(calendar);
 				this.toDate.calendar(calendar);
@@ -1435,21 +1303,22 @@
 					this.selectedDates[i].calendar(calendar);
 				}
 				this.submitDate(false);
-				// if (this.selectedDates[0]) this.selectedDates[0].calendar(calendar);
-				// if (this.selectedDates[1]) this.selectedDates[1].calendar(calendar);
 			},
 			clear() {
 				this.displayValue = "";
 				this.$emit("setDate", "");
 			},
-			startChangeTime(date, unit, operator) {
+			startChangeTime(dateIndex, unit, operator) {
+				let date = this.selectedDates[dateIndex];
 				if (this.type != "time" && !date) return;
 				else if (!date) {
 					date = this.core.clone();
+					if (dateIndex == 1 && !this.selectedDates.length)
+						this.selectedDates.push(date.clone());
 					this.selectedDates.push(date);
 				}
 				this.stopChangeTime();
-				let maxAmount = unit == "hour" ? 23 : 59;
+				const maxAmount = unit == "hour" ? 23 : 59;
 				let currentAmount = date[unit]();
 				const changeTime = () => {
 					if (operator == "add") {
@@ -1459,19 +1328,24 @@
 						currentAmount--;
 						if (currentAmount < 0) currentAmount = maxAmount;
 					}
-					console.log(
-						this.checkDate(date.clone()[unit](currentAmount), "time")
-					);
-					if (this.checkDate(date.clone()[unit](currentAmount), "time")) {
-						date[unit](currentAmount);
-					} else {
+					if (!this.checkDate(date[unit](currentAmount), "time")) {
 						date.parse(
-							operator == "add" ? this.toDate.clone() : this.fromDate.clone()
+							date.isSameOrAfter(this.toDate.clone())
+								? this.toDate.clone()
+								: this.fromDate.clone()
+						);
+					} else if (
+						this.selectedDates.length == 2 &&
+						this.selectedDates[0].isAfter(this.selectedDates[1])
+					) {
+						date.parse(
+							dateIndex == 0 ? this.selectedDates[1] : this.selectedDates[0]
 						);
 					}
-					this.$emit("select", date);
-					if (this.autoSubmit && !this.isInDisable(date))
-						this.submitDate(false);
+					if (!this.isInDisable(date)) {
+						this.$emit("select", date);
+						if (this.autoSubmit) this.submitDate(false);
+					}
 				};
 				changeTime();
 				this.interval = setInterval(changeTime, 100);

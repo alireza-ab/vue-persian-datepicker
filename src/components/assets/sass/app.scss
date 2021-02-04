@@ -12,7 +12,8 @@
 		//--- left of datepicker ---//
 		/* left: 1.2rem; */
 		border: solid transparent;
-		border-bottom-color: white;
+		border-bottom-color: $background;
+		border-bottom-color: var(--background);
 		border-width: 0.4rem;
 	}
 }
@@ -183,8 +184,8 @@
 			font-size: 1rem;
 			color: $text-color;
 			color: var(--text-color);
-			background: $icon-background-color;
-			background: var(--icon-background-color);
+			background: $icon-background;
+			background: var(--icon-background);
 			border: 1px solid $border-color;
 			border: 1px solid var(--border-color);
 		}
@@ -224,8 +225,8 @@
 		position: absolute;
 		color: $text-color;
 		color: var(--text-color);
-		background: $background-color;
-		background: var(--background-color);
+		background: $background;
+		background: var(--background);
 		box-shadow: $main-box-shadow;
 		box-shadow: var(--main-box-shadow);
 		z-index: $z-index + 1;
@@ -274,6 +275,26 @@
 			}
 		}
 
+		&.pdp-left {
+			left: 0;
+			right: unset;
+
+			&::after {
+				right: unset;
+				left: 1.2rem;
+			}
+		}
+
+		&.pdp-right {
+			left: unset;
+			right: 0;
+
+			&::after {
+				left: unset;
+				right: 1.2rem;
+			}
+		}
+
 		@include little-flag();
 
 		::selection {
@@ -307,8 +328,6 @@
 			li {
 				width: 5rem;
 				height: 4rem;
-				// width: 30%;
-				// height: 23%;
 				padding: 0.2rem;
 				cursor: pointer;
 				margin: 0.15rem;
@@ -328,7 +347,8 @@
 					text-shadow: unset;
 					box-shadow: unset;
 					cursor: default !important;
-					opacity: 0.3;
+					opacity: $disabled-opacity;
+					opacity: var(--disabled-opacity);
 				}
 
 				&.selected {
@@ -338,8 +358,8 @@
 					border-radius: var(--radius);
 					background: $primary-color !important;
 					background: var(--primary-color) !important;
-					color: $background-color;
-					color: var(--background-color);
+					color: $background;
+					color: var(--background);
 				}
 			}
 
@@ -399,11 +419,13 @@
 				}
 
 				.pdp-arrow.disabled {
-					opacity: 0.3;
+					opacity: $disabled-opacity;
+					opacity: var(--disabled-opacity);
 				}
 
 				.pdp-arrow:not(.disabled):hover {
-					opacity: 0.3;
+					opacity: $disabled-opacity;
+					opacity: var(--disabled-opacity);
 				}
 			}
 		}
@@ -425,12 +447,12 @@
 						justify-content: space-around;
 
 						.pdp-weekday {
-							width: $day-width-and-height;
-							width: var(--day-width-and-height);
-							height: $day-width-and-height;
-							height: var(--day-width-and-height);
-							line-height: $day-width-and-height;
-							line-height: var(--day-width-and-height);
+							width: $day-dimensions;
+							width: var(--day-dim$day-dimensions);
+							height: $day-dimensions;
+							height: var(--day-dim$day-dimensions);
+							line-height: $day-dimensions;
+							line-height: var(--day-dim$day-dimensions);
 							font-size: 0.8rem;
 							text-align: center;
 						}
@@ -445,12 +467,10 @@
 							align-items: center;
 							margin: 0.1rem 0;
 							font-size: 0.8rem;
-							width: $day-width-and-height;
-							width: var(--day-width-and-height);
-							height: $day-width-and-height;
-							height: var(--day-width-and-height);
-							// border: 1px solid $border-color;
-							// border: 1px solid var(--border-color);
+							width: $day-dimensions;
+							width: var(--day-dim$day-dimensions);
+							height: $day-dimensions;
+							height: var(--day-dim$day-dimensions);
 							border-radius: $radius;
 							border-radius: var(--radius);
 							padding: 0;
@@ -472,8 +492,8 @@
 							&.end-range {
 								background: $primary-color;
 								background: var(--primary-color);
-								color: $background-color;
-								color: var(--background-color);
+								color: $background;
+								color: var(--background);
 							}
 
 							&.disabled {
@@ -481,7 +501,8 @@
 								text-shadow: unset;
 								cursor: default !important;
 								border-color: transparent;
-								opacity: 0.3;
+								opacity: $disabled-opacity;
+								opacity: var(--disabled-opacity);
 							}
 
 							&.hover {
@@ -492,8 +513,8 @@
 							}
 
 							&.in-range {
-								background: $in-range-background-color;
-								background: var(--in-range-background-color);
+								background: $in-range-background;
+								background: var(--in-range-background);
 								color: $hover-color;
 								color: var(--hover-color);
 								border-radius: 0 !important;
@@ -509,8 +530,7 @@
 								animation: tada 1s;
 								background: $secondary-color;
 								background: var(--secondary-color);
-								box-shadow: $hover-and-selected-box-shadow;
-								box-shadow: var(--hover-and-selected-box-shadow);
+								box-shadow: inset 0 4px 9px rgba(0, 0, 0, 0.24);
 								color: #000;
 								position: relative;
 								z-index: 1;
@@ -560,7 +580,8 @@
 						padding: 1rem 0;
 
 						&.disabled {
-							opacity: 0.3;
+							opacity: $disabled-opacity;
+							opacity: var(--disabled-opacity);
 						}
 
 						div {
@@ -601,8 +622,8 @@
 				padding: 0.25rem 0.5rem;
 				margin: 0 0.3rem;
 				line-height: 1.5;
-				color: $background-color;
-				color: var(--background-color);
+				color: $background;
+				color: var(--background);
 				text-decoration: none;
 				border: none;
 				border-radius: $radius;
