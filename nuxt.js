@@ -3,7 +3,7 @@ import { join, resolve } from 'path'
 export default function (option) {
   if (option['PersianDate'])
     this.addPlugin({
-      src: resolve(__dirname, 'node_modules/@alireza-ab/persian-date/lib/plugin.js'),
+      src: resolve(__dirname, '../persian-date/lib/plugin.js'),
       fileName: 'PersianDate.js'
     })
   this.nuxt.hook('components:dirs', (dirs) => {

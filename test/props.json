@@ -1,4 +1,5 @@
 {
-  "clearable": true,
-  "type": "datetime"
+  "from": "1399",
+  "to": "1399/06/31",
+  "locale": "en"
 }

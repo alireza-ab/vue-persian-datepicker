@@ -10,19 +10,19 @@
 
 /*! -!../../../../node_modules/babel-loader/lib/index.js!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./CalendarIcon.vue?vue&type=script&lang=js& */
 
-/*! -!../../../../node_modules/babel-loader/lib/index.js!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./CloseIcon.vue?vue&type=script&lang=js& */
+/*! -!../../../../node_modules/babel-loader/lib/index.js!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./ClearIcon.vue?vue&type=script&lang=js& */
 
 /*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./ArrowIcon.vue?vue&type=template&id=1c862f7f& */
 
 /*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./CalendarIcon.vue?vue&type=template&id=77482a34& */
 
-/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./CloseIcon.vue?vue&type=template&id=79732b4b& */
+/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./ClearIcon.vue?vue&type=template&id=33469800& */
 
 /*! -!../../node_modules/babel-loader/lib/index.js!../../node_modules/vue-loader/lib/index.js??vue-loader-options!./DatePicker.vue?vue&type=script&lang=js& */
 
 /*! -!../../node_modules/style-loader/dist/cjs.js!../../node_modules/css-loader/dist/cjs.js!../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../node_modules/sass-loader/dist/cjs.js!../../node_modules/vue-loader/lib/index.js??vue-loader-options!./DatePicker.vue?vue&type=style&index=0&lang=scss& */
 
-/*! -!../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../node_modules/vue-loader/lib/index.js??vue-loader-options!./DatePicker.vue?vue&type=template&id=7fc7b389& */
+/*! -!../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../node_modules/vue-loader/lib/index.js??vue-loader-options!./DatePicker.vue?vue&type=template&id=17df8abb& */
 
 /*! ../../node_modules/css-loader/dist/runtime/api.js */
 
@@ -206,15 +206,15 @@
 
 /*! ./CalendarIcon.vue?vue&type=template&id=77482a34& */
 
-/*! ./CloseIcon.vue?vue&type=script&lang=js& */
+/*! ./ClearIcon.vue?vue&type=script&lang=js& */
 
-/*! ./CloseIcon.vue?vue&type=template&id=79732b4b& */
+/*! ./ClearIcon.vue?vue&type=template&id=33469800& */
 
 /*! ./DatePicker.vue?vue&type=script&lang=js& */
 
 /*! ./DatePicker.vue?vue&type=style&index=0&lang=scss& */
 
-/*! ./DatePicker.vue?vue&type=template&id=7fc7b389& */
+/*! ./DatePicker.vue?vue&type=template&id=17df8abb& */
 
 /*! ./classof-raw */
 
@@ -238,7 +238,7 @@
 
 /*! ./utils/components/CalendarIcon.vue */
 
-/*! ./utils/components/CloseIcon.vue */
+/*! ./utils/components/ClearIcon.vue */
 
 /*! ./utils/modules/core.js */
 
@@ -455,7 +455,7 @@
   \*******************************************************/
 
 /*!*******************************************************!*\
-  !*** ./src/components/utils/components/CloseIcon.vue ***!
+  !*** ./src/components/utils/components/ClearIcon.vue ***!
   \*******************************************************/
 
 /*!********************************************************!*\
@@ -751,7 +751,7 @@
   \**********************************************************************/
 
 /*!**********************************************************************!*\
-  !*** ./src/components/DatePicker.vue?vue&type=template&id=7fc7b389& ***!
+  !*** ./src/components/DatePicker.vue?vue&type=template&id=17df8abb& ***!
   \**********************************************************************/
 
 /*!***********************************************************************!*\
@@ -815,7 +815,7 @@
   \********************************************************************************/
 
 /*!********************************************************************************!*\
-  !*** ./src/components/utils/components/CloseIcon.vue?vue&type=script&lang=js& ***!
+  !*** ./src/components/utils/components/ClearIcon.vue?vue&type=script&lang=js& ***!
   \********************************************************************************/
 
 /*!***********************************************************************************!*\
@@ -827,7 +827,7 @@
   \**************************************************************************************/
 
 /*!**************************************************************************************!*\
-  !*** ./src/components/utils/components/CloseIcon.vue?vue&type=template&id=79732b4b& ***!
+  !*** ./src/components/utils/components/ClearIcon.vue?vue&type=template&id=33469800& ***!
   \**************************************************************************************/
 
 /*!*****************************************************************************************!*\
@@ -843,7 +843,7 @@
   \************************************************************************************************************************************************************************************/
 
 /*!************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/components/utils/components/CloseIcon.vue?vue&type=script&lang=js& ***!
+  !*** ./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/components/utils/components/ClearIcon.vue?vue&type=script&lang=js& ***!
   \************************************************************************************************************************************************************************************/
 
 /*!***************************************************************************************************************************************************************************************!*\
@@ -851,7 +851,7 @@
   \***************************************************************************************************************************************************************************************/
 
 /*!*************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/components/DatePicker.vue?vue&type=template&id=7fc7b389& ***!
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/components/DatePicker.vue?vue&type=template&id=17df8abb& ***!
   \*************************************************************************************************************************************************************************************************************/
 
 /*!*****************************************************************************************************************************************************************************************************************************!*\
@@ -859,7 +859,7 @@
   \*****************************************************************************************************************************************************************************************************************************/
 
 /*!*****************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/components/utils/components/CloseIcon.vue?vue&type=template&id=79732b4b& ***!
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/components/utils/components/ClearIcon.vue?vue&type=template&id=33469800& ***!
   \*****************************************************************************************************************************************************************************************************************************/
 
 /*!********************************************************************************************************************************************************************************************************************************!*\

@@ -42,8 +42,8 @@ describe('slots', () => {
         cy.get('.pdp-input').focus().get('.pdp-footer').should('contain.text', 'تاریخ انتخابی:')
     })
 
-    it('close', () => {
-        cy.changeSlots('close', 'بستن')
+    it('clear', () => {
+        cy.changeSlots('clear', 'بستن')
         cy.changeProps('clearable', true)
         cy.visit('/')
         cy.get('.pdp-clear').should('contain.text', 'بستن')

@@ -105,9 +105,10 @@
 				margin-right: -1px;
 			}
 
-			input[type="text"] {
+			input {
 				border-radius: 0 $radius $radius 0;
 				border-radius: 0 var(--radius) var(--radius) 0;
+				font-family: sans-serif;
 			}
 
 			.pdp-clear {
@@ -198,10 +199,7 @@
 			top: 0.45rem;
 			z-index: 1;
 			cursor: pointer;
-		}
-
-		.d-none {
-			display: none;
+			padding: 0 0.5rem;
 		}
 	}
 
@@ -250,12 +248,19 @@
 				}
 			}
 
+			// .pdp-select-year,
+			// .pdp-select-month,
+			// .pdp-header .bottom,
+			// .pdp-main,
+			// .pdp-footer {
+			// 	font-family: sans-serif;
+			// }
 			.pdp-select-year,
-			.pdp-select-month,
-			.pdp-header .bottom,
-			.pdp-main,
-			.pdp-footer {
-				font-family: sans-serif;
+			.pdp-days,
+			.pdp-header .pdp-year,
+			.pdp-footer small,
+			.pdp-time {
+				font-family: sans-serif !important;
 			}
 		}
 
@@ -378,6 +383,7 @@
 				display: flex;
 				justify-content: space-between;
 				font-size: 0.9rem;
+				direction: rtl;
 
 				button {
 					border: 0;
@@ -385,6 +391,7 @@
 					cursor: pointer;
 					color: $primary-color;
 					color: var(--primary-color);
+					padding: 0 0.5rem;
 				}
 			}
 

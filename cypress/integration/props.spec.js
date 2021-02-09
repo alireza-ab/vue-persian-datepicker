@@ -153,21 +153,13 @@ describe('localeConfig prop', () => {
     it('change default properties', () => {
         cy.changeProps('locale-config', {
             fa: {
-                inputFormat: {
-                    date: "jMM/jDD",
-                    datetime: "jYYYY/jMM",
-                    time: "jYYYY/jMM",
-                },
+                inputFormat: 'jMM/jDD',
                 translations: {
                     label: "فارسی",
                 },
             },
             en: {
-                inputFormat: {
-                    date: "YYYY",
-                    datetime: "YYYY",
-                    time: "YYYY",
-                },
+                inputFormat: 'YYYY',
                 translations: {
                     label: "انگلیسی",
                 },
@@ -453,12 +445,12 @@ describe('input class attribute', () => {
 describe('column prop', () => {
     let type = 'date'
     for (let i = 0; i < 2; i++) {
-        for (let i = 1; i <= 3; i++) {
-            it('number value in ' + type + ' type => ' + i, () => {
-                cy.changeProps('column', i)
+        for (let j = 1; j <= 3; j++) {
+            it('number value in ' + type + ' type => ' + j, () => {
+                cy.changeProps('column', j)
                 cy.visit('/')
                 cy.get('.pdp-input').focus()
-                cy.get('.pdp-column').should('have.length', i)
+                cy.get('.pdp-column').should('have.length', j)
             })
         }
         if (i == 1)
@@ -855,5 +847,12 @@ describe('attributes', () => {
         cy.changeProps('div-id', 'div')
         cy.visit('/')
         cy.get('.pdp-group').should('have.attr', 'id')
+    })
+
+    it('id for picker', () => {
+        cy.changeProps('picker-id', 'picker')
+        cy.visit('/')
+        cy.get('.pdp-icon').click()
+        cy.get('.pdp-picker').should('have.attr', 'id')
     })
 })

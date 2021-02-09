@@ -35,48 +35,32 @@
 				@focus="showPicker('input')"
 				@keydown="selectWithArrow"
 			/>
-			<div v-if="attrs.alt.name" class="d-none">
-				<div v-if="attrs.alt.name.endsWith('[]')">
-					<input
-						v-for="(date, i) in selectedDates"
-						:key="i"
-						type="hidden"
-						:name="attrs.alt.name"
-						:value="date.toString(attrs.alt.format || format || defaultFormat)"
-					/>
-				</div>
+			<div v-if="attrs.alt.name && attrs.alt.name.endsWith('[]')">
 				<input
-					v-else
+					v-for="(date, i) in selectedDates"
+					:key="i"
 					type="hidden"
 					:name="attrs.alt.name"
-					:value="
-						selectedDates.map((date) =>
-							date.toString(attrs.alt.format || format || defaultFormat)
-						)
-					"
+					:value="date.toString(getFormat('alt'))"
+				/>
+			</div>
+			<div v-else-if="attrs.alt.name">
+				<input
+					type="hidden"
+					:name="attrs.alt.name"
+					:value="selectedDates.map((date) => date.toString(getFormat('alt')))"
 				/>
 			</div>
 			<button class="pdp-clear" type="button" @click="clear" v-if="clearable">
-				<slot name="close">
-					<close-icon></close-icon>
+				<slot name="clear">
+					<clear-icon></clear-icon>
 				</slot>
 			</button>
 		</div>
 		<slot name="after"></slot>
 		<div v-if="showDatePicker">
 			<div class="pdp-overlay" @click="showDatePicker = false"></div>
-			<div
-				:class="[
-					'pdp-picker',
-					{
-						'pdp-top': pickerPlace.top,
-						'pdp-left': pickerPlace.left,
-						'pdp-right': pickerPlace.right,
-					},
-					lang.dir.picker,
-				]"
-				ref="pdpPicker"
-			>
+			<div v-bind="attrs.picker" ref="pdpPicker">
 				<div v-if="type.includes('date')">
 					<ul class="pdp-select-month" v-show="showMonthSelect">
 						<li
@@ -331,19 +315,11 @@
 					<div>
 						<slot name="footer"></slot>
 						<small v-if="selectedDates.length">
-							{{
-								selectedDates[0].toString(
-									displayFormat || lang.displayFormat[type]
-								)
-							}}
+							{{ selectedDates[0].toString(getFormat("display")) }}
 						</small>
 						<small v-if="selectedDates.length == 2">
 							&nbsp;-
-							{{
-								selectedDates[1].toString(
-									displayFormat || lang.displayFormat[type]
-								)
-							}}
+							{{ selectedDates[1].toString(getFormat("display")) }}
 						</small>
 					</div>
 					<div>
@@ -380,18 +356,13 @@
 	//TODO: in select date, select date before and after
 	//TODO: test the project with attention and test in nuxt
 	//TODO: refactor and write comment --> pay a high attention
-	//TODO: add nuxt support -
-	// 			locale and locale config and clearable and type and disable and styles and color prop -
-	// 			close and up-arrow and down-arrow slot - alternative field -
-	// 			div and label and style attributes in doc
-	//TODO: change "change event" to "submit event" in doc
 
 	// Core
 	import { PersianDate, Core } from "./utils/modules/core.js";
 	// components
 	import arrowIcon from "./utils/components/ArrowIcon.vue";
 	import calendarIcon from "./utils/components/CalendarIcon.vue";
-	import closeIcon from "./utils/components/CloseIcon.vue";
+	import clearIcon from "./utils/components/ClearIcon.vue";
 
 	export { PersianDate };
 	export default {
@@ -400,7 +371,7 @@
 		components: {
 			arrowIcon,
 			calendarIcon,
-			closeIcon,
+			clearIcon,
 		},
 		props: {
 			/**
@@ -488,7 +459,6 @@
 
 			/**
 			 * text for label tag
-			 * @default Null
 			 * @type String
 			 */
 			label: {
@@ -538,7 +508,7 @@
 			 * @default "fa"
 			 * @type String
 			 * @values fa | en | fa,en |  en,fa
-			 * @desc Except for the above values, you can add
+			 * @desc Except above values, you can add
 			 *  	the language in "localeConfig" prop and use it.
 			 * @since 2.0.0
 			 */
@@ -548,7 +518,7 @@
 			},
 
 			/**
-			 * The user can clear the selected dates or not
+			 * user can clear the selected dates or not
 			 * @default false
 			 * @type Boolean
 			 * @since 2.0.0
@@ -559,9 +529,8 @@
 			},
 
 			/**
-			 * The user can clear the selected dates or not
-			 * @default false
-			 * @type Boolean
+			 * disable some dates or time
+			 * @type [Array, String, Function, RegExp]
 			 * @since 2.0.0
 			 */
 			disable: {
@@ -569,9 +538,10 @@
 			},
 
 			/**
-			 * The type of picker
+			 * the type of picker
 			 * @default "date"
 			 * @type String
+			 * @values date | time | datetime
 			 * @since 2.0.0
 			 */
 			type: {
@@ -580,7 +550,7 @@
 			},
 
 			/**
-			 * The config for locales
+			 * the config for locales
 			 * @type Object
 			 * @since 2.0.0
 			 */
@@ -589,7 +559,7 @@
 			},
 
 			/**
-			 * The styles of the picker
+			 * the styles of the picker
 			 * @type Object
 			 * @since 2.0.0
 			 */
@@ -598,9 +568,9 @@
 			},
 
 			/**
-			 * The color of the picker
+			 * the color of the picker
 			 * @type String
-			 * @values red
+			 * @values red | pink | orange | green | purple | gray
 			 * @since 2.0.0
 			 */
 			color: {
@@ -651,7 +621,7 @@
 			},
 			localeConfig: {
 				handler: function(val) {
-					Core.mergeObject(this.langs, val);
+					this.langs = Core.mergeObject(this.langs, val);
 				},
 				deep: true,
 			},
@@ -691,22 +661,35 @@
 		computed: {
 			attrs() {
 				let attrs = {
+					picker: {
+						class: [
+							"pdp-picker",
+							{
+								"pdp-top": this.pickerPlace.top,
+								"pdp-left": this.pickerPlace.left,
+								"pdp-right": this.pickerPlace.right,
+							},
+							this.lang.dir.picker,
+						],
+					},
 					div: {
 						class: "pdp-group",
 					},
 					label: {
 						class: "pdp-label",
 					},
-					alt: {},
 					input: {
 						class: "pdp-input",
 					},
+					alt: {},
 				};
 				let $attrs = { ...this.$attrs };
 				delete $attrs.value;
 				for (const key in $attrs) {
 					try {
-						const [, group, attr] = key.match(/(div|label|alt|input)-(.*)/);
+						const [, group, attr] = key.match(
+							/(div|label|alt|input|picker)-(.*)/
+						);
 						attrs[group][attr] = $attrs[key];
 					} catch {
 						attrs["input"][key] = $attrs[key];
@@ -850,23 +833,15 @@
 				const locale = locales[index + 1] || locales[0];
 				return this.langs[locale].translations.label;
 			},
-			defaultFormat() {
-				const format = {
-					date: "YYYY-MM-DD",
-					datetime: "YYYY-MM-DD HH:mm",
-					time: "HH:mm",
-				};
-				return format[this.type];
-			},
 			defaultDate() {
 				return {
 					from: this.from ? this.from : this.type == "time" ? "" : "1300",
-					to: this.to ? this.to : this.type == "time" ? "23:59" : "1499/12/29",
+					to: this.to ? this.to : this.type == "time" ? "23:59" : "1499",
 				};
 			},
 		},
 		beforeMount() {
-			Core.mergeObject(this.langs, this.localeConfig);
+			this.langs = Core.mergeObject(this.langs, this.localeConfig);
 		},
 		mounted() {
 			Core.setColor(this.color, this.$refs.root);
@@ -881,6 +856,7 @@
 			this.toDate = this.core
 				.clone()
 				.parse(prefix + this.defaultDate.to)
+				.endOf(Core.getLastUnit(this.defaultDate.to, this.type))
 				.calendar(calendar);
 			this.core.calendar(calendar);
 			let val = this.$attrs.value;
@@ -1240,12 +1216,10 @@
 			submitDate(close = true) {
 				let date, displayDate;
 				displayDate = this.selectedDates.map((el) => {
-					return el.toString(
-						this.inputFormat || this.lang.inputFormat[this.type]
-					);
+					return el.toString(this.getFormat("input"));
 				});
 				date = this.selectedDates.map((el) => {
-					return el.toString(this.format || this.defaultFormat);
+					return el.toString(this.getFormat());
 				});
 				this.displayValue = displayDate.join(" - ");
 				if (this.mode == "single") date = date[0];
@@ -1342,9 +1316,14 @@
 							dateIndex == 0 ? this.selectedDates[1] : this.selectedDates[0]
 						);
 					}
+					console.log(date.toString("datetime"));
 					if (!this.isInDisable(date)) {
 						this.$emit("select", date);
-						if (this.autoSubmit) this.submitDate(false);
+						if (
+							this.autoSubmit &&
+							!this.selectedDates.some((sDate) => this.isInDisable(sDate))
+						)
+							this.submitDate(false);
 					}
 				};
 				changeTime();
@@ -1352,6 +1331,31 @@
 			},
 			stopChangeTime() {
 				clearInterval(this.interval);
+			},
+			getFormat(which) {
+				let format;
+				switch (which) {
+					case "input":
+						return this.inputFormat || this.lang.inputFormat || this.type;
+					case "display":
+						format = {
+							date: "?D ?MMMM",
+							datetime: "?D ?MMMM HH:mm",
+							time: "HH:mm",
+						};
+						return (
+							this.displayFormat || this.lang.displayFormat || format[this.type]
+						);
+					case "alt":
+						return this.attrs.alt.format || this.getFormat();
+					default:
+						format = {
+							date: "YYYY-MM-DD",
+							datetime: "YYYY-MM-DD HH:mm",
+							time: "HH:mm",
+						};
+						return this.format || format[this.type];
+				}
 			},
 		},
 	};

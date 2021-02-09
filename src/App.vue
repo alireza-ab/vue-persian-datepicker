@@ -1,11 +1,11 @@
 <template>
 	<div id="app">
-		<form action="">
+		<!-- <form action="">
 			<date-picker
 				v-model="date"
 				tabindex="1"
 				:locale-config="localeConfig"
-				type="date"
+				type="datetime"
 				from="1399/6/1"
 				to="1399/11/30"
 				disable="1399/11/10"
@@ -13,6 +13,7 @@
 				label="Please select the date:"
 				label-id="label"
 				div-id="div"
+				alt-name="date[]"
 				:clearable="true"
 				:show="show"
 				name="date"
@@ -36,7 +37,9 @@
 			<div class="show">date is: {{ date }}</div>
 
 			<button type="submit">submit</button>
-		</form>
+		</form> -->
+
+		<date-picker type="datetime" />
 	</div>
 </template>
 
@@ -98,7 +101,7 @@
 							text: "تقویم قمری",
 							prevMonth: "الماه قبل",
 							nextMonth: "الماه بعد",
-							today: "بوم",
+							now: "بوم",
 							submit: "التایید",
 						},
 						inputFormat: {
@@ -112,10 +115,42 @@
 							time: "HH:mm",
 						},
 					},
+					fr: {
+						calendar: "gregorian",
+						weekdays: ["di", "lu", "ma", "me", "je", "ve", "sa"],
+						months: [
+							"janvier",
+							"février",
+							"mars",
+							"avril",
+							"mai",
+							"juin",
+							"juillet",
+							"août",
+							"septembre",
+							"octobre",
+							"novembre",
+							"décembre",
+						],
+						dir: {
+							input: "ltr",
+							picker: "ltr",
+						},
+						translations: {
+							label: "فرانسوی",
+							text: "Calendrier français",
+							prevMonth: "le mois dernier",
+							nextMonth: "le mois prochain",
+							now: "maintenant",
+							submit: "Confirmation",
+						},
+						inputFormat: "date",
+						displayFormat: "D MMMM",
+					},
 				},
 				styles: null,
 				mode: "range",
-				color: "green",
+				color: "red",
 			};
 		},
 		methods: {
@@ -161,15 +196,9 @@
 		font-family: Shabnam !important;
 		margin: 1px;
 		padding: 30rem 0;
-		font-size: 16px;
 	}
 
 	.show {
 		margin-top: 1rem;
-	}
-
-	form {
-		margin-right: 40rem;
-		margin-left: 40rem;
 	}
 </style>
