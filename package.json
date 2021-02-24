@@ -36,6 +36,11 @@
 		"vue persian datepicker",
 		"vue persian range datepicker"
 	],
+	"files": [
+		"src",
+		"dist",
+		"nuxt.js"
+	],
 	"author": "Alireza Alibeiki <alibeikialireza@gmail.com>",
 	"license": "MIT",
 	"dependencies": {

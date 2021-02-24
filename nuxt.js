@@ -1,11 +1,9 @@
-import { join, resolve } from 'path'
+import { join } from 'path'
 
 export default function (option) {
-  if (option['PersianDate'])
-    this.addPlugin({
-      src: resolve(__dirname, '../persian-date/lib/plugin.js'),
-      fileName: 'PersianDate.js'
-    })
+  if (option['PersianDate']) {
+    this.addModule('@alireza-ab/persian-date/lib/nuxt')
+  }
   this.nuxt.hook('components:dirs', (dirs) => {
     dirs.push({
       path: join(__dirname, 'src/components'),

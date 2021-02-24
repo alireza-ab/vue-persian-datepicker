@@ -20,6 +20,6 @@ pnpm-debug.log*
 *.sln
 *.sw?
 
-// Cypress additional files
+# Cypress additional files
 cypress/videos
 cypress/screenshots
