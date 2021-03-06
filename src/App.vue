@@ -1,6 +1,8 @@
 <template>
 	<div id="app">
-		<!-- <form action="">
+		<form action="">
+			<date-picker type="date"></date-picker>
+			<date-picker type="time"></date-picker>
 			<date-picker
 				v-model="date"
 				tabindex="1"
@@ -35,11 +37,10 @@
 			>
 			</date-picker>
 			<div class="show">date is: {{ date }}</div>
-
 			<button type="submit">submit</button>
-		</form> -->
+		</form>
 
-		<date-picker type="datetime" />
+		<!-- <date-picker type="datetime" /> -->
 	</div>
 </template>
 
@@ -51,16 +52,12 @@
 		components: { datePicker },
 		data() {
 			return {
-				date: "",
+				date: ["2020/12", "2021/1"],
 				show: false,
 				core: new PersianDate(),
 				localeConfig: {
 					fa: {
-						inputFormat: {
-							date: "jYYYY/jMM",
-							datetime: "jYYYY/jMM",
-							time: "jYYYY/jMM",
-						},
+						inputFormat: "jYYYY/jMM",
 						translations: {
 							label: "فارسی",
 						},
@@ -104,11 +101,7 @@
 							now: "بوم",
 							submit: "التایید",
 						},
-						inputFormat: {
-							date: "date",
-							datetime: "datetime",
-							time: "time",
-						},
+						inputFormat: "datetime",
 						displayFormat: {
 							date: "?D ?MMMM",
 							datetime: "?D ?MMMM HH:mm",

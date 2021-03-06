@@ -22,7 +22,21 @@
 				@click="showPicker('icon')"
 			>
 				<slot name="icon">
-					<calendar-icon width="20" height="20"></calendar-icon>
+					<calendar-icon
+						v-if="type === 'date'"
+						width="23"
+						height="23"
+					></calendar-icon>
+					<clock-icon
+						v-else-if="type === 'time'"
+						width="23"
+						height="23"
+					></clock-icon>
+					<calendar-clock-icon
+						v-else
+						width="23"
+						height="23"
+					></calendar-clock-icon>
 				</slot>
 			</div>
 			<input
@@ -208,7 +222,7 @@
 											{ disabled: day.disabled },
 											{ 'in-range': day.inRange },
 										]"
-										@click="selectDateRefactor(day.raw, 'date')"
+										@click="selectDate(day.raw, 'date')"
 										:value="day.val"
 									>
 										{{ day.val }}
@@ -362,6 +376,8 @@
 	// components
 	import arrowIcon from "./utils/components/ArrowIcon.vue";
 	import calendarIcon from "./utils/components/CalendarIcon.vue";
+	import clockIcon from "./utils/components/ClockIcon.vue";
+	import calendarClockIcon from "./utils/components/CalendarClockIcon.vue";
 	import clearIcon from "./utils/components/ClearIcon.vue";
 
 	export { PersianDate };
@@ -371,6 +387,8 @@
 		components: {
 			arrowIcon,
 			calendarIcon,
+			clockIcon,
+			calendarClockIcon,
 			clearIcon,
 		},
 		props: {
@@ -935,7 +953,7 @@
 					this.onDisplay = this.nearestDate(this.onDisplay);
 				this.showYearSelect = false;
 			},
-			selectDateRefactor(date, part) {
+			selectDate(date, part) {
 				if (!this.checkDate(date, part)) return -1;
 				if (this.isInDisable(date)) return -2;
 				if (this.mode == "range" && this.selectedDates.length == 1) {
@@ -1151,7 +1169,7 @@
 					// 13 is key code of Enter key
 					const focusedDay = document.querySelector(".pdp .pdp-day.hover");
 					if (focusedDay) {
-						this.selectDateRefactor(
+						this.selectDate(
 							this.onDisplay
 								.clone()
 								.addMonth(this.getColumn(focusedDay) || 0)
@@ -1169,7 +1187,7 @@
 						} else {
 							onDisplay = this.core.clone().parse(this.displayValue);
 						}
-						if (this.selectDateRefactor(onDisplay, "time") === 0) {
+						if (this.selectDate(onDisplay, "time") === 0) {
 							const diff = onDisplay.diff(this.onDisplay, "month");
 							if (diff < 0 || diff >= this.columnCount)
 								this.onDisplay = onDisplay.clone();
@@ -1316,7 +1334,6 @@
 							dateIndex == 0 ? this.selectedDates[1] : this.selectedDates[0]
 						);
 					}
-					console.log(date.toString("datetime"));
 					if (!this.isInDisable(date)) {
 						this.$emit("select", date);
 						if (
