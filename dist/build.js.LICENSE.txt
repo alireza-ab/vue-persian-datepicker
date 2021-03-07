@@ -20,27 +20,35 @@
 
 /*! -!../../../../node_modules/babel-loader/lib/index.js!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./ArrowIcon.vue?vue&type=script&lang=js& */
 
+/*! -!../../../../node_modules/babel-loader/lib/index.js!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./CalendarClockIcon.vue?vue&type=script&lang=js& */
+
 /*! -!../../../../node_modules/babel-loader/lib/index.js!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./CalendarIcon.vue?vue&type=script&lang=js& */
 
 /*! -!../../../../node_modules/babel-loader/lib/index.js!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./ClearIcon.vue?vue&type=script&lang=js& */
 
+/*! -!../../../../node_modules/babel-loader/lib/index.js!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./ClockIcon.vue?vue&type=script&lang=js& */
+
 /*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./ArrowIcon.vue?vue&type=template&id=1c862f7f& */
+
+/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./CalendarClockIcon.vue?vue&type=template&id=1e551fad& */
 
 /*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./CalendarIcon.vue?vue&type=template&id=77482a34& */
 
 /*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./ClearIcon.vue?vue&type=template&id=33469800& */
 
+/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./ClockIcon.vue?vue&type=template&id=29bc39f7& */
+
 /*! -!../../node_modules/babel-loader/lib/index.js!../../node_modules/vue-loader/lib/index.js??vue-loader-options!./DatePicker.vue?vue&type=script&lang=js& */
 
 /*! -!../../node_modules/style-loader/dist/cjs.js!../../node_modules/css-loader/dist/cjs.js!../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../node_modules/sass-loader/dist/cjs.js!../../node_modules/vue-loader/lib/index.js??vue-loader-options!./DatePicker.vue?vue&type=style&index=0&lang=scss& */
 
-/*! -!../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../node_modules/vue-loader/lib/index.js??vue-loader-options!./DatePicker.vue?vue&type=template&id=17df8abb& */
+/*! -!../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../node_modules/vue-loader/lib/index.js??vue-loader-options!./DatePicker.vue?vue&type=template&id=e4d7abae& */
 
 /*! -!../node_modules/babel-loader/lib/index.js!../node_modules/vue-loader/lib/index.js??vue-loader-options!./App.vue?vue&type=script&lang=js& */
 
 /*! -!../node_modules/style-loader/dist/cjs.js!../node_modules/css-loader/dist/cjs.js!../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../node_modules/sass-loader/dist/cjs.js!../node_modules/vue-loader/lib/index.js??vue-loader-options!./App.vue?vue&type=style&index=0&lang=scss& */
 
-/*! -!../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../node_modules/vue-loader/lib/index.js??vue-loader-options!./App.vue?vue&type=template&id=095e456c& */
+/*! -!../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../node_modules/vue-loader/lib/index.js??vue-loader-options!./App.vue?vue&type=template&id=d292f842& */
 
 /*! ../../node_modules/css-loader/dist/runtime/api.js */
 
@@ -66,8 +74,6 @@
 
 /*! ../internals/array-method-is-strict */
 
-/*! ../internals/array-method-uses-to-length */
-
 /*! ../internals/array-species-create */
 
 /*! ../internals/classof */
@@ -89,6 +95,8 @@
 /*! ../internals/document-create-element */
 
 /*! ../internals/dom-iterables */
+
+/*! ../internals/engine-is-node */
 
 /*! ../internals/engine-user-agent */
 
@@ -228,11 +236,15 @@
 
 /*! ./App.vue?vue&type=style&index=0&lang=scss& */
 
-/*! ./App.vue?vue&type=template&id=095e456c& */
+/*! ./App.vue?vue&type=template&id=d292f842& */
 
 /*! ./ArrowIcon.vue?vue&type=script&lang=js& */
 
 /*! ./ArrowIcon.vue?vue&type=template&id=1c862f7f& */
+
+/*! ./CalendarClockIcon.vue?vue&type=script&lang=js& */
+
+/*! ./CalendarClockIcon.vue?vue&type=template&id=1e551fad& */
 
 /*! ./CalendarIcon.vue?vue&type=script&lang=js& */
 
@@ -242,17 +254,33 @@
 
 /*! ./ClearIcon.vue?vue&type=template&id=33469800& */
 
+/*! ./ClockIcon.vue?vue&type=script&lang=js& */
+
+/*! ./ClockIcon.vue?vue&type=template&id=29bc39f7& */
+
 /*! ./DatePicker.vue?vue&type=script&lang=js& */
 
 /*! ./DatePicker.vue?vue&type=style&index=0&lang=scss& */
 
-/*! ./DatePicker.vue?vue&type=template&id=17df8abb& */
+/*! ./DatePicker.vue?vue&type=template&id=e4d7abae& */
+
+/*! ./arrayLikeToArray.js */
+
+/*! ./arrayWithHoles.js */
+
+/*! ./arrayWithoutHoles.js */
 
 /*! ./classof-raw */
 
 /*! ./components/DatePicker */
 
+/*! ./defineProperty.js */
+
 /*! ./fails */
+
+/*! ./iterableToArray.js */
+
+/*! ./iterableToArrayLimit.js */
 
 /*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator */
 
@@ -262,53 +290,39 @@
 
 /*! ./node_modules/@babel/runtime/helpers/esm/toConsumableArray */
 
+/*! ./nonIterableRest.js */
+
+/*! ./nonIterableSpread.js */
+
 /*! ./regexp-exec */
 
 /*! ./regexp-flags */
 
 /*! ./regexp-sticky-helpers */
 
+/*! ./unsupportedIterableToArray.js */
+
 /*! ./utils/components/ArrowIcon.vue */
+
+/*! ./utils/components/CalendarClockIcon.vue */
 
 /*! ./utils/components/CalendarIcon.vue */
 
 /*! ./utils/components/ClearIcon.vue */
 
+/*! ./utils/components/ClockIcon.vue */
+
 /*! ./utils/modules/core.js */
 
 /*! @alireza-ab/persian-date */
 
-/*! @babel/runtime/helpers/esm/arrayLikeToArray */
-
-/*! @babel/runtime/helpers/esm/arrayWithHoles */
-
-/*! @babel/runtime/helpers/esm/arrayWithoutHoles */
-
-/*! @babel/runtime/helpers/esm/defineProperty */
-
-/*! @babel/runtime/helpers/esm/iterableToArray */
-
-/*! @babel/runtime/helpers/esm/iterableToArrayLimit */
-
-/*! @babel/runtime/helpers/esm/nonIterableRest */
-
-/*! @babel/runtime/helpers/esm/nonIterableSpread */
-
-/*! @babel/runtime/helpers/esm/unsupportedIterableToArray */
-
 /*! core-js/modules/es.array.concat.js */
 
-/*! core-js/modules/es.array.for-each.js */
-
 /*! core-js/modules/es.array.includes.js */
-
-/*! core-js/modules/es.array.index-of.js */
 
 /*! core-js/modules/es.array.join.js */
 
 /*! core-js/modules/es.array.map.js */
-
-/*! core-js/modules/es.array.some.js */
 
 /*! core-js/modules/es.number.constructor.js */
 
@@ -411,7 +425,7 @@
   \****************************************************/
 
 /*!****************************************************!*\
-  !*** ./src/App.vue?vue&type=template&id=095e456c& ***!
+  !*** ./src/App.vue?vue&type=template&id=d292f842& ***!
   \****************************************************/
 
 /*!*****************************************************!*\
@@ -503,10 +517,6 @@
   \*******************************************************/
 
 /*!*******************************************************!*\
-  !*** ./node_modules/core-js/modules/es.array.some.js ***!
-  \*******************************************************/
-
-/*!*******************************************************!*\
   !*** ./src/App.vue?vue&type=style&index=0&lang=scss& ***!
   \*******************************************************/
 
@@ -516,6 +526,10 @@
 
 /*!*******************************************************!*\
   !*** ./src/components/utils/components/ClearIcon.vue ***!
+  \*******************************************************/
+
+/*!*******************************************************!*\
+  !*** ./src/components/utils/components/ClockIcon.vue ***!
   \*******************************************************/
 
 /*!********************************************************!*\
@@ -583,6 +597,10 @@
   \**********************************************************/
 
 /*!**********************************************************!*\
+  !*** ./node_modules/core-js/internals/engine-is-node.js ***!
+  \**********************************************************/
+
+/*!**********************************************************!*\
   !*** ./node_modules/core-js/internals/ie8-dom-define.js ***!
   \**********************************************************/
 
@@ -615,15 +633,7 @@
   \***********************************************************/
 
 /*!***********************************************************!*\
-  !*** ./node_modules/core-js/modules/es.array.for-each.js ***!
-  \***********************************************************/
-
-/*!***********************************************************!*\
   !*** ./node_modules/core-js/modules/es.array.includes.js ***!
-  \***********************************************************/
-
-/*!***********************************************************!*\
-  !*** ./node_modules/core-js/modules/es.array.index-of.js ***!
   \***********************************************************/
 
 /*!************************************************************!*\
@@ -688,6 +698,10 @@
 
 /*!***************************************************************!*\
   !*** ./node_modules/core-js/modules/es.regexp.constructor.js ***!
+  \***************************************************************/
+
+/*!***************************************************************!*\
+  !*** ./src/components/utils/components/CalendarClockIcon.vue ***!
   \***************************************************************/
 
 /*!****************************************************************!*\
@@ -811,15 +825,11 @@
   \**********************************************************************/
 
 /*!**********************************************************************!*\
-  !*** ./src/components/DatePicker.vue?vue&type=template&id=17df8abb& ***!
+  !*** ./src/components/DatePicker.vue?vue&type=template&id=e4d7abae& ***!
   \**********************************************************************/
 
 /*!***********************************************************************!*\
   !*** ./node_modules/@alireza-ab/persian-date/dist/PersianDate.min.js ***!
-  \***********************************************************************/
-
-/*!***********************************************************************!*\
-  !*** ./node_modules/core-js/internals/array-method-uses-to-length.js ***!
   \***********************************************************************/
 
 /*!***********************************************************************!*\
@@ -882,6 +892,10 @@
   !*** ./src/components/utils/components/ClearIcon.vue?vue&type=script&lang=js& ***!
   \********************************************************************************/
 
+/*!********************************************************************************!*\
+  !*** ./src/components/utils/components/ClockIcon.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************/
+
 /*!***********************************************************************************!*\
   !*** ./src/components/utils/components/CalendarIcon.vue?vue&type=script&lang=js& ***!
   \***********************************************************************************/
@@ -894,9 +908,21 @@
   !*** ./src/components/utils/components/ClearIcon.vue?vue&type=template&id=33469800& ***!
   \**************************************************************************************/
 
+/*!**************************************************************************************!*\
+  !*** ./src/components/utils/components/ClockIcon.vue?vue&type=template&id=29bc39f7& ***!
+  \**************************************************************************************/
+
+/*!****************************************************************************************!*\
+  !*** ./src/components/utils/components/CalendarClockIcon.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************/
+
 /*!*****************************************************************************************!*\
   !*** ./src/components/utils/components/CalendarIcon.vue?vue&type=template&id=77482a34& ***!
   \*****************************************************************************************/
+
+/*!**********************************************************************************************!*\
+  !*** ./src/components/utils/components/CalendarClockIcon.vue?vue&type=template&id=1e551fad& ***!
+  \**********************************************************************************************/
 
 /*!**************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/App.vue?vue&type=script&lang=js& ***!
@@ -914,16 +940,24 @@
   !*** ./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/components/utils/components/ClearIcon.vue?vue&type=script&lang=js& ***!
   \************************************************************************************************************************************************************************************/
 
+/*!************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/components/utils/components/ClockIcon.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************************************************************************************************************/
+
 /*!***************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/components/utils/components/CalendarIcon.vue?vue&type=script&lang=js& ***!
   \***************************************************************************************************************************************************************************************/
 
 /*!*******************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/App.vue?vue&type=template&id=095e456c& ***!
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/App.vue?vue&type=template&id=d292f842& ***!
   \*******************************************************************************************************************************************************************************************/
 
+/*!********************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/components/utils/components/CalendarClockIcon.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************************************************************************************************************/
+
 /*!*************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/components/DatePicker.vue?vue&type=template&id=17df8abb& ***!
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/components/DatePicker.vue?vue&type=template&id=e4d7abae& ***!
   \*************************************************************************************************************************************************************************************************************/
 
 /*!*****************************************************************************************************************************************************************************************************************************!*\
@@ -934,9 +968,17 @@
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/components/utils/components/ClearIcon.vue?vue&type=template&id=33469800& ***!
   \*****************************************************************************************************************************************************************************************************************************/
 
+/*!*****************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/components/utils/components/ClockIcon.vue?vue&type=template&id=29bc39f7& ***!
+  \*****************************************************************************************************************************************************************************************************************************/
+
 /*!********************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/components/utils/components/CalendarIcon.vue?vue&type=template&id=77482a34& ***!
   \********************************************************************************************************************************************************************************************************************************/
+
+/*!*************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/components/utils/components/CalendarClockIcon.vue?vue&type=template&id=1e551fad& ***!
+  \*************************************************************************************************************************************************************************************************************************************/
 
 /*!********************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/dist/cjs.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/App.vue?vue&type=style&index=0&lang=scss& ***!
