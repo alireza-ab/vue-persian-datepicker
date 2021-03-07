@@ -15,6 +15,7 @@
 		</slot>
 		<div v-bind="attrs.div">
 			<div
+				v-if="!$slots.hasOwnProperty('icon') || !!$slots.icon"
 				:class="[
 					'pdp-icon',
 					{ 'pdp-pointer': ['all', 'icon'].includes(clickOn) },

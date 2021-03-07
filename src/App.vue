@@ -1,7 +1,9 @@
 <template>
 	<div id="app">
 		<form action="">
-			<date-picker type="date"></date-picker>
+			<date-picker type="date" locale="en">
+				<template #icon></template>
+			</date-picker>
 			<date-picker type="time"></date-picker>
 			<date-picker
 				v-model="date"
@@ -69,7 +71,7 @@
 							time: "YYYY",
 						},
 						dir: {
-							input: "ltr",
+							input: "rtl",
 						},
 					},
 					ar: {
