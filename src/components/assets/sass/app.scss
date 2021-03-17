@@ -77,19 +77,29 @@
 		text-align: right;
 
 		.pdp-group {
-			:first-child {
+			:first-child:not(.pdp-inside),
+			.pdp-inside:first-child + input {
 				border-top-right-radius: $radius;
 				border-top-right-radius: var(--radius);
 				border-bottom-right-radius: $radius;
 				border-bottom-right-radius: var(--radius);
-				margin-right: -1px;
+				margin-left: -1px;
 			}
 
-			input {
+			input:last-child {
 				border-top-left-radius: $radius;
 				border-top-left-radius: var(--radius);
 				border-bottom-left-radius: $radius;
 				border-bottom-left-radius: var(--radius);
+			}
+
+			.pdp-icon.pdp-inside {
+				&:nth-of-type(2) {
+					right: 50%;
+				}
+				+ input {
+					padding-right: 3rem;
+				}
 			}
 		}
 
@@ -103,7 +113,8 @@
 		text-align: left;
 
 		.pdp-group {
-			:first-child {
+			:first-child:not(.pdp-inside),
+			.pdp-inside:first-child + input {
 				border-top-left-radius: $radius;
 				border-top-left-radius: var(--radius);
 				border-bottom-left-radius: $radius;
@@ -111,7 +122,7 @@
 				margin-right: -1px;
 			}
 
-			input {
+			input:last-child {
 				border-top-right-radius: $radius;
 				border-top-right-radius: var(--radius);
 				border-bottom-right-radius: $radius;
@@ -123,10 +134,32 @@
 				left: unset;
 				right: 0.45rem;
 			}
+
+			.pdp-icon.pdp-inside {
+				&:nth-of-type(2) {
+					left: 50%;
+				}
+				+ input {
+					padding-left: 3rem;
+				}
+			}
 		}
 
 		.pdp-picker::after {
 			left: 1.2rem;
+		}
+	}
+
+	&.pdp-dual {
+		.pdp-picker {
+			left: 50%;
+			transform: translateX(-50%);
+
+			&::after {
+				right: unset;
+				left: 50%;
+				transform: translateX(-50%);
+			}
 		}
 	}
 
@@ -185,6 +218,7 @@
 			transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 			position: relative;
 			flex: 1 1 auto;
+			width: 100%;
 		}
 
 		.pdp-icon {
@@ -197,6 +231,18 @@
 			background: var(--icon-background);
 			border: 1px solid $border-color;
 			border: 1px solid var(--border-color);
+
+			&:nth-of-type(2) {
+				margin-left: -1px;
+				margin-right: -1px;
+			}
+
+			&.pdp-inside {
+				background: transparent;
+				border: none;
+				position: absolute;
+				z-index: 1;
+			}
 		}
 
 		.pdp-clear {
@@ -661,11 +707,11 @@
 
 @keyframes start {
 	from {
-		transform: scale(0.5);
+		transform: inherit scale(0.5);
 		opacity: 0;
 	}
 	to {
-		transform: scale(1);
+		transform: inherit scale(1);
 		opacity: 1;
 	}
 }

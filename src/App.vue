@@ -1,11 +1,18 @@
 <template>
 	<div id="app">
 		<form action="">
-			<date-picker type="date" locale="en">
-				<template #icon></template>
-			</date-picker>
-			<date-picker type="time"></date-picker>
+			<date-picker dual-input icon-inside> </date-picker>
+			<date-picker dual-input> </date-picker>
+			<date-picker icon-inside></date-picker>
 			<date-picker
+				:locale-config="ltrDirection"
+				dual-input
+				icon-inside
+			></date-picker>
+			<date-picker :locale-config="ltrDirection" dual-input> </date-picker>
+			<date-picker :locale-config="ltrDirection" icon-inside></date-picker>
+			<!-- <date-picker type="time"></date-picker> -->
+			<!-- <date-picker
 				v-model="date"
 				tabindex="1"
 				:locale-config="localeConfig"
@@ -37,7 +44,7 @@
 				@submit="submit"
 				@keydown="keydown"
 			>
-			</date-picker>
+			</date-picker> -->
 			<div class="show">date is: {{ date }}</div>
 			<button type="submit">submit</button>
 		</form>
@@ -54,9 +61,10 @@
 		components: { datePicker },
 		data() {
 			return {
-				date: ["2020/12", "2021/1"],
+				date: "",
 				show: false,
 				core: new PersianDate(),
+				ltrDirection: { fa: { dir: { input: "ltr" } } },
 				localeConfig: {
 					fa: {
 						inputFormat: "jYYYY/jMM",
@@ -190,7 +198,7 @@
 	#app {
 		font-family: Shabnam !important;
 		margin: 1px;
-		padding: 30rem 0;
+		padding: 30rem 40rem;
 	}
 
 	.show {

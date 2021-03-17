@@ -1,7 +1,7 @@
 /// <reference types="Cypress" />
 
 describe('slots', () => {
-    beforeEach(() => {
+    before(() => {
         cy.changeProps()
         cy.changeSlots()
     })
@@ -50,9 +50,7 @@ describe('slots', () => {
     })
 
     it('up arrow', () => {
-        cy.changeProps('from', undefined)
-        cy.changeProps('to', undefined)
-        cy.changeProps('type', 'time')
+        cy.changeProps({ from: undefined, to: undefined, type: 'time' })
         cy.changeSlots('up-arrow', 'افزایش')
         cy.visit('/')
         cy.get('.pdp-input').focus().get('.hour button:first-child,.minute button:first-child')

@@ -2,7 +2,7 @@
 	<div id="app">
 		<date-picker
 			v-bind="props"
-			v-model="date"
+			v-model="model"
 			@input="input"
 			@close="close"
 			@blur="blur"
@@ -19,23 +19,23 @@
 			></div>
 		</date-picker>
 
-		<div class="show">date is: {{ date }}</div>
+		<div class="show">date/time is: {{ model }}</div>
 
 		<button class="show-picker" @click="props.show = true">show picker</button>
 
-		<div class="status">{{ status }}</div>
+		<div class="status" style="display:none;">{{ status }}</div>
 	</div>
 </template>
 
 <script>
 	import datePicker, { PersianDate } from "../src/components/DatePicker";
-
+	window.PersianDate = PersianDate;
 	export default {
 		name: "App",
 		components: { datePicker },
 		data() {
 			return {
-				date: "",
+				model: "",
 				status: "",
 				props: require("./props.json"),
 				slots: require("./slots.json"),
@@ -49,6 +49,7 @@
 				this.props.disable = eval(this.props.disableF);
 				delete this.props.disableF;
 			}
+			if (this.props.model) this.model = this.props.model;
 		},
 		methods: {
 			open() {
@@ -71,7 +72,10 @@
 			},
 			submit(e) {
 				this.status +=
-					"submit:" + e.map((date) => date.toString(this.props.type || "date"));
+					"submit:" +
+					(Array.isArray(e)
+						? e.map((date) => date.toString(this.props.type || "date"))
+						: e.toString(this.props.type || "date"));
 			},
 			select(e) {
 				this.status += "select:" + e.toString(this.props.type || "date");

@@ -4,6 +4,7 @@
 			'pdp',
 			{ 'pdp-range': mode === 'range' },
 			{ 'pdp-modal': modal },
+			{ 'pdp-dual': dualInput },
 			lang.dir.input,
 		]"
 		ref="root"
@@ -14,65 +15,76 @@
 			</label>
 		</slot>
 		<div v-bind="attrs.div">
-			<div
-				v-if="!$slots.hasOwnProperty('icon') || !!$slots.icon"
-				:class="[
-					'pdp-icon',
-					{ 'pdp-pointer': ['all', 'icon'].includes(clickOn) },
-				]"
-				@click="showPicker('icon')"
-			>
-				<slot name="icon">
-					<calendar-icon
-						v-if="type === 'date'"
-						width="23"
-						height="23"
-					></calendar-icon>
-					<clock-icon
-						v-else-if="type === 'time'"
-						width="23"
-						height="23"
-					></clock-icon>
-					<calendar-clock-icon
-						v-else
-						width="23"
-						height="23"
-					></calendar-clock-icon>
-				</slot>
-			</div>
-			<input
-				type="text"
-				autocomplete="off"
-				ref="pdpInput"
-				v-model="displayValue"
-				v-bind="attrs.input"
-				v-on="$listeners"
-				@focus="showPicker('input')"
-				@keydown="selectWithArrow"
-			/>
-			<div v-if="attrs.alt.name && attrs.alt.name.endsWith('[]')">
+			<template v-for="(number, index) in dualInput ? 2 : 1">
+				<div
+					v-if="!$slots.hasOwnProperty('icon') || !!$slots.icon"
+					:key="`icon-${index}`"
+					:class="[
+						'pdp-icon',
+						{ 'pdp-pointer': ['all', 'icon'].includes(clickOn) },
+						{ 'pdp-inside': iconInside },
+					]"
+					@click="showPicker('icon', index)"
+				>
+					<slot name="icon">
+						<calendar-icon
+							v-if="type === 'date'"
+							width="23"
+							height="23"
+						></calendar-icon>
+						<clock-icon
+							v-else-if="type === 'time'"
+							width="23"
+							height="23"
+						></clock-icon>
+						<calendar-clock-icon
+							v-else
+							width="23"
+							height="23"
+						></calendar-clock-icon>
+					</slot>
+				</div>
 				<input
-					v-for="(date, i) in selectedDates"
-					:key="i"
-					type="hidden"
-					:name="attrs.alt.name"
-					:value="date.toString(getFormat('alt'))"
+					:key="`input-${index}`"
+					type="text"
+					autocomplete="off"
+					ref="pdpInput"
+					v-model="displayValue[index]"
+					v-bind="attrs.input"
+					v-on="$listeners"
+					@focus="showPicker('input', index)"
+					@keydown="selectWithArrow"
 				/>
-			</div>
-			<div v-else-if="attrs.alt.name">
-				<input
-					type="hidden"
-					:name="attrs.alt.name"
-					:value="selectedDates.map((date) => date.toString(getFormat('alt')))"
-				/>
-			</div>
-			<button class="pdp-clear" type="button" @click="clear" v-if="clearable">
-				<slot name="clear">
-					<clear-icon></clear-icon>
-				</slot>
-			</button>
+				<button
+					v-if="clearable"
+					:key="`clear-${index}`"
+					class="pdp-clear"
+					type="button"
+					@click="clear(index)"
+				>
+					<slot name="clear">
+						<clear-icon></clear-icon>
+					</slot>
+				</button>
+			</template>
 		</div>
 		<slot name="after"></slot>
+		<div v-if="attrs.alt.name && attrs.alt.name.endsWith('[]')">
+			<input
+				v-for="(date, i) in selectedDates"
+				:key="i"
+				type="hidden"
+				:name="attrs.alt.name"
+				:value="date.toString(getFormat('alt'))"
+			/>
+		</div>
+		<div v-else-if="attrs.alt.name">
+			<input
+				type="hidden"
+				:name="attrs.alt.name"
+				:value="selectedDates.map((date) => date.toString(getFormat('alt')))"
+			/>
+		</div>
 		<div v-if="showDatePicker">
 			<div class="pdp-overlay" @click="showDatePicker = false"></div>
 			<div v-bind="attrs.picker" ref="pdpPicker">
@@ -368,7 +380,10 @@
 <script>
 	//TODO: add time config
 	//TODO: add two input for range
+	//TODO: add tip for days
+	//TODO: add panel and show yesterday, lastweek, ...
 	//TODO: in select date, select date before and after
+	//TODO: test with data in model
 	//TODO: test the project with attention and test in nuxt
 	//TODO: refactor and write comment --> pay a high attention
 
@@ -468,7 +483,7 @@
 
 			/**
 			 * show the picker in modal mode
-			 * @default true
+			 * @default false
 			 * @type Boolean
 			 */
 			modal: {
@@ -595,6 +610,28 @@
 			color: {
 				type: String,
 			},
+
+			/**
+			 * use two input for dispaly
+			 * @type Boolean
+			 * @default false
+			 * @since 2.2.0
+			 */
+			dualInput: {
+				type: Boolean,
+				default: false,
+			},
+
+			/**
+			 * show icon inside of input
+			 * @type Boolean
+			 * @default false
+			 * @since 2.2.0
+			 */
+			iconInside: {
+				type: Boolean,
+				default: false,
+			},
 		},
 		model: {
 			prop: "value",
@@ -670,7 +707,7 @@
 				endRange: "",
 				fromDate: null,
 				toDate: null,
-				displayValue: "",
+				displayValue: [],
 				documentWidth: this.$isServer ? 0 : window.innerWidth,
 				langs: Core.langs,
 				currentLocale: this.locale.split(",")[0],
@@ -882,6 +919,11 @@
 			if (val) {
 				if (this.mode == "single") val = [val];
 				val.some((date, index) => {
+					console.log(
+						(this.type == "time"
+							? this.core.toString("YYYY-MM-DD") + " "
+							: "") + date
+					);
 					date = this.core
 						.clone()
 						.fromGregorian(
@@ -1092,9 +1134,9 @@
 					});
 				}
 			},
-			showPicker(el) {
+			showPicker(el, inputIndex) {
 				if (this.clickOn == "all" || this.clickOn == el) {
-					this.$refs.pdpInput.focus();
+					this.$refs.pdpInput[inputIndex].focus();
 					this.showDatePicker = true;
 					if (!this.modal) {
 						this.$nextTick(() => {
@@ -1179,21 +1221,24 @@
 						);
 					} else {
 						let onDisplay;
-						if (this.type == "time") {
-							const time = this.displayValue.split(/[/ -.,:\\]/);
-							if (this.checkDate(this.core.clone(), "time"))
-								onDisplay = this.core.clone();
-							else onDisplay = this.fromDate.clone();
-							onDisplay.hour(time[0] || 0).minute(time[1] || 0);
-						} else {
-							onDisplay = this.core.clone().parse(this.displayValue);
-						}
-						if (this.selectDate(onDisplay, "time") === 0) {
-							const diff = onDisplay.diff(this.onDisplay, "month");
-							if (diff < 0 || diff >= this.columnCount)
-								this.onDisplay = onDisplay.clone();
-							this.displayValue = "";
-						}
+						this.displayValue.forEach((value, index) => {
+							if (!value) return false;
+							if (this.type == "time") {
+								const time = value.split(/[/ -.,:\\]/);
+								if (this.checkDate(this.core.clone(), "time"))
+									onDisplay = this.core.clone();
+								else onDisplay = this.fromDate.clone();
+								onDisplay.hour(time[0] || 0).minute(time[1] || 0);
+							} else {
+								onDisplay = this.core.clone().parse(value);
+							}
+							if (this.selectDate(onDisplay, "time") === 0) {
+								const diff = onDisplay.diff(this.onDisplay, "month");
+								if (diff < 0 || diff >= this.columnCount)
+									this.onDisplay = onDisplay.clone();
+								this.displayValue[index] = "";
+							}
+						});
 					}
 				}
 			},
@@ -1240,7 +1285,8 @@
 				date = this.selectedDates.map((el) => {
 					return el.toString(this.getFormat());
 				});
-				this.displayValue = displayDate.join(" - ");
+				if (this.dualInput) this.displayValue = displayDate;
+				else this.displayValue[0] = displayDate.join(" - ");
 				if (this.mode == "single") date = date[0];
 				this.setModel(date);
 				this.$emit(
@@ -1267,7 +1313,7 @@
 					right: false,
 				};
 				this.$nextTick(() => {
-					const input = this.$refs.pdpInput;
+					const input = this.$refs.pdpInput[0];
 					const inputOffset =
 						input.offsetHeight + input.getBoundingClientRect().top;
 					const picker = this.$refs.pdpPicker;
@@ -1297,8 +1343,8 @@
 				}
 				this.submitDate(false);
 			},
-			clear() {
-				this.displayValue = "";
+			clear(inputIndex) {
+				this.displayValue[inputIndex] = "";
 				this.$emit("setDate", "");
 			},
 			startChangeTime(dateIndex, unit, operator) {

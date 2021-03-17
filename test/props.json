@@ -1,4 +1,64 @@
 {
-  "clearable": true,
-  "type": "datetime"
+  "from": "1399",
+  "to": "1399/6/31",
+  "type": "date",
+  "locale": "fa,ar",
+  "locale-config": {
+    "ar": {
+      "calendar": "gregorian",
+      "weekdays": [
+        "ح ",
+        "ن ",
+        "ث ",
+        "ر ",
+        "خ ",
+        "ج ",
+        "س"
+      ],
+      "months": [
+        "الفروردین",
+        "الاردیبهشت",
+        "الخرداد",
+        "التیر",
+        "المرداد",
+        "الشهریور",
+        "المهر",
+        "الآبان",
+        "الآذر",
+        "الدی",
+        "البهمن",
+        "الاسفند"
+      ],
+      "dir": {
+        "input": "rtl",
+        "picker": "ltr"
+      },
+      "translations": {
+        "label": "قمری",
+        "text": "التقویم القمری",
+        "prevMonth": "الماه قبل",
+        "nextMonth": "الماه بعد",
+        "today": "یوم",
+        "submit": "التایید"
+      },
+      "inputFormat": {
+        "date": "date",
+        "datetime": "datetime",
+        "time": "time"
+      },
+      "displayFormat": {
+        "date": "?D ?MMMM",
+        "datetime": "?D ?MMMM HH:mm",
+        "time": "HH:mm"
+      }
+    }
+  },
+  "format": "YY-M-D",
+  "input-format": "jYY/jM/jD",
+  "display-format": "jD-jMMMM",
+  "show": false,
+  "label": "select date:",
+  "click-on": "all",
+  "div-class": "pdp-group add-class",
+  "input-class": ""
 }

@@ -31,9 +31,18 @@ let props = {
 
 let slots = {}
 
-Cypress.Commands.add('changeProps', (prop, value) => {
-    if (prop)
-        props[prop] = value
+Cypress.Commands.add('changeProps', (prop, value, replace = false) => {
+    if (replace) {
+        props = {};
+    }
+    if (prop) {
+        if (typeof prop == 'string') { props[prop] = value }
+        else {
+            for (const key in prop) {
+                props[key] = prop[key]
+            }
+        }
+    }
     cy.writeFile('test/props.json', props)
 })
 

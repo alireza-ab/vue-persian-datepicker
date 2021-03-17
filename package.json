@@ -1,19 +1,19 @@
 {
 	"name": "@alireza-ab/vue-persian-datepicker",
 	"description": "A datepicker component for select persian date",
-	"version": "2.1.0",
+	"version": "2.1.1",
 	"main": "./dist/datepicker.common.js",
 	"unpkg": "./dist/datepicker.min.js",
 	"scripts": {
-		"serve": "webpack serve --hot --watch-content-base",
+		"serve": "webpack serve --hot --watch-content-base --liveReload --inline",
 		"build:prod": "cross-env NODE_ENV=production webpack",
 		"build:common": "cross-env NODE_ENV=common webpack",
 		"build:unpkg": "cross-env NODE_ENV=unpkg webpack",
-		"build:all": "npm run build:prod && npm run build:common && npm run build:unpkg",
+		"build:all": "yarn build:prod && yarn build:common && yarn build:unpkg",
 		"cy:open": "cypress open",
 		"cy:run": "cypress run",
-		"serve:test": "cross-env NODE_ENV=test webpack serve --hot --watch-content-base --port 8081",
-		"test": "npm run serve:test > /dev/null 2>&1 & npm run cy:run"
+		"serve:test": "cross-env NODE_ENV=test webpack serve --hot --watch-content-base --liveReload --inline --port 8081",
+		"test": "yarn serve:test > /dev/null 2>&1 & cypress run"
 	},
 	"repository": {
 		"type": "git",
@@ -49,18 +49,18 @@
 	"author": "Alireza Alibeiki <alibeikialireza@gmail.com>",
 	"license": "MIT",
 	"dependencies": {
-		"@alireza-ab/persian-date": "^2.3.0"
+		"@alireza-ab/persian-date": "^2.4.0"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.13.8",
+		"@babel/core": "^7.13.10",
 		"@vue/cli-plugin-babel": "^4.5.11",
 		"babel-loader": "^8.2.2",
 		"core-js": "^3.9.1",
 		"cross-env": "^7.0.3",
-		"css-loader": "^5.1.1",
+		"css-loader": "^5.1.2",
 		"cypress": "^6.6.0",
 		"cypress-plugin-tab": "^1.0.5",
-		"postcss-loader": "^5.1.0",
+		"postcss-loader": "^5.2.0",
 		"sass": "^1.32.8",
 		"sass-loader": "^11.0.1",
 		"style-loader": "^2.0.0",
@@ -68,7 +68,7 @@
 		"vue": "^2.6.12",
 		"vue-loader": "^15.9.6",
 		"vue-template-compiler": "^2.6.12",
-		"webpack": "^5.24.3",
+		"webpack": "^5.25.1",
 		"webpack-cli": "^4.5.0",
 		"webpack-dev-server": "^3.11.2"
 	},
