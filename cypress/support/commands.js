@@ -37,18 +37,19 @@ Cypress.Commands.add('changeProps', (prop, value, replace = false) => {
     }
     if (prop) {
         if (typeof prop == 'string') { props[prop] = value }
-        else {
-            for (const key in prop) {
-                props[key] = prop[key]
-            }
-        }
+        else { Object.assign(props, prop) }
     }
     cy.writeFile('test/props.json', props)
 })
 
-Cypress.Commands.add('changeSlots', (slot, value) => {
-    if (slot)
-        slots[slot] = value
+Cypress.Commands.add('changeSlots', (slot, value, replace = false) => {
+    if (replace) {
+        slots = {};
+    }
+    if (slot) {
+        if (typeof slot == 'string') { slots[slot] = value }
+        else { Object.assign(slots, slot) }
+    }
     cy.writeFile('test/slots.json', slots)
 })
 
@@ -70,7 +71,7 @@ Cypress.Commands.add('selectTime', (hour = 0, minute = 0, child = 'first') => {
         nowHour += 24
     let button = cy.get(`.pdp-time .pdp-moment > div:${child}-child .hour button:first-child`);
     for (let i = 0; i < nowHour; i++) {
-        button.click()
+        button.type('{enter}')
     }
     let nowMinute = new Date().getMinutes();
     nowMinute = minute - nowMinute;
@@ -78,6 +79,6 @@ Cypress.Commands.add('selectTime', (hour = 0, minute = 0, child = 'first') => {
         nowMinute += 60
     button = cy.get(`.pdp-time .pdp-moment > div:${child}-child .minute button:first-child`);
     for (let i = 0; i < nowMinute; i++) {
-        button.click()
+        button.type('{enter}')
     }
 })

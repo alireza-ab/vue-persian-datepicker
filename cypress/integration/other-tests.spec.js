@@ -6,13 +6,15 @@ describe('others', () => {
         cy.changeSlots()
     })
 
-    it('show top of input', () => {
+    it('show top of input and focus line', () => {
         cy.visit('/')
         cy.get('.pdp').invoke('attr', 'style', 'margin-top:50rem;')
         cy.get('.pdp-input').focus()
-        cy.wait(1000).then(() => {
+        cy.wait(1).then(() => {
+            const input = cy.$$('.pdp-input')
+            const inputTop = input.offset().top;
             const pickerTop = cy.$$('.pdp-picker').offset().top;
-            const inputTop = cy.$$('.pdp-input').offset().top;
+            input.hasClass('pdp-focus')
             expect(pickerTop).lt(inputTop)
         })
     })
@@ -20,9 +22,8 @@ describe('others', () => {
     it('scroll in year-select section', () => {
         cy.visit('/')
         cy.get('.pdp-input').focus()
-        cy.get('.pdp-year').first().click()
-        cy.wait(1000).then(() => {
-            expect(cy.$$('.pdp-select-year').offset().top).not.equal(0)
+        cy.get('.pdp-year').first().click().then(() => {
+            expect(cy.$$('.pdp-select-year').scrollTop()).not.equal(0)
         })
     })
 
@@ -75,7 +76,7 @@ describe('others', () => {
     })
 
     it('disable datetimes and change locale', () => {
-        cy.changeProps({ type: 'datetime', disable: ['1399/10/5 10:10', '1399/10/5 10:11', '1399/10/5 10:12'] });
+        cy.changeProps({ type: 'datetime', disable: ['1399/10/5 15:52', '1399/10/5 15:53', '1399/10/5 15:54'] });
         cy.visit('/')
         cy.get('.pdp-input').focus()
         cy.get('button.pdp-year').first().click()
@@ -84,7 +85,7 @@ describe('others', () => {
         cy.get('.pdp-select-month > :nth-child(10)').click()
         cy.get('[data-column="0"] .pdp-day[value="5"]').click()
         cy.get('.pdp-input').focus()
-        cy.selectTime(10, 10)
+        cy.selectTime(15, 52)
         cy.get('.pdp-time .pdp-moment > div').first().should('have.attr', 'class').and('match', /disabled/)
         cy.get('.pdp-time .pdp-moment button').eq(2).click()
         cy.get('.pdp-time .pdp-moment > div').first().should('have.attr', 'class').and('match', /disabled/)
@@ -109,39 +110,40 @@ describe('others', () => {
         cy.get('.pdp-input').focus()
         cy.get('.pdp-day').contains('10').first().click()
         cy.get('.pdp-input').focus()
-        cy.selectTime(10, 10)
+        cy.selectTime(15, 52)
         cy.get('.pdp-header .top button').click()
         cy.get('.pdp-month').should('contain.text', 'شهریور')
         cy.get('.start-range').should('contain.text', '20')
-        cy.get('.pdp-time .pdp-moment > div .hour').first().should('contain.text', '10')
-        cy.get('.pdp-time .pdp-moment > div .minute').first().should('contain.text', '10')
+        cy.get('.pdp-time .pdp-moment > div .hour').first().should('contain.text', '15')
+        cy.get('.pdp-time .pdp-moment > div .minute').first().should('contain.text', '52')
     })
 
     it('select range datetime and change locale', () => {
-        cy.changeProps({ locale: 'fa,en', mode: 'range', type: 'datetime' }, null, true);
+        cy.changeProps({ locale: 'fa,en', mode: 'range', type: 'datetime' });
         cy.visit('/')
         cy.get('.pdp-input').focus()
         cy.get('.pdp-day').contains('15').first().click()
         cy.get('.pdp-day').contains('20').first().click()
         cy.get('.pdp-input').focus()
-        cy.selectTime(10, 10)
-        cy.selectTime(20, 20, 'last')
+        cy.selectTime(15, 52)
+        cy.selectTime(20, 48, 'last')
         cy.get('.pdp-header .top button').click()
         cy.contains('September')
         cy.get('.start-range').should('contain.text', '5')
         cy.get('.end-range').should('contain.text', '10')
-        cy.get('.pdp-time .pdp-moment > div .hour').first().should('contain.text', '10')
-        cy.get('.pdp-time .pdp-moment > div .minute').first().should('contain.text', '10')
+        cy.get('.pdp-time .pdp-moment > div .hour').first().should('contain.text', '15')
+        cy.get('.pdp-time .pdp-moment > div .minute').first().should('contain.text', '52')
         cy.get('.pdp-time .pdp-moment > div .hour').last().should('contain.text', '20')
-        cy.get('.pdp-time .pdp-moment > div .minute').last().should('contain.text', '20')
+        cy.get('.pdp-time .pdp-moment > div .minute').last().should('contain.text', '48')
     })
 
     it('today button', () => {
+        cy.changeProps({ from: undefined, to: undefined })
         cy.visit('/')
         cy.selectDate()
         const date = new Date()
         cy.get('.pdp-input').focus()
-        cy.get('.pdp-moment button:first-child').click({ multiple: true })
+        cy.get('.pdp-moment > :first-child button:first-child').click({ multiple: true })
         cy.get('.hour').last().should('contain.text', date.getHours())
         cy.get('.minute').last().should('contain.text', date.getMinutes())
         cy.get('.pdp-today').click()

@@ -1,16 +1,32 @@
 <template>
 	<div id="app">
 		<form action="">
-			<date-picker dual-input icon-inside> </date-picker>
-			<date-picker dual-input> </date-picker>
-			<date-picker icon-inside></date-picker>
+			<date-picker dual-input v-model="date" type="datetime"></date-picker>
+			<date-picker dual-input icon-inside clearable></date-picker>
+			<date-picker dual-input clearable></date-picker>
+			<date-picker icon-inside clearable></date-picker>
+			<date-picker clearable></date-picker>
+			<date-picker
+				dual-input
+				icon-inside
+				clearable
+				locale="en"
+				:locale-config="ltrDirection"
+				from="1399"
+				to="1399/6"
+			></date-picker>
 			<date-picker
 				:locale-config="ltrDirection"
 				dual-input
-				icon-inside
+				clearable
 			></date-picker>
-			<date-picker :locale-config="ltrDirection" dual-input> </date-picker>
-			<date-picker :locale-config="ltrDirection" icon-inside></date-picker>
+			<date-picker
+				:locale-config="ltrDirection"
+				icon-inside
+				clearable
+			></date-picker>
+			<date-picker :locale-config="ltrDirection" clearable></date-picker>
+			<date-picker dual-input clearable></date-picker>
 			<!-- <date-picker type="time"></date-picker> -->
 			<!-- <date-picker
 				v-model="date"
@@ -46,7 +62,7 @@
 			>
 			</date-picker> -->
 			<div class="show">date is: {{ date }}</div>
-			<button type="submit">submit</button>
+			<button type="submit" @click.prevent="show = true">submit</button>
 		</form>
 
 		<!-- <date-picker type="datetime" /> -->
@@ -203,5 +219,9 @@
 
 	.show {
 		margin-top: 1rem;
+	}
+
+	.pdp {
+		margin: 3rem 0;
 	}
 </style>

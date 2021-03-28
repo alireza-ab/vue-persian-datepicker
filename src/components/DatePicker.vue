@@ -50,8 +50,8 @@
 					autocomplete="off"
 					ref="pdpInput"
 					v-model="displayValue[index]"
-					v-bind="attrs.input"
-					v-on="$listeners"
+					v-bind="attrs[index == 0 ? 'input' : 'second']"
+					v-on="listeners(index + 1)"
 					@focus="showPicker('input', index)"
 					@keydown="selectWithArrow"
 				/>
@@ -260,10 +260,9 @@
 								:class="[
 									{
 										disabled:
-											(type != 'time' && !selectedDates[i]) ||
-											(selectedDates[i] &&
-												!checkDate(selectedDates[i], 'time')) ||
-											isInDisable(selectedDates[i]),
+											selectedTimes[i] &&
+											(!checkDate(selectedTimes[i], 'time') ||
+												isInDisable(selectedTimes[i])),
 									}, // FIXME: go to method
 								]"
 							>
@@ -282,8 +281,8 @@
 										</slot>
 									</button>
 									{{
-										selectedDates[i]
-											? selectedDates[i].hour("HH")
+										selectedTimes[i]
+											? selectedTimes[i].hour("HH")
 											: core.hour("HH")
 									}}
 									<button
@@ -316,8 +315,8 @@
 										</slot>
 									</button>
 									{{
-										selectedDates[i]
-											? selectedDates[i].minute("mm")
+										selectedTimes[i]
+											? selectedTimes[i].minute("mm")
 											: core.minute("mm")
 									}}
 									<button
@@ -341,7 +340,7 @@
 				<div class="pdp-footer">
 					<div>
 						<slot name="footer"></slot>
-						<small v-if="selectedDates.length">
+						<small v-if="selectedDates[0]">
 							{{ selectedDates[0].toString(getFormat("display")) }}
 						</small>
 						<small v-if="selectedDates.length == 2">
@@ -703,6 +702,7 @@
 				showYearSelect: false,
 				onDisplay: "",
 				selectedDates: [],
+				selectedTimes: [],
 				startRange: "",
 				endRange: "",
 				fromDate: null,
@@ -712,44 +712,47 @@
 				langs: Core.langs,
 				currentLocale: this.locale.split(",")[0],
 				interval: null,
+				dateIndex: 0,
 			};
 		},
 		computed: {
 			attrs() {
 				let attrs = {
-					picker: {
-						class: [
-							"pdp-picker",
-							{
-								"pdp-top": this.pickerPlace.top,
-								"pdp-left": this.pickerPlace.left,
-								"pdp-right": this.pickerPlace.right,
-							},
-							this.lang.dir.picker,
-						],
-					},
-					div: {
-						class: "pdp-group",
-					},
-					label: {
-						class: "pdp-label",
-					},
-					input: {
-						class: "pdp-input",
-					},
+					div: { class: "pdp-group" },
+					label: { class: "pdp-label" },
 					alt: {},
+					picker: { class: "pdp-picker" },
+					input: { class: "pdp-input" },
+					second: { class: "pdp-input" },
 				};
 				let $attrs = { ...this.$attrs };
 				delete $attrs.value;
 				for (const key in $attrs) {
 					try {
 						const [, group, attr] = key.match(
-							/(div|label|alt|input|picker)-(.*)/
+							/(div|label|alt|picker|input|second)-(.*)/
 						);
 						attrs[group][attr] = $attrs[key];
 					} catch {
 						attrs["input"][key] = $attrs[key];
 					}
+				}
+				attrs.picker.class = [
+					attrs.picker.class,
+					{
+						"pdp-top": this.pickerPlace.top,
+						"pdp-left": this.pickerPlace.left,
+						"pdp-right": this.pickerPlace.right,
+					},
+					this.lang.dir.picker,
+				];
+				if (this.mode == "single" && this.dualInput) {
+					attrs["second"].disabled = true;
+				}
+				if (this.showDatePicker) {
+					const whichInput =
+						this.dualInput && this.dateIndex == 1 ? "second" : "input";
+					attrs[whichInput].class += " pdp-focus";
 				}
 				return attrs;
 			},
@@ -802,14 +805,14 @@
 										.addMonth(i)
 										.date(showDay),
 									startRange:
-										this.selectedDates.length &&
+										this.selectedDates[0] &&
 										this.selectedDates[0].isSame(
 											selectedYear,
 											selectedMonth,
 											showDay
 										),
 									endRange:
-										this.selectedDates.length == 2 &&
+										this.selectedDates[1] &&
 										this.selectedDates[1].isSame(
 											selectedYear,
 											selectedMonth,
@@ -902,6 +905,7 @@
 		mounted() {
 			Core.setColor(this.color, this.$refs.root);
 			Core.setStyles(this.styles, this.$refs.root);
+
 			const calendar = this.lang.calendar;
 			const prefix =
 				this.type == "time" ? this.core.toString("jYYYY/jMM/jDD") + " " : "";
@@ -915,15 +919,11 @@
 				.endOf(Core.getLastUnit(this.defaultDate.to, this.type))
 				.calendar(calendar);
 			this.core.calendar(calendar);
+
 			let val = this.$attrs.value;
 			if (val) {
 				if (this.mode == "single") val = [val];
 				val.some((date, index) => {
-					console.log(
-						(this.type == "time"
-							? this.core.toString("YYYY-MM-DD") + " "
-							: "") + date
-					);
 					date = this.core
 						.clone()
 						.fromGregorian(
@@ -932,10 +932,11 @@
 								: "") + date
 						);
 					if (this.core.isPersianDate(date)) {
-						this.selectedDates.push(date);
+						this.selectedDates.push(date.clone());
+						this.selectedTimes.push(date.clone());
 						if (index == 0) this.onDisplay = date.clone();
 					} else {
-						this.selectedDates = [];
+						this.selectedDates = this.selectedTimes = [];
 						return true;
 					}
 				});
@@ -946,15 +947,14 @@
 				if (this.checkDate(today, "date")) {
 					this.onDisplay = today;
 				} else {
-					this.onDisplay = this.nearestDate(today);
+					this.onDisplay = this.nearestDate(today).startOf("date");
 				}
 			}
 			window.addEventListener("resize", () => {
 				this.documentWidth = window.innerWidth;
 			});
 			if (this.type != "date") {
-				this.onDisplay.hour(this.core.hour());
-				this.onDisplay.minute(this.core.minute());
+				this.onDisplay.time(this.core);
 			}
 			this.showDatePicker = this.show;
 		},
@@ -1000,38 +1000,62 @@
 				if (!this.checkDate(date, part)) return -1;
 				if (this.isInDisable(date)) return -2;
 				if (this.mode == "range" && this.selectedDates.length == 1) {
-					let inRangeDate = date
+					let inRangeDate = date.clone().startOf("date");
+					const firstSelectedDate = this.selectedDates[0]
 						.clone()
-						.startOf("date")
-						.subDay();
-					while (
-						!inRangeDate.isSameOrBefore(this.selectedDates[0].toString())
-					) {
+						.startOf("date");
+					const number = date.isAfter(firstSelectedDate) ? -1 : 1;
+					while (!inRangeDate.isSame(firstSelectedDate)) {
 						if (this.isInDisable(inRangeDate)) return -3;
-						inRangeDate.subDay();
+						inRangeDate.addDay(number);
 					}
 				}
-
-				if (this.type == "date") date.startOf("date");
+				if (this.type == "date") {
+					date.startOf("date");
+				}
 				if (this.mode == "single") {
-					this.$set(this.selectedDates, 0, date);
+					this.selectedDates = [date];
 				} else if (this.mode == "range") {
 					this.$refs.pdpMain.addEventListener(
 						"mouseover",
 						this.selectInRangeDate
 					);
-					if (this.selectedDates.length == 2) {
+
+					if (this.selectedDates.length === 0) {
+						this.$set(this.selectedDates, 0, date);
+						this.dateIndex = 1;
+					} else if (this.dateIndex === 1) {
+						this.dateIndex = 0;
+						if (!date.isBefore(this.selectedDates[0])) {
+							this.$set(this.selectedDates, 1, date);
+						} else {
+							if (this.selectedDates.length === 1)
+								this.selectedDates.unshift(date);
+							else {
+								this.selectedDates = [date];
+								this.dateIndex = 1;
+							}
+						}
+					} else {
 						this.selectedDates = [date];
-					} else if (
-						this.selectedDates.length &&
-						!date.isBefore(this.selectedDates[0])
-					) {
-						this.$set(this.selectedDates, 1, date);
+						this.dateIndex = 1;
+					}
+					if (this.selectedDates.length == 2) {
 						this.$refs.pdpMain.removeEventListener(
 							"mouseover",
 							this.selectInRangeDate
 						);
-					} else this.$set(this.selectedDates, 0, date);
+					}
+				}
+
+				if (this.type == "datetime") {
+					this.selectedDates.map((d, i) => {
+						if (this.selectedTimes[i]) {
+							d.time(this.selectedTimes[i]);
+						}
+						this.selectedTimes[i] = d;
+						return d;
+					});
 				}
 
 				this.$emit("select", date);
@@ -1052,9 +1076,12 @@
 				this.showMonthSelect = this.showYearSelect = false;
 				this.onDisplay = this.core.now().clone();
 				if (this.type.includes("time") && this.selectedDates.length) {
-					let time = this.selectedDates[this.selectedDates.length - 1];
-					time.hour(this.onDisplay.hour());
-					time.minute(this.onDisplay.minute());
+					const lastIndex = this.selectedDates.length - 1;
+					let time = this.selectedDates[lastIndex];
+					time.time(this.onDisplay);
+					if (this.selectedTimes[lastIndex]) {
+						this.selectedTimes[lastIndex] = time.clone();
+					}
 					if (
 						this.autoSubmit &&
 						this.checkDate(time, "time") &&
@@ -1136,6 +1163,7 @@
 			},
 			showPicker(el, inputIndex) {
 				if (this.clickOn == "all" || this.clickOn == el) {
+					if (this.dualInput) this.dateIndex = inputIndex;
 					this.$refs.pdpInput[inputIndex].focus();
 					this.showDatePicker = true;
 					if (!this.modal) {
@@ -1208,8 +1236,8 @@
 						this.selectInRangeDate({ target: focusedDay });
 					}
 				} else if (e.keyCode == 13) {
-					e.preventDefault();
 					// 13 is key code of Enter key
+					e.preventDefault();
 					const focusedDay = document.querySelector(".pdp .pdp-day.hover");
 					if (focusedDay) {
 						this.selectDate(
@@ -1228,7 +1256,7 @@
 								if (this.checkDate(this.core.clone(), "time"))
 									onDisplay = this.core.clone();
 								else onDisplay = this.fromDate.clone();
-								onDisplay.hour(time[0] || 0).minute(time[1] || 0);
+								onDisplay.time(time);
 							} else {
 								onDisplay = this.core.clone().parse(value);
 							}
@@ -1244,36 +1272,59 @@
 			},
 			selectInRangeDate({ target }) {
 				if (!target.classList.contains("pdp-day")) return;
-				const column = this.getColumn(target);
-				let date = target.innerText;
 				document.querySelectorAll(`.pdp .pdp-day`).forEach((el) => {
 					el.classList.remove("in-range");
 				});
-				let onDisplay;
-				columnLoop: for (let i = column; i >= 0; i--) {
-					onDisplay = this.onDisplay
-						.clone()
-						.addMonth(i)
-						.date(date);
-					if (onDisplay.isAfter(this.selectedDates[0].toString())) {
-						for (let j = +date; j > 0; j--) {
-							if (this.checkDate(onDisplay.date(j), "date")) {
-								target = document.querySelector(
-									`.pdp .pdp-main .pdp-column[data-column='${i}'] .pdp-day[value='${j}']:not(.start-range)`
-								);
-								if (target) target.classList.add("in-range");
-								else break columnLoop;
-								if (this.isInDisable(onDisplay)) {
-									document.querySelectorAll(`.pdp .pdp-day`).forEach((el) => {
-										el.classList.remove("in-range");
-									});
-								}
-							}
-						}
-						date = this.onDisplay
-							.clone()
-							.addMonth(i - 1)
-							.getDaysInMonth();
+
+				let column = this.getColumn(target);
+				let hoveredDate = this.onDisplay
+					.clone()
+					.startOf("date")
+					.addMonth(column)
+					.date(target.innerText);
+				const selectedDate = this.selectedDates[0].clone().startOf("date");
+				const number = hoveredDate.isAfter(selectedDate) ? 1 : -1;
+				const selectedDateDOM = document.querySelector(
+					".pdp-day.start-range,.pdp-day.end-range"
+				);
+				if (selectedDateDOM) {
+					column = +this.getColumn(selectedDateDOM);
+					selectedDateDOM.classList.replace(
+						...(hoveredDate.isBefore(selectedDate)
+							? ["start-range", "end-range"]
+							: ["end-range", "start-range"])
+					);
+				} else {
+					selectedDate.parse(this.onDisplay);
+					if (number === 1) {
+						selectedDate.startOf("month").subDay();
+						column = -1;
+					} else {
+						selectedDate
+							.addMonth(this.columnCount - 1)
+							.endOf("month")
+							.addDay()
+							.startOf("date");
+						column = this.columnCount;
+					}
+				}
+				while (!hoveredDate.isSame(selectedDate)) {
+					const oldMonth = selectedDate.month();
+					selectedDate.addDay(number);
+					if (oldMonth != selectedDate.month()) {
+						column += number;
+					}
+					if (
+						this.checkDate(selectedDate, "date") &&
+						!this.isInDisable(selectedDate)
+					) {
+						document
+							.querySelector(
+								`.pdp-column[data-column='${column}'] .pdp-day[value='${selectedDate.date()}']`
+							)
+							.classList.add("in-range");
+					} else {
+						break;
 					}
 				}
 			},
@@ -1344,21 +1395,27 @@
 				this.submitDate(false);
 			},
 			clear(inputIndex) {
-				this.displayValue[inputIndex] = "";
-				this.$emit("setDate", "");
+				this.$set(this.displayValue, inputIndex, "");
+				if (this.dualInput) {
+					const values = this.$attrs.value;
+					if (values && Array.isArray(values))
+						return this.setModel(
+							values.map((val, i) => (i == inputIndex ? null : val))
+						);
+				}
+				this.setModel("");
 			},
-			startChangeTime(dateIndex, unit, operator) {
-				let date = this.selectedDates[dateIndex];
-				if (this.type != "time" && !date) return;
-				else if (!date) {
-					date = this.core.clone();
-					if (dateIndex == 1 && !this.selectedDates.length)
-						this.selectedDates.push(date.clone());
-					this.selectedDates.push(date);
+			startChangeTime(timeIndex, unit, operator) {
+				let time = this.selectedTimes[timeIndex];
+				if (!time) {
+					time = this.core.clone();
+					if (timeIndex == 1 && !this.selectedTimes.length)
+						this.selectedTimes.push(time.clone());
+					this.selectedTimes.push(time);
 				}
 				this.stopChangeTime();
 				const maxAmount = unit == "hour" ? 23 : 59;
-				let currentAmount = date[unit]();
+				let currentAmount = time[unit]();
 				const changeTime = () => {
 					if (operator == "add") {
 						currentAmount++;
@@ -1367,25 +1424,30 @@
 						currentAmount--;
 						if (currentAmount < 0) currentAmount = maxAmount;
 					}
-					if (!this.checkDate(date[unit](currentAmount), "time")) {
-						date.parse(
-							date.isSameOrAfter(this.toDate.clone())
-								? this.toDate.clone()
-								: this.fromDate.clone()
+					if (!this.checkDate(time[unit](currentAmount), "time")) {
+						time.parse(
+							time.isSameOrAfter(this.toTime.clone())
+								? this.toTime.clone()
+								: this.fromTime.clone()
 						);
 					} else if (
-						this.selectedDates.length == 2 &&
-						this.selectedDates[0].isAfter(this.selectedDates[1])
+						this.selectedTimes.length == 2 &&
+						this.selectedTimes[0].isAfter(this.selectedTimes[1])
 					) {
-						date.parse(
-							dateIndex == 0 ? this.selectedDates[1] : this.selectedDates[0]
+						time.parse(
+							timeIndex == 0 ? this.selectedTimes[1] : this.selectedTimes[0]
 						);
 					}
-					if (!this.isInDisable(date)) {
-						this.$emit("select", date);
+					if (!this.isInDisable(time)) {
+						if (this.type == "time") {
+							this.selectedDates[timeIndex] = time;
+						} else if (this.selectedDates[timeIndex]) {
+							this.selectedDates[timeIndex].time(time);
+						}
+						this.$emit("select", time);
 						if (
 							this.autoSubmit &&
-							!this.selectedDates.some((sDate) => this.isInDisable(sDate))
+							!this.selectedTimes.some((sTime) => this.isInDisable(sTime))
 						)
 							this.submitDate(false);
 					}
@@ -1420,6 +1482,15 @@
 						};
 						return this.format || format[this.type];
 				}
+			},
+			listeners(index) {
+				let listeners = {};
+				for (const listener in this.$listeners) {
+					listeners[listener] = (event) => {
+						this.$listeners[listener](event, index);
+					};
+				}
+				return listeners;
 			},
 		},
 	};

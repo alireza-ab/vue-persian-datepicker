@@ -2,12 +2,11 @@
 
 describe('from and to props', () => {
     before(() => {
-        cy.changeProps()
+        cy.changeProps({ from: '10:10', to: '20:20', type: 'time' }, null, true);
         cy.changeSlots()
     })
 
     it('time - with click', () => {
-        cy.changeProps({ from: '10:10', to: '20:20', type: 'time' });
         cy.visit('/')
         cy.get('.pdp-input').focus()
         cy.get('.pdp-moment button').eq(1).as('momentButtonOne');
@@ -402,6 +401,14 @@ describe('clickOn prop', () => {
     })
 })
 
+describe('icon', () => {
+    it('iconInside prop', () => {
+        cy.changeProps('icon-inside', true)
+        cy.visit('/')
+        cy.get('.pdp-icon').should('have.attr', 'class').and('match', /pdp-inside/)
+    })
+})
+
 describe('div class attribute', () => {
     it('remove class', () => {
         cy.changeProps('div-class', '')
@@ -525,18 +532,18 @@ describe('alternative field', () => {
 
 describe('disable prop', () => {
     it('String in time type', () => {
-        cy.changeProps({ from: undefined, to: undefined, type: 'time', disable: '10:10' })
+        cy.changeProps({ from: undefined, to: undefined, type: 'time', disable: '15:52' })
         cy.visit('/')
         cy.get('.pdp-input').focus()
-        cy.selectTime(10, 10)
+        cy.selectTime(15, 52)
         cy.get('.pdp-time .pdp-moment > div').first().should('have.attr', 'class').and('match', /disabled/)
     })
 
     it('RegExp in time type', () => {
-        cy.changeProps('disableR', '10:*')
+        cy.changeProps('disableR', '15:*')
         cy.visit('/')
         cy.get('.pdp-input').focus()
-        cy.selectTime(10, 0)
+        cy.selectTime(15, 0)
         cy.get('.pdp-time .pdp-moment > div').first().should('have.attr', 'class').and('match', /disabled/)
         cy.get('.pdp-time .pdp-moment button').eq(3).as('momentButtonThree');
         cy.get('.pdp-time .pdp-moment > div').first().as('momentFirstDiv');
@@ -547,10 +554,10 @@ describe('disable prop', () => {
     })
 
     it('Array in time type', () => {
-        cy.changeProps({ disableR: undefined, disable: ['10:10', '10:11', '10:12'] })
+        cy.changeProps({ disableR: undefined, disable: ['15:52', '15:53', '15:54'] })
         cy.visit('/')
         cy.get('.pdp-input').focus()
-        cy.selectTime(10, 10)
+        cy.selectTime(15, 52)
         cy.get('.pdp-time .pdp-moment > div').first().should('have.attr', 'class').and('match', /disabled/)
         cy.get('.pdp-time .pdp-moment button').eq(2).click()
         cy.get('.pdp-time .pdp-moment > div').first().should('have.attr', 'class').and('match', /disabled/)
@@ -559,10 +566,10 @@ describe('disable prop', () => {
     })
 
     it('Function in time type', () => {
-        cy.changeProps('disableF', '(date)=>date.hour()==10')
+        cy.changeProps('disableF', '(date)=>date.hour()==15')
         cy.visit('/')
         cy.get('.pdp-input').focus()
-        cy.selectTime(10, 0)
+        cy.selectTime(15, 0)
         cy.get('.pdp-time .pdp-moment > div').first().should('have.attr', 'class').and('match', /disabled/)
         cy.get('.pdp-time .pdp-moment button').eq(3).as('momentButtonThree');
         cy.get('.pdp-time .pdp-moment > div').first().as('momentFirstDiv');
@@ -573,21 +580,21 @@ describe('disable prop', () => {
     })
 
     it('String in datetime type', () => {
-        cy.changeProps({ from: '1399', to: '1399/6/31', type: 'datetime', disableF: undefined, disable: '1399/6/15 10:10' })
+        cy.changeProps({ from: '1399', to: '1399/6/31', type: 'datetime', disableF: undefined, disable: '1399/6/15 15:52' })
         cy.visit('/')
         cy.get('.pdp-input').focus()
         cy.get('.pdp-day[value="15"]').first().click()
-        cy.selectTime(10, 10)
+        cy.selectTime(15, 52)
         cy.get('.pdp-time .pdp-moment > div').first().should('have.attr', 'class').and('match', /disabled/)
     })
 
     it('RegExp in datetime type', () => {
-        cy.changeProps('disableR', '1399/5/2 10:*')
+        cy.changeProps('disableR', '1399/5/2 15:*')
         cy.visit('/')
         cy.get('.pdp-input').focus()
         cy.get('.pdp-arrow').first().click();
         cy.get('.pdp-day[value="2"]').first().click()
-        cy.selectTime(10, 0)
+        cy.selectTime(15, 0)
         cy.get('.pdp-time .pdp-moment > div').first().should('have.attr', 'class').and('match', /disabled/)
         cy.get('.pdp-time .pdp-moment > div').first().as('momentFirstDiv');
         for (let i = 1; i <= 59; i++) {
@@ -596,12 +603,12 @@ describe('disable prop', () => {
     })
 
     it('Array in datetime type', () => {
-        cy.changeProps({ disableR: undefined, disable: ['1399/6/10 10:10', '1399/6/10 10:11', '1399/6/10 10:12', '1399/6/11'] })
+        cy.changeProps({ disableR: undefined, disable: ['1399/6/10 15:52', '1399/6/10 15:53', '1399/6/10 15:54', '1399/6/11'] })
         cy.visit('/')
         cy.get('.pdp-input').focus()
         cy.get('[data-column="0"] .pdp-day[value="11"]').should('have.attr', 'class').and('match', /disabled/)
         cy.get('[data-column="0"] .pdp-day[value="10"]').click()
-        cy.selectTime(10, 10)
+        cy.selectTime(15, 52)
         cy.get('.pdp-time .pdp-moment > div').first().should('have.attr', 'class').and('match', /disabled/)
         cy.get('.pdp-time .pdp-moment button').eq(2).click()
         cy.get('.pdp-time .pdp-moment > div').first().should('have.attr', 'class').and('match', /disabled/)
@@ -610,11 +617,11 @@ describe('disable prop', () => {
     })
 
     it('Function in datetime type', () => {
-        cy.changeProps('disableF', '(date)=>date.hour()==10')
+        cy.changeProps('disableF', '(date)=>date.hour()==15')
         cy.visit('/')
         cy.get('.pdp-input').focus()
         cy.get('[data-column="0"] .pdp-day[value="10"]').click()
-        cy.selectTime(10, 0)
+        cy.selectTime(15, 0)
         cy.get('.pdp-time .pdp-moment > div').first().should('have.attr', 'class').and('match', /disabled/)
         cy.get('.pdp-time .pdp-moment button').eq(3).as('momentButtonThree');
         cy.get('.pdp-time .pdp-moment > div').first().as('momentFirstDiv');
@@ -675,17 +682,17 @@ describe('mode prop', () => {
         cy.changeProps({ from: undefined, to: undefined, 'input-format': undefined, type: 'time' })
         cy.visit('/')
         cy.get('.pdp-input').focus()
-        cy.selectTime(10, 10)
-        cy.get('.pdp-input').should('have.value', '10:10')
+        cy.selectTime(15, 52)
+        cy.get('.pdp-input').should('have.value', '15:52')
     })
 
     it('range in time type', () => {
         cy.changeProps('mode', 'range')
         cy.visit('/')
         cy.get('.pdp-input').focus()
-        cy.selectTime(10, 10)
-        cy.selectTime(20, 20, 'last')
-        cy.get('.pdp-input').should('have.value', '10:10 - 20:20')
+        cy.selectTime(6, 52)
+        cy.selectTime(20, 48, 'last')
+        cy.get('.pdp-input').should('have.value', '06:52 - 20:48')
     })
 
     it('range in date type', () => {
@@ -732,19 +739,19 @@ describe('autoSubmit prop', () => {
         cy.changeProps({ from: undefined, to: undefined, type: 'time', format: undefined })
         cy.visit('/')
         cy.get('.pdp-input').focus()
-        cy.selectTime(10, 10)
-        cy.get('.status').should('contain.text', '10:10')
+        cy.selectTime(15, 52)
+        cy.get('.status').should('contain.text', '15:52')
     })
 
     it('false value in time type', () => {
         cy.changeProps('auto-submit', false)
         cy.visit('/')
         cy.get('.pdp-input').focus()
-        cy.selectTime(10, 10)
-        cy.selectTime(20, 20, 'last')
+        cy.selectTime(6, 52)
+        cy.selectTime(20, 48, 'last')
         cy.get('.pdp-submit').click()
         cy.get('.pdp-picker').should('not.exist')
-        cy.get('.status').should('contain.text', '10:10,20:20')
+        cy.get('.status').should('contain.text', '06:52,20:48')
     })
 
     it('false value in date type', () => {
@@ -790,52 +797,28 @@ describe('modal prop', () => {
 })
 
 describe('attributes', () => {
-    it('required for input', () => {
-        cy.changeProps('required', 'required')
+    before(() => {
+        cy.changeProps({
+            required: true,
+            placeholder: 'تاریخ تولد',
+            readonly: true,
+            disabled: true,
+            id: 'input',
+            'label-id': 'label',
+            'div-id': 'div',
+            'picker-id': 'picker',
+        })
+    })
+
+    it('check attributes', () => {
         cy.visit('/')
         cy.get('.pdp-input').should('have.attr', 'required')
-    })
-
-    it('placeholder for input', () => {
-        cy.changeProps('placeholder', 'تاریخ تولد')
-        cy.visit('/')
-        cy.get('.pdp-input').should('have.attr', 'placeholder')
-    })
-
-    it('readonly for input', () => {
-        cy.changeProps('readonly', 'readonly')
-        cy.visit('/')
         cy.get('.pdp-input').should('have.attr', 'readonly')
-    })
-
-    it('disabled for input', () => {
-        cy.changeProps({ readonly: undefined, disabled: 'disabled' })
-        cy.visit('/')
         cy.get('.pdp-input').should('have.attr', 'disabled')
-    })
-
-    it('id for input', () => {
-        cy.changeProps('id', 'input')
-        cy.visit('/')
-        cy.get('.pdp-input').should('have.attr', 'id')
-    })
-
-    it('id for label', () => {
-        cy.changeProps('label-id', 'label')
-        cy.visit('/')
-        cy.get('.pdp-label').should('have.attr', 'id')
-    })
-
-    it('id for div', () => {
-        cy.changeProps('div-id', 'div')
-        cy.visit('/')
-        cy.get('.pdp-group').should('have.attr', 'id')
-    })
-
-    it('id for picker', () => {
-        cy.changeProps('picker-id', 'picker')
-        cy.visit('/')
-        cy.get('.pdp-icon').click()
-        cy.get('.pdp-picker').should('have.attr', 'id')
+        cy.get('.pdp-input').should('have.attr', 'placeholder', 'تاریخ تولد')
+        cy.get('.pdp-input').should('have.attr', 'id', 'input')
+        cy.get('.pdp-label').should('have.attr', 'id', 'label')
+        cy.get('.pdp-group').should('have.attr', 'id', 'div')
+        cy.get('.pdp-picker').should('have.attr', 'id', 'picker')
     })
 })
