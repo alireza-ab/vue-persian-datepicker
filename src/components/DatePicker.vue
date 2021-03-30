@@ -378,11 +378,8 @@
 
 <script>
 	//TODO: add time config
-	//TODO: add two input for range
 	//TODO: add tip for days
 	//TODO: add panel and show yesterday, lastweek, ...
-	//TODO: in select date, select date before and after
-	//TODO: test with data in model
 	//TODO: test the project with attention and test in nuxt
 	//TODO: refactor and write comment --> pay a high attention
 
@@ -1409,6 +1406,12 @@
 				let time = this.selectedTimes[timeIndex];
 				if (!time) {
 					time = this.core.clone();
+					if (!this.checkDate(time, "time")) {
+						time = this.toDate
+							.clone()
+							.subDay()
+							.time(this.core);
+					}
 					if (timeIndex == 1 && !this.selectedTimes.length)
 						this.selectedTimes.push(time.clone());
 					this.selectedTimes.push(time);
@@ -1426,9 +1429,9 @@
 					}
 					if (!this.checkDate(time[unit](currentAmount), "time")) {
 						time.parse(
-							time.isSameOrAfter(this.toTime.clone())
-								? this.toTime.clone()
-								: this.fromTime.clone()
+							time.isSameOrAfter(this.toDate.clone())
+								? this.toDate.clone()
+								: this.fromDate.clone()
 						);
 					} else if (
 						this.selectedTimes.length == 2 &&

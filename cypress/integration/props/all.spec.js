@@ -812,6 +812,7 @@ describe('attributes', () => {
 
     it('check attributes', () => {
         cy.visit('/')
+        cy.get('.pdp-icon').click()
         cy.get('.pdp-input').should('have.attr', 'required')
         cy.get('.pdp-input').should('have.attr', 'readonly')
         cy.get('.pdp-input').should('have.attr', 'disabled')

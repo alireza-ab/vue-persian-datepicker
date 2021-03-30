@@ -1,11 +1,4 @@
 {
-  "type": "date",
-  "dual-input": true,
-  "from": "1399",
-  "to": "1399/06/31",
-  "locale": "fa",
   "clearable": true,
-  "placeholder": "first",
-  "second-placeholder": "second",
-  "mode": "single"
+  "type": "datetime"
 }

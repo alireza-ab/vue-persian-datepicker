@@ -71,7 +71,7 @@ Cypress.Commands.add('selectTime', (hour = 0, minute = 0, child = 'first') => {
         nowHour += 24
     let button = cy.get(`.pdp-time .pdp-moment > div:${child}-child .hour button:first-child`);
     for (let i = 0; i < nowHour; i++) {
-        button.type('{enter}')
+        button.click()
     }
     let nowMinute = new Date().getMinutes();
     nowMinute = minute - nowMinute;
@@ -79,6 +79,6 @@ Cypress.Commands.add('selectTime', (hour = 0, minute = 0, child = 'first') => {
         nowMinute += 60
     button = cy.get(`.pdp-time .pdp-moment > div:${child}-child .minute button:first-child`);
     for (let i = 0; i < nowMinute; i++) {
-        button.type('{enter}')
+        button.click()
     }
 })

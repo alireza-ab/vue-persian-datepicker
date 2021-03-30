@@ -53,17 +53,17 @@
 		"@alireza-ab/persian-date": "^2.4.0"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.13.13",
+		"@babel/core": "^7.13.14",
 		"@vue/cli-plugin-babel": "^4.5.12",
 		"babel-loader": "^8.2.2",
 		"core-js": "^3.9.1",
 		"cross-env": "^7.0.3",
+		"css-loader": "^5.2.0",
 		"cypress": "^6.8.0",
 		"cypress-plugin-tab": "^1.0.5",
+		"postcss-loader": "^5.2.0",
 		"sass": "^1.32.8",
 		"sass-loader": "^10.1.1",
-		"postcss-loader": "^5.2.0",
-		"css-loader": "^5.2.0",
 		"style-loader": "^2.0.0",
 		"terser-webpack-plugin": "^5.1.1",
 		"vue": "^2.6.12",
@@ -71,7 +71,7 @@
 		"vue-template-compiler": "^2.6.12",
 		"webpack": "^4.44.2",
 		"webpack-cli": "^3.3.12",
-		"webpack-dev-server": "^3.11.0"
+		"webpack-dev-server": "^3.11.2"
 	},
 	"browserslist": [
 		"> 1%",
