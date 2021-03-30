@@ -1,4 +1,10 @@
 {
-  "clearable": true,
+  "locale": "fa,en",
+  "mode": "range",
+  "disable": [
+    "1399/10/5 10:10",
+    "1399/10/5 10:11",
+    "1399/10/5 10:12"
+  ],
   "type": "datetime"
 }
