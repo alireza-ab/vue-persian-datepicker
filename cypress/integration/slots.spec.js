@@ -1,5 +1,9 @@
 /// <reference types="Cypress" />
 
+beforeEach(() => {
+    cy.clock(new Date(2021, 2, 30, 12))
+})
+
 describe('slots', () => {
     before(() => {
         cy.changeProps('clearable', true, true)

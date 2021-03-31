@@ -1,5 +1,9 @@
 /// <reference types="Cypress" />
 
+beforeEach(() => {
+    cy.clock(new Date(2021, 2, 30, 12))
+})
+
 const types = ['date', 'time', 'datetime'];
 
 describe('focus', () => {
@@ -18,17 +22,6 @@ describe('focus', () => {
     }
 })
 
-describe('open', () => {
-    for (let i = 0; i < types.length; i++) {
-        it(`${types[i]} type`, () => {
-            cy.changeProps('type', types[i]);
-            cy.visit('/')
-            cy.get('.pdp-input').focus()
-            cy.get('.status').should('contain.text', 'open')
-        })
-    }
-})
-
 describe('blur', () => {
     for (let i = 0; i < types.length; i++) {
         it(`${types[i]} type`, () => {
@@ -41,6 +34,28 @@ describe('blur', () => {
     }
 })
 
+describe('input', () => {
+    for (let i = 0; i < types.length; i++) {
+        it(`${types[i]} type`, () => {
+            cy.changeProps('type', types[i]);
+            cy.visit('/')
+            cy.get('.pdp-input').type('1')
+            cy.get('.status').should('contain.text', 'input')
+        })
+    }
+})
+
+describe('open', () => {
+    for (let i = 0; i < types.length; i++) {
+        it(`${types[i]} type`, () => {
+            cy.changeProps('type', types[i]);
+            cy.visit('/')
+            cy.get('.pdp-input').focus()
+            cy.get('.status').should('contain.text', 'open')
+        })
+    }
+})
+
 describe('close', () => {
     for (let i = 0; i < types.length; i++) {
         it(`${types[i]} type`, () => {
@@ -49,17 +64,6 @@ describe('close', () => {
             cy.get('.pdp-input').focus()
             cy.get('.pdp-overlay').click({ force: true })
             cy.get('.status').should('contain.text', 'close')
-        })
-    }
-})
-
-describe('input', () => {
-    for (let i = 0; i < types.length; i++) {
-        it(`${types[i]} type`, () => {
-            cy.changeProps('type', types[i]);
-            cy.visit('/')
-            cy.get('.pdp-input').type('1')
-            cy.get('.status').should('contain.text', 'input')
         })
     }
 })

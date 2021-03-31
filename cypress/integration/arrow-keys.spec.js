@@ -1,5 +1,9 @@
 /// <reference types="Cypress" />
 
+beforeEach(() => {
+    cy.clock(new Date(2021, 2, 30, 12))
+})
+
 describe('arrow keys', () => {
     before(() => {
         cy.changeProps()
@@ -8,7 +12,7 @@ describe('arrow keys', () => {
 
     it('without select date', () => {
         cy.visit('/')
-        cy.tab().type('{downarrow}{downarrow}{rightarrow}')
+        cy.get('.pdp-input').focus().type('{downarrow}{downarrow}{rightarrow}')
         cy.get('[data-column=1] .hover').should('contain.text', '31')
         cy.get('.pdp-input').type('{uparrow}')
         cy.get('[data-column=1] .hover').should('contain.text', '24')
@@ -42,9 +46,9 @@ describe('arrow keys', () => {
 
     it('with select date', () => {
         cy.visit('/')
-        cy.tab().get('.pdp-year').first().click()
+        cy.get('.pdp-input').focus().get('.pdp-year').first().click()
         cy.get('li').contains('1399').click()
-        cy.tab().get('.pdp-month').first().click()
+        cy.get('.pdp-input').focus().get('.pdp-month').first().click()
         cy.get('li').contains('فروردین').click()
         cy.get('.pdp-input').type('{downarrow}', { force: true })
         cy.get('.hover').should('contain.text', '1')
@@ -80,7 +84,7 @@ describe('arrow keys in "en" locale', () => {
 
     it('without select date', () => {
         cy.visit('/')
-        cy.tab()
+        cy.get('.pdp-input').focus()
             .type('{downarrow}{downarrow}{leftarrow}')
         cy.get('[data-column=1] .hover').should('contain.text', '31')
         cy.get('.pdp-input').type('{uparrow}')
@@ -115,9 +119,9 @@ describe('arrow keys in "en" locale', () => {
 
     it('with select date', () => {
         cy.visit('/')
-        cy.tab().get('.pdp-year').first().click()
+        cy.get('.pdp-input').focus().get('.pdp-year').first().click()
         cy.get('li').contains('2020').click()
-        cy.tab().get('.pdp-month').first().click()
+        cy.get('.pdp-input').focus().get('.pdp-month').first().click()
         cy.get('li').contains('March').click()
         cy.get('.pdp-input').type('{downarrow}', { force: true })
         cy.get('.hover').should('contain.text', '20')

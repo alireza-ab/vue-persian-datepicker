@@ -1,3 +1,9 @@
+/// <reference types="Cypress" />
+
+beforeEach(() => {
+  cy.clock(new Date(2021, 2, 30, 12))
+})
+
 describe('time type', () => {
   before(() => {
     cy.changeProps({ type: 'time', 'dual-input': true }, null, true)
@@ -5,10 +11,12 @@ describe('time type', () => {
   })
 
   it('select second input', () => {
+    cy.clock(new Date(2021, 2, 30, 12))
     cy.visit('/')
     cy.get('.pdp').should('have.attr', 'class').and('match', /pdp-dual/)
     cy.get('.pdp-input').last().focus()
       .should('have.attr', 'class').and('match', /pdp-focus/)
+    cy.get('.status').should('contain.text', 'focus:2')
     cy.selectTime(20, 48, 'last')
     cy.selectTime(15, 52)
     cy.get('.pdp-input').last().should('have.value', '20:48')
@@ -26,11 +34,13 @@ describe('datetime type', () => {
     cy.get('.pdp').should('have.attr', 'class').and('match', /pdp-dual/)
     cy.get('.pdp-input').last().focus()
       .should('have.attr', 'class').and('match', /pdp-focus/)
+    cy.get('.status').should('contain.text', 'focus:2')
     cy.get('.pdp-day').contains('20').click()
     cy.selectTime(20, 48, 'last')
     cy.get('.pdp-day').contains('10').click()
     cy.get('.pdp-input').first().focus()
       .should('have.attr', 'class').and('match', /pdp-focus/)
+    cy.get('.status').should('contain.text', 'focus:1')
     cy.selectTime(15, 52)
     cy.get('.pdp-input').last().should('have.value', '1399/06/20 20:48')
     cy.get('.pdp-input').first().should('have.value', '1399/06/10 15:52')
@@ -78,6 +88,7 @@ describe('date type', () => {
     cy.get('.pdp').should('have.attr', 'class').and('match', /pdp-dual/)
     cy.get('.pdp-input').last().focus()
       .should('have.attr', 'class').and('match', /pdp-focus/)
+    cy.get('.status').should('contain.text', 'focus:2')
     cy.get('.pdp-day').contains('20').click()
     cy.get('.pdp-day').contains('10').click()
     cy.get('.pdp-input').last().should('have.value', '1399/06/20')

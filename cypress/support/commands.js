@@ -65,7 +65,7 @@ Cypress.Commands.add('selectRangeDate', () => {
 })
 
 Cypress.Commands.add('selectTime', (hour = 0, minute = 0, child = 'first') => {
-    let nowHour = new Date().getHours();
+    let nowHour = new Date(2021, 2, 30, 12).getHours();
     nowHour = hour - nowHour;
     if (nowHour < 0)
         nowHour += 24
@@ -73,7 +73,7 @@ Cypress.Commands.add('selectTime', (hour = 0, minute = 0, child = 'first') => {
     for (let i = 0; i < nowHour; i++) {
         button.click()
     }
-    let nowMinute = new Date().getMinutes();
+    let nowMinute = new Date(2021, 2, 30, 12).getMinutes();
     nowMinute = minute - nowMinute;
     if (nowMinute < 0)
         nowMinute += 60

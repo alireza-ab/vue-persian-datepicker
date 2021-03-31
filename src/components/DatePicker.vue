@@ -51,7 +51,7 @@
 					ref="pdpInput"
 					v-model="displayValue[index]"
 					v-bind="attrs[index == 0 ? 'input' : 'second']"
-					v-on="listeners(index + 1)"
+					v-on="listeners[index]"
 					@focus="showPicker('input', index)"
 					@keydown="selectWithArrow"
 				/>
@@ -75,14 +75,14 @@
 				:key="i"
 				type="hidden"
 				:name="attrs.alt.name"
-				:value="date.toString(getFormat('alt'))"
+				:value="date.toString(formats.alt)"
 			/>
 		</div>
 		<div v-else-if="attrs.alt.name">
 			<input
 				type="hidden"
 				:name="attrs.alt.name"
-				:value="selectedDates.map((date) => date.toString(getFormat('alt')))"
+				:value="selectedDates.map((date) => date.toString(formats.alt))"
 			/>
 		</div>
 		<div v-if="showDatePicker">
@@ -341,11 +341,11 @@
 					<div>
 						<slot name="footer"></slot>
 						<small v-if="selectedDates[0]">
-							{{ selectedDates[0].toString(getFormat("display")) }}
+							{{ selectedDates[0].toString(formats.display) }}
 						</small>
 						<small v-if="selectedDates.length == 2">
 							&nbsp;-
-							{{ selectedDates[1].toString(getFormat("display")) }}
+							{{ selectedDates[1].toString(formats.display) }}
 						</small>
 					</div>
 					<div>
@@ -753,6 +753,28 @@
 				}
 				return attrs;
 			},
+			listeners() {
+				let listeners;
+				if (this.dualInput) {
+					listeners = [{}, {}];
+					for (const listener in this.$listeners) {
+						listeners[0][listener] = (event) => {
+							this.$listeners[listener](event, 1);
+						};
+						listeners[1][listener] = (event) => {
+							this.$listeners[listener](event, 2);
+						};
+					}
+				} else {
+					listeners = [{}];
+					for (const listener in this.$listeners) {
+						listeners[0][listener] = (event) => {
+							this.$listeners[listener](event, 1);
+						};
+					}
+				}
+				return listeners;
+			},
 			years() {
 				let years = [];
 				for (
@@ -893,6 +915,27 @@
 				return {
 					from: this.from ? this.from : this.type == "time" ? "" : "1300",
 					to: this.to ? this.to : this.type == "time" ? "23:59" : "1499",
+				};
+			},
+			formats() {
+				const displayFormat = {
+					date: "?D ?MMMM",
+					datetime: "?D ?MMMM HH:mm",
+					time: "HH:mm",
+				};
+				const format = {
+					date: "YYYY-MM-DD",
+					datetime: "YYYY-MM-DD HH:mm",
+					time: "HH:mm",
+				};
+				return {
+					model: this.format || format[this.type],
+					input: this.inputFormat || this.lang.inputFormat || this.type,
+					display:
+						this.displayFormat ||
+						this.lang.displayFormat ||
+						displayFormat[this.type],
+					alt: this.attrs.alt.format || this.format || format[this.type],
 				};
 			},
 		},
@@ -1328,10 +1371,10 @@
 			submitDate(close = true) {
 				let date, displayDate;
 				displayDate = this.selectedDates.map((el) => {
-					return el.toString(this.getFormat("input"));
+					return el.toString(this.formats.input);
 				});
 				date = this.selectedDates.map((el) => {
-					return el.toString(this.getFormat());
+					return el.toString(this.formats.model);
 				});
 				if (this.dualInput) this.displayValue = displayDate;
 				else this.displayValue[0] = displayDate.join(" - ");
@@ -1460,40 +1503,6 @@
 			},
 			stopChangeTime() {
 				clearInterval(this.interval);
-			},
-			getFormat(which) {
-				let format;
-				switch (which) {
-					case "input":
-						return this.inputFormat || this.lang.inputFormat || this.type;
-					case "display":
-						format = {
-							date: "?D ?MMMM",
-							datetime: "?D ?MMMM HH:mm",
-							time: "HH:mm",
-						};
-						return (
-							this.displayFormat || this.lang.displayFormat || format[this.type]
-						);
-					case "alt":
-						return this.attrs.alt.format || this.getFormat();
-					default:
-						format = {
-							date: "YYYY-MM-DD",
-							datetime: "YYYY-MM-DD HH:mm",
-							time: "HH:mm",
-						};
-						return this.format || format[this.type];
-				}
-			},
-			listeners(index) {
-				let listeners = {};
-				for (const listener in this.$listeners) {
-					listeners[listener] = (event) => {
-						this.$listeners[listener](event, index);
-					};
-				}
-				return listeners;
 			},
 		},
 	};

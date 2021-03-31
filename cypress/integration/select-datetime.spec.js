@@ -1,5 +1,9 @@
 /// <reference types="Cypress" />
 
+beforeEach(() => {
+    cy.clock(new Date(2021, 2, 30, 12))
+})
+
 describe('select date and time - range', () => {
     before(() => {
         cy.changeProps('type', 'datetime')
@@ -12,7 +16,7 @@ describe('select date and time - range', () => {
         cy.contains('10').click()
         cy.contains('15').click()
         cy.get('.pdp-input').focus()
-        let hour = new Date().getHours();
+        let hour = new Date(2021, 2, 30, 12).getHours();
         hour = 20 - hour;
         if (hour < 0)
             hour += 24
@@ -20,7 +24,7 @@ describe('select date and time - range', () => {
         for (let i = 0; i < hour; i++) {
             button.click()
         }
-        let minute = new Date().getMinutes();
+        let minute = new Date(2021, 2, 30, 12).getMinutes();
         minute = 18 - minute;
         if (minute < 0)
             minute += 60
@@ -28,14 +32,14 @@ describe('select date and time - range', () => {
         for (let i = 0; i < minute; i++) {
             button.click()
         }
-        hour = new Date().getHours();
+        hour = new Date(2021, 2, 30, 12).getHours();
         hour = 15 - hour;
         hour -= 24
         button = cy.get('.pdp-time .pdp-moment > div:last-child .hour button:last-child');
         for (let i = 0; i < Math.abs(hour); i++) {
             button.click()
         }
-        minute = new Date().getMinutes();
+        minute = new Date(2021, 2, 30, 12).getMinutes();
         minute = 12 - minute;
         minute -= 60
         button = cy.get('.pdp-time .pdp-moment > div:last-child .minute button:last-child');
@@ -47,10 +51,10 @@ describe('select date and time - range', () => {
 
     it('with keys', () => {
         cy.visit('/')
-        cy.tab()
+        cy.get('.pdp-input').focus()
             .type('{downarrow}{downarrow}{downarrow}{leftarrow}{leftarrow}{enter}')
             .type('{downarrow}{rightarrow}{rightarrow}{enter}')
-        let hour = new Date().getHours();
+        let hour = new Date(2021, 2, 30, 12).getHours();
         cy.get('.pdp-input').focus()
         hour = 20 - hour;
         if (hour < 0)
@@ -59,7 +63,7 @@ describe('select date and time - range', () => {
         for (let i = 0; i < hour; i++) {
             button.type('{enter}')
         }
-        let minute = new Date().getMinutes();
+        let minute = new Date(2021, 2, 30, 12).getMinutes();
         minute = 18 - minute;
         if (minute < 0)
             minute += 60
@@ -67,14 +71,14 @@ describe('select date and time - range', () => {
         for (let i = 0; i < minute; i++) {
             button.type('{enter}')
         }
-        hour = new Date().getHours();
+        hour = new Date(2021, 2, 30, 12).getHours();
         hour = 15 - hour;
         hour -= 24
         button = cy.get('.pdp-moment button').eq(5).focus()
         for (let i = 0; i < Math.abs(hour); i++) {
             button.type('{enter}')
         }
-        minute = new Date().getMinutes();
+        minute = new Date(2021, 2, 30, 12).getMinutes();
         minute = 12 - minute;
         minute -= 60
         button = cy.get('.pdp-moment button').eq(7).focus()
@@ -86,7 +90,7 @@ describe('select date and time - range', () => {
 
     it('with type', () => {
         cy.visit('/')
-        cy.tab()
+        cy.get('.pdp-input').focus()
             .type('1399/06/10 20:18{enter}')
             .type('1399/06/15 15:12{enter}')
             .should('have.value', '1399/06/10 20:18 - 1399/06/15 15:12')
@@ -103,7 +107,7 @@ describe('select date and time - single', () => {
         cy.get('.pdp-input').focus()
         cy.contains('10').click()
         cy.get('.pdp-input').focus()
-        let hour = new Date().getHours();
+        let hour = new Date(2021, 2, 30, 12).getHours();
         hour = 20 - hour;
         if (hour < 0)
             hour += 24
@@ -111,7 +115,7 @@ describe('select date and time - single', () => {
         for (let i = 0; i < hour; i++) {
             button.click()
         }
-        let minute = new Date().getMinutes();
+        let minute = new Date(2021, 2, 30, 12).getMinutes();
         minute = 18 - minute;
         if (minute < 0)
             minute += 60
@@ -124,8 +128,8 @@ describe('select date and time - single', () => {
 
     it('with keys', () => {
         cy.visit('/')
-        cy.tab().type('{downarrow}{downarrow}{downarrow}{leftarrow}{leftarrow}{enter}').focus()
-        let hour = new Date().getHours();
+        cy.get('.pdp-input').focus().type('{downarrow}{downarrow}{downarrow}{leftarrow}{leftarrow}{enter}').focus()
+        let hour = new Date(2021, 2, 30, 12).getHours();
         hour = 20 - hour;
         if (hour < 0)
             hour += 24
@@ -133,7 +137,7 @@ describe('select date and time - single', () => {
         for (let i = 0; i < hour; i++) {
             button.type('{enter}')
         }
-        let minute = new Date().getMinutes();
+        let minute = new Date(2021, 2, 30, 12).getMinutes();
         minute = 18 - minute;
         if (minute < 0)
             minute += 60
@@ -146,7 +150,7 @@ describe('select date and time - single', () => {
 
     it('with type', () => {
         cy.visit('/')
-        cy.tab()
+        cy.get('.pdp-input').focus()
             .type('1399/06/10 20:18{enter}')
             .should('have.value', '1399/06/10 20:18')
     })
@@ -162,7 +166,7 @@ describe('select date and time with disable date - single', () => {
         cy.get('.pdp-input').focus()
         cy.contains('5').click()
         cy.get('.pdp-input').focus()
-        let hour = new Date().getHours();
+        let hour = new Date(2021, 2, 30, 12).getHours();
         hour = 20 - hour;
         if (hour < 0)
             hour += 24
@@ -170,7 +174,7 @@ describe('select date and time with disable date - single', () => {
         for (let i = 0; i < hour; i++) {
             button.click()
         }
-        let minute = new Date().getMinutes();
+        let minute = new Date(2021, 2, 30, 12).getMinutes();
         minute = 18 - minute;
         if (minute < 0)
             minute += 60
@@ -186,10 +190,10 @@ describe('select date and time with disable date - single', () => {
 
     it('with keys', () => {
         cy.visit('/')
-        cy.tab()
+        cy.get('.pdp-input').focus()
             .type('{downarrow}{leftarrow}{leftarrow}{leftarrow}{leftarrow}{leftarrow}{enter}')
             .focus()
-        let hour = new Date().getHours();
+        let hour = new Date(2021, 2, 30, 12).getHours();
         hour = 20 - hour;
         if (hour < 0)
             hour += 24
@@ -197,7 +201,7 @@ describe('select date and time with disable date - single', () => {
         for (let i = 0; i < hour; i++) {
             button.type('{enter}')
         }
-        let minute = new Date().getMinutes();
+        let minute = new Date(2021, 2, 30, 12).getMinutes();
         minute = 18 - minute;
         if (minute < 0)
             minute += 60
@@ -213,7 +217,7 @@ describe('select date and time with disable date - single', () => {
 
     it('with type', () => {
         cy.visit('/')
-        cy.tab()
+        cy.get('.pdp-input').focus()
             .type('1399/06/05 20:18{enter}')
             .should('have.value', '1399/06/05 20:18')
             .clear().type('1399/06/06 20:18{enter}')
@@ -238,7 +242,7 @@ describe('select date and time with disable date - range', () => {
         cy.get('.pdp-day[value="6"]').first().click()
         cy.get('.pdp-input').focus()
         cy.get('.pdp-day.end-range').should('contain.text', '6')
-        let hour = new Date().getHours();
+        let hour = new Date(2021, 2, 30, 12).getHours();
         hour = 20 - hour;
         if (hour < 0)
             hour += 24
@@ -246,7 +250,7 @@ describe('select date and time with disable date - range', () => {
         for (let i = 0; i < hour; i++) {
             button.click()
         }
-        let minute = new Date().getMinutes();
+        let minute = new Date(2021, 2, 30, 12).getMinutes();
         minute = 18 - minute;
         if (minute < 0)
             minute += 60
@@ -258,14 +262,14 @@ describe('select date and time with disable date - range', () => {
         cy.get('.pdp-input').should('contain.value', '1399/06/05 20:17 - 1399/06/06 ')
         cy.get('.pdp-time .pdp-moment > div:first-child .minute button:first-child').click()
         cy.get('.pdp-input').should('contain.value', '1399/06/05 20:19 - 1399/06/06 ')
-        hour = new Date().getHours();
+        hour = new Date(2021, 2, 30, 12).getHours();
         hour = 15 - hour;
         hour -= 24
         button = cy.get('.pdp-time .pdp-moment > div:last-child .hour button:last-child');
         for (let i = 0; i < Math.abs(hour); i++) {
             button.click()
         }
-        minute = new Date().getMinutes();
+        minute = new Date(2021, 2, 30, 12).getMinutes();
         minute = 12 - minute;
         minute -= 60
         button = cy.get('.pdp-time .pdp-moment > div:last-child .minute button:last-child');
@@ -277,11 +281,11 @@ describe('select date and time with disable date - range', () => {
 
     it('with keys', () => {
         cy.visit('/')
-        cy.tab().type('{downarrow}{downarrow}{leftarrow}{leftarrow}{leftarrow}{leftarrow}{enter}')
+        cy.get('.pdp-input').focus().type('{downarrow}{downarrow}{leftarrow}{leftarrow}{leftarrow}{leftarrow}{enter}')
         cy.get('.pdp-day.start-range').should('contain.text', '5')
         cy.get('.pdp-input').type('{leftarrow}{leftarrow}{leftarrow}{enter}').focus()
         cy.get('.pdp-day.end-range').should('contain.text', '8')
-        let hour = new Date().getHours();
+        let hour = new Date(2021, 2, 30, 12).getHours();
         hour = 20 - hour;
         if (hour < 0)
             hour += 24
@@ -289,7 +293,7 @@ describe('select date and time with disable date - range', () => {
         for (let i = 0; i < hour; i++) {
             button.type('{enter}')
         }
-        let minute = new Date().getMinutes();
+        let minute = new Date(2021, 2, 30, 12).getMinutes();
         minute = 18 - minute;
         if (minute < 0)
             minute += 60
@@ -301,14 +305,14 @@ describe('select date and time with disable date - range', () => {
         cy.get('.pdp-input').focus().should('contain.value', '1399/06/05 20:17 - 1399/06/08 ')
         cy.get('.pdp-moment button').eq(2).focus().type('{enter}')
         cy.get('.pdp-input').focus().should('contain.value', '1399/06/05 20:19 - 1399/06/08 ')
-        hour = new Date().getHours();
+        hour = new Date(2021, 2, 30, 12).getHours();
         hour = 15 - hour;
         hour -= 24
         button = cy.get('.pdp-moment button').eq(5).focus()
         for (let i = 0; i < Math.abs(hour); i++) {
             button.type('{enter}')
         }
-        minute = new Date().getMinutes();
+        minute = new Date(2021, 2, 30, 12).getMinutes();
         minute = 12 - minute;
         minute -= 60
         button = cy.get('.pdp-moment button').eq(7).focus()
@@ -320,7 +324,7 @@ describe('select date and time with disable date - range', () => {
 
     it('with type', () => {
         cy.visit('/')
-        cy.tab()
+        cy.get('.pdp-input').focus()
             .type('1399/06/05 20:18{enter}')
             .should('have.value', '1399/06/05 20:18')
             .clear().type('1399/06/03 20:18{enter}')
@@ -351,7 +355,7 @@ describe('select date and time in en locale - range', () => {
         cy.contains('10').click()
         cy.contains('15').click()
         cy.get('.pdp-input').focus()
-        let hour = new Date().getHours();
+        let hour = new Date(2021, 2, 30, 12).getHours();
         hour = 20 - hour;
         if (hour < 0)
             hour += 24
@@ -359,7 +363,7 @@ describe('select date and time in en locale - range', () => {
         for (let i = 0; i < hour; i++) {
             button.click()
         }
-        let minute = new Date().getMinutes();
+        let minute = new Date(2021, 2, 30, 12).getMinutes();
         minute = 18 - minute;
         if (minute < 0)
             minute += 60
@@ -367,14 +371,14 @@ describe('select date and time in en locale - range', () => {
         for (let i = 0; i < minute; i++) {
             button.click()
         }
-        hour = new Date().getHours();
+        hour = new Date(2021, 2, 30, 12).getHours();
         hour = 15 - hour;
         hour -= 24
         button = cy.get('.pdp-time .pdp-moment > div:last-child .hour button:last-child');
         for (let i = 0; i < Math.abs(hour); i++) {
             button.click()
         }
-        minute = new Date().getMinutes();
+        minute = new Date(2021, 2, 30, 12).getMinutes();
         minute = 12 - minute;
         minute -= 60
         button = cy.get('.pdp-time .pdp-moment > div:last-child .minute button:last-child');
@@ -386,10 +390,10 @@ describe('select date and time in en locale - range', () => {
 
     it('with keys', () => {
         cy.visit('/')
-        cy.tab()
+        cy.get('.pdp-input').focus()
             .type('{downarrow}{downarrow}{downarrow}{leftarrow}{leftarrow}{enter}')
             .type('{downarrow}{rightarrow}{rightarrow}{enter}')
-        let hour = new Date().getHours();
+        let hour = new Date(2021, 2, 30, 12).getHours();
         cy.get('.pdp-input').focus()
         hour = 20 - hour;
         if (hour < 0)
@@ -398,7 +402,7 @@ describe('select date and time in en locale - range', () => {
         for (let i = 0; i < hour; i++) {
             button.type('{enter}')
         }
-        let minute = new Date().getMinutes();
+        let minute = new Date(2021, 2, 30, 12).getMinutes();
         minute = 18 - minute;
         if (minute < 0)
             minute += 60
@@ -406,14 +410,14 @@ describe('select date and time in en locale - range', () => {
         for (let i = 0; i < minute; i++) {
             button.type('{enter}')
         }
-        hour = new Date().getHours();
+        hour = new Date(2021, 2, 30, 12).getHours();
         hour = 15 - hour;
         hour -= 24
         button = cy.get('.pdp-moment button').eq(5).focus()
         for (let i = 0; i < Math.abs(hour); i++) {
             button.type('{enter}')
         }
-        minute = new Date().getMinutes();
+        minute = new Date(2021, 2, 30, 12).getMinutes();
         minute = 12 - minute;
         minute -= 60
         button = cy.get('.pdp-moment button').eq(7).focus()
@@ -425,7 +429,7 @@ describe('select date and time in en locale - range', () => {
 
     it('with type', () => {
         cy.visit('/')
-        cy.tab()
+        cy.get('.pdp-input').focus()
             .type('2020-09-10 20:18{enter}')
             .type('2020-09-15 15:12{enter}')
             .should('have.value', '2020-09-10 20:18 - 2020-09-15 15:12')
@@ -442,7 +446,7 @@ describe('select date and time in en locale - single', () => {
         cy.get('.pdp-input').focus()
         cy.contains('10').click()
         cy.get('.pdp-input').focus()
-        let hour = new Date().getHours();
+        let hour = new Date(2021, 2, 30, 12).getHours();
         hour = 20 - hour;
         if (hour < 0)
             hour += 24
@@ -450,7 +454,7 @@ describe('select date and time in en locale - single', () => {
         for (let i = 0; i < hour; i++) {
             button.click()
         }
-        let minute = new Date().getMinutes();
+        let minute = new Date(2021, 2, 30, 12).getMinutes();
         minute = 18 - minute;
         if (minute < 0)
             minute += 60
@@ -463,9 +467,9 @@ describe('select date and time in en locale - single', () => {
 
     it('with keys', () => {
         cy.visit('/')
-        cy.tab()
+        cy.get('.pdp-input').focus()
             .type('{downarrow}{downarrow}{downarrow}{rightarrow}{rightarrow}{enter}').focus()
-        let hour = new Date().getHours();
+        let hour = new Date(2021, 2, 30, 12).getHours();
         hour = 20 - hour;
         if (hour < 0)
             hour += 24
@@ -473,7 +477,7 @@ describe('select date and time in en locale - single', () => {
         for (let i = 0; i < hour; i++) {
             button.type('{enter}')
         }
-        let minute = new Date().getMinutes();
+        let minute = new Date(2021, 2, 30, 12).getMinutes();
         minute = 18 - minute;
         if (minute < 0)
             minute += 60
@@ -486,7 +490,7 @@ describe('select date and time in en locale - single', () => {
 
     it('with type', () => {
         cy.visit('/')
-        cy.tab()
+        cy.get('.pdp-input').focus()
             .type('2020-09-10 20:18{enter}')
             .should('have.value', '2020-09-10 20:18')
     })

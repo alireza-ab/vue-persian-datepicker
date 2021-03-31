@@ -1,5 +1,9 @@
 /// <reference types="Cypress" />
 
+beforeEach(() => {
+    cy.clock(new Date(2021, 2, 30, 12))
+})
+
 describe('select date - range', () => {
     before(() => {
         cy.changeProps()
@@ -16,7 +20,7 @@ describe('select date - range', () => {
 
     it('with arrow keys', () => {
         cy.visit('/')
-        cy.tab()
+        cy.get('.pdp-input').focus()
             .type('{downarrow}{downarrow}{downarrow}{leftarrow}{leftarrow}{enter}')
             .type('{downarrow}{rightarrow}{rightarrow}{enter}')
             .should('have.value', '1399/06/10 - 1399/06/15')
@@ -24,7 +28,7 @@ describe('select date - range', () => {
 
     it('with type the date', () => {
         cy.visit('/')
-        cy.tab()
+        cy.get('.pdp-input').focus()
             .type('1399/06/10{enter}')
             .type('1399/06/15{enter}')
             .should('have.value', '1399/06/10 - 1399/06/15')
@@ -45,14 +49,14 @@ describe('select date - single', () => {
 
     it('with arrow keys', () => {
         cy.visit('/')
-        cy.tab()
+        cy.get('.pdp-input').focus()
             .type('{downarrow}{downarrow}{downarrow}{leftarrow}{leftarrow}{enter}')
             .should('have.value', '1399/06/10')
     })
 
     it('with type the date', () => {
         cy.visit('/')
-        cy.tab()
+        cy.get('.pdp-input').focus()
             .type('1399/06/10{enter}')
             .should('have.value', '1399/06/10')
     })
@@ -74,7 +78,7 @@ describe('select date with disable date - single', () => {
 
     it('with arrow keys', () => {
         cy.visit('/')
-        cy.tab()
+        cy.get('.pdp-input').focus()
             .type('{downarrow}{leftarrow}{leftarrow}{leftarrow}{leftarrow}{leftarrow}{enter}')
             .should('have.value', '')
             .type('{leftarrow}{enter}')
@@ -83,7 +87,7 @@ describe('select date with disable date - single', () => {
 
     it('with type the date', () => {
         cy.visit('/')
-        cy.tab()
+        cy.get('.pdp-input').focus()
             .type('1399/06/05{enter}')
             .should('have.value', '1399/06/05')
             .clear().type('1399/06/06{enter}')
@@ -114,7 +118,7 @@ describe('select date with disable date - range', () => {
 
     it('with arrow keys', () => {
         cy.visit('/')
-        cy.tab()
+        cy.get('.pdp-input').focus()
             .type('{downarrow}{downarrow}{leftarrow}{leftarrow}{leftarrow}{leftarrow}{enter}')
             .should('have.value', '')
             .type('{rightarrow}{rightarrow}{enter}')
@@ -128,7 +132,7 @@ describe('select date with disable date - range', () => {
 
     it('with type the date', () => {
         cy.visit('/')
-        cy.tab()
+        cy.get('.pdp-input').focus()
             .type('1399/06/05{enter}')
             .should('have.value', '1399/06/05')
             .clear().type('1399/06/03{enter}')
@@ -160,7 +164,7 @@ describe('select date in en locale - range', () => {
 
     it('with arrow keys', () => {
         cy.visit('/')
-        cy.tab()
+        cy.get('.pdp-input').focus()
             .type('{downarrow}{downarrow}{downarrow}{leftarrow}{leftarrow}{enter}')
             .type('{downarrow}{rightarrow}{rightarrow}{enter}')
             .should('have.value', '2020-09-06 - 2020-09-15')
@@ -168,7 +172,7 @@ describe('select date in en locale - range', () => {
 
     it('with type the date', () => {
         cy.visit('/')
-        cy.tab()
+        cy.get('.pdp-input').focus()
             .type('2020-09-10{enter}')
             .type('2020-09-15{enter}')
             .should('have.value', '2020-09-10 - 2020-09-15')
@@ -189,14 +193,14 @@ describe('select date in en locale - single', () => {
 
     it('with arrow keys', () => {
         cy.visit('/')
-        cy.tab()
+        cy.get('.pdp-input').focus()
             .type('{downarrow}{downarrow}{downarrow}{rightarrow}{rightarrow}{enter}')
             .should('have.value', '2020-09-10')
     })
 
     it('with type the date', () => {
         cy.visit('/')
-        cy.tab()
+        cy.get('.pdp-input').focus()
             .type('2020-09-10{enter}')
             .should('have.value', '2020-09-10')
     })

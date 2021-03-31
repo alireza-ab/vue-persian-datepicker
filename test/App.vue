@@ -58,17 +58,17 @@
 			close() {
 				this.status += "close";
 			},
-			focus(e) {
+			focus(e, inputNumber) {
 				e.preventDefault();
-				this.status += "focus";
+				this.status += "focus:" + inputNumber;
 			},
-			blur(e) {
+			blur(e, inputNumber) {
 				e.preventDefault();
-				this.status += "blur";
+				this.status += "blur:" + inputNumber;
 			},
-			input(e) {
+			input(e, inputNumber) {
 				e.preventDefault();
-				this.status += "input";
+				this.status += "input:" + inputNumber;
 			},
 			submit(e) {
 				this.status +=

@@ -1,5 +1,9 @@
 /// <reference types="Cypress" />
 
+beforeEach(() => {
+    cy.clock(new Date(2021, 2, 30, 12))
+})
+
 describe('from and to props', () => {
     before(() => {
         cy.changeProps({ from: '10:10', to: '20:20', type: 'time' }, null, true);

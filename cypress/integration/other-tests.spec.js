@@ -1,5 +1,9 @@
 /// <reference types="Cypress" />
 
+beforeEach(() => {
+    cy.clock(new Date(2021, 2, 30, 12))
+})
+
 describe('others', () => {
     before(() => {
         cy.changeProps(null, null, true);
@@ -141,7 +145,7 @@ describe('others', () => {
         cy.changeProps({ from: undefined, to: undefined })
         cy.visit('/')
         cy.selectDate()
-        const date = new Date()
+        const date = new Date(2021, 2, 30, 12)
         cy.get('.pdp-input').focus()
         cy.get('.pdp-moment > :first-child button:first-child').click({ multiple: true })
         cy.get('.hour').last().should('contain.text', date.getHours())
