@@ -16,7 +16,7 @@ It's very customizable and easily for use.
 
 ## Documentation
 
-For full documentation, visit [https://alireza-ab.ir/datepicker](https://alireza-ab.ir/datepicker)
+For full documentation and examples, visit [https://alireza-ab.ir/datepicker](https://alireza-ab.ir/datepicker)
 
 ![select date with vue persian datepicker](https://alireza-ab.ir/images/GIFs/selectWithArrow.gif)
 

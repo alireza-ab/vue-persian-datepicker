@@ -1,4 +1,9 @@
 {
-  "clearable": true,
-  "type": "datetime"
+  "shortcut": true,
+  "locale": "fa",
+  "mode": "single",
+  "type": "date",
+  "from": "1400/01/11",
+  "to": "1400/01/31",
+  "disable": "1400/01/11"
 }
