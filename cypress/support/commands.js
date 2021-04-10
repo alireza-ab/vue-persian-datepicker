@@ -25,60 +25,85 @@
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
 let props = {
-    "from": "1399",
-    "to": "1399/06/31"
-}
+	from: "1399",
+	to: "1399/06/31",
+};
 
-let slots = {}
+let slots = {};
 
-Cypress.Commands.add('changeProps', (prop, value, replace = false) => {
-    if (replace) {
-        props = {};
-    }
-    if (prop) {
-        if (typeof prop == 'string') { props[prop] = value }
-        else { Object.assign(props, prop) }
-    }
-    cy.writeFile('test/props.json', props)
-})
+Cypress.Commands.add("changeProps", (prop, value, replace = false) => {
+	if (replace) {
+		props = {};
+	}
+	if (prop) {
+		if (typeof prop == "string") {
+			props[prop] = value;
+		} else {
+			Object.assign(props, prop);
+		}
+	}
+});
 
-Cypress.Commands.add('changeSlots', (slot, value, replace = false) => {
-    if (replace) {
-        slots = {};
-    }
-    if (slot) {
-        if (typeof slot == 'string') { slots[slot] = value }
-        else { Object.assign(slots, slot) }
-    }
-    cy.writeFile('test/slots.json', slots)
-})
+Cypress.Commands.add("changeSlots", (slot, value, replace = false) => {
+	if (replace) {
+		slots = {};
+	}
+	if (slot) {
+		if (typeof slot == "string") {
+			slots[slot] = value;
+		} else {
+			Object.assign(slots, slot);
+		}
+	}
+});
 
-Cypress.Commands.add('selectDate', () => {
-    cy.get('.pdp-input').focus()
-    cy.get('.pdp-day').contains('10').click()
-})
+Cypress.Commands.add("selectDate", () => {
+	cy.get(".pdp-input").focus();
+	cy.get(".pdp-day")
+		.contains("10")
+		.click();
+});
 
-Cypress.Commands.add('selectRangeDate', () => {
-    cy.get('.pdp-input').focus()
-    cy.get('.pdp-day').contains('10').click()
-    cy.get('.pdp-day').contains('15').click()
-})
+Cypress.Commands.add("selectRangeDate", () => {
+	cy.get(".pdp-input").focus();
+	cy.get(".pdp-day")
+		.contains("10")
+		.click();
+	cy.get(".pdp-day")
+		.contains("15")
+		.click();
+});
 
-Cypress.Commands.add('selectTime', (hour = 0, minute = 0, child = 'first') => {
-    let nowHour = new Date(2021, 2, 30, 12).getHours();
-    nowHour = hour - nowHour;
-    if (nowHour < 0)
-        nowHour += 24
-    let button = cy.get(`.pdp-time .pdp-moment > div:${child}-child .hour button:first-child`);
-    for (let i = 0; i < nowHour; i++) {
-        button.click()
-    }
-    let nowMinute = new Date(2021, 2, 30, 12).getMinutes();
-    nowMinute = minute - nowMinute;
-    if (nowMinute < 0)
-        nowMinute += 60
-    button = cy.get(`.pdp-time .pdp-moment > div:${child}-child .minute button:first-child`);
-    for (let i = 0; i < nowMinute; i++) {
-        button.click()
-    }
-})
+Cypress.Commands.add("selectTime", (hour = 0, minute = 0, child = "first") => {
+	let nowHour = new Date(2021, 2, 30, 12).getHours();
+	nowHour = hour - nowHour;
+	if (nowHour < 0) nowHour += 24;
+	let button = cy.get(
+		`.pdp-time .pdp-moment > div:${child}-child .hour button:first-child`
+	);
+	for (let i = 0; i < nowHour; i++) {
+		button.click();
+	}
+	let nowMinute = new Date(2021, 2, 30, 12).getMinutes();
+	nowMinute = minute - nowMinute;
+	if (nowMinute < 0) nowMinute += 60;
+	button = cy.get(
+		`.pdp-time .pdp-moment > div:${child}-child .minute button:first-child`
+	);
+	for (let i = 0; i < nowMinute; i++) {
+		button.click();
+	}
+});
+
+Cypress.Commands.overwrite("visit", (originalFn, url) => {
+	if (!url.endsWith("/")) {
+		url += "/";
+	}
+	return originalFn(
+		url +
+			"?props=" +
+			encodeURI(JSON.stringify(props)) +
+			"&slots=" +
+			encodeURI(JSON.stringify(slots))
+	);
+});
