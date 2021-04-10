@@ -1,9 +1,8 @@
 {
-  "shortcut": true,
-  "locale": "fa",
-  "mode": "single",
-  "type": "date",
-  "from": "1400/01/11",
-  "to": "1400/01/31",
-  "disable": "1400/01/11"
+  "locale": "fa,en",
+  "disable": [
+    "1399/10/5",
+    "1399/9/20",
+    "1399/7/1"
+  ]
 }

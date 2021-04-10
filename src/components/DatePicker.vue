@@ -396,7 +396,6 @@
 <script>
 //TODO: add time config
 //TODO: add tip for days
-//TODO: add panel and show yesterday, lastweek, ...
 //TODO: test the project with attention and test in nuxt
 //TODO: refactor and write comment --> pay a high attention
 
