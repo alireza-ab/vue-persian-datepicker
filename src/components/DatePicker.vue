@@ -809,15 +809,11 @@ export default {
       return listeners;
     },
     years() {
-      let years = [];
-      for (
-        let startYear = this.fromDate.year();
-        startYear <= this.toDate.year();
-        startYear++
-      ) {
-        years.push(startYear);
-      }
-      return years;
+      let start = this.fromDate.year();
+      const end = this.toDate.year();
+      return Array(end - start + 1)
+        .fill(null)
+        .map(() => start++);
     },
     monthDays() {
       let months = [];
@@ -915,7 +911,7 @@ export default {
         const scale = column / (this.mode == "single" ? 1 : 2);
         this.$refs.root.style.setProperty(
           "--time-scale",
-          scale >= 1 ? scale : 1
+          scale > 1 ? scale : 1
         );
       }
       return column;
