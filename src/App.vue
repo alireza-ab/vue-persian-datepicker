@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <form action="">
-      <date-picker shortcut></date-picker>
-      <date-picker dual-input shortcut></date-picker>
+      <date-picker shortcut :auto-submit="false" mode="single"></date-picker>
+      <date-picker dual-input shortcut :auto-submit="false"></date-picker>
       <date-picker dual-input icon-inside clearable></date-picker>
       <date-picker dual-input clearable></date-picker>
       <date-picker icon-inside clearable></date-picker>
