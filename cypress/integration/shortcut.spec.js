@@ -1,5 +1,9 @@
 /// <reference types="Cypress" />
 
+import PersianDate from "@alireza-ab/persian-date";
+
+const date = new PersianDate([2021, 3, 30, 12]);
+
 beforeEach(() => {
 	cy.clock(new Date(2021, 2, 30, 12));
 });

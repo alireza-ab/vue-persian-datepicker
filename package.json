@@ -5,7 +5,7 @@
 	"main": "./dist/datepicker.common.js",
 	"unpkg": "./dist/datepicker.min.js",
 	"scripts": {
-		"serve": "webpack serve --hot --watch-content-base",
+		"serve": "webpack serve",
 		"build:prod": "cross-env NODE_ENV=production webpack",
 		"build:common": "cross-env NODE_ENV=common webpack",
 		"build:unpkg": "cross-env NODE_ENV=unpkg webpack",
@@ -13,7 +13,7 @@
 		"cy:open": "cypress open",
 		"cy:run": "cypress run",
 		"cy:run-parallel": "cypress run --parallel --ci-build-id GITHUB_TOKEN --record --key de25f7c7-0bd0-4651-8063-eca94dfd3591",
-		"serve:test": "cross-env NODE_ENV=test webpack-dev-server --hot --watch --port 8081",
+		"serve:test": "cross-env NODE_ENV=test webpack serve --port 8081",
 		"test": "npm run serve:test > /dev/null 2>&1 & npm run cy:run"
 	},
 	"homepage": "https://alireza-ab.ir/datepicker",
