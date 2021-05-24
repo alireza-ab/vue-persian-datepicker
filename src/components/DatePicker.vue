@@ -1089,25 +1089,7 @@ export default {
 
     let val = this.$attrs.value;
     if (val) {
-      if (this.mode == "single") val = [val];
-      val.some((date, index) => {
-        date = this.core
-          .clone()
-          .fromGregorian(
-            (this.type == "time"
-              ? this.core.toString("YYYY-MM-DD") + " "
-              : "") + date
-          );
-        if (Core.isPersianDate(date)) {
-          this.selectedDates.push(date.clone());
-          this.selectedTimes.push(date.clone());
-          if (index == 0) this.onDisplay = date.clone();
-        } else {
-          this.selectedDates = this.selectedTimes = [];
-          return true;
-        }
-      });
-      if (this.selectedDates.length) this.submitDate();
+      this.setDate(val);
     } else {
       let today = this.core.clone();
       if (this.type == "date") today.startOf("date");
@@ -1665,6 +1647,28 @@ export default {
       if (this.autoSubmit) {
         this.submitDate();
       }
+    },
+    setDate(date) {
+      if (!date) return;
+      if (this.mode == "single" && typeof date === "string") date = [date];
+      date.some((d, index) => {
+        d = this.core
+          .clone()
+          .fromGregorian(
+            (this.type == "time"
+              ? this.core.toString("YYYY-MM-DD") + " "
+              : "") + d
+          );
+        if (Core.isPersianDate(d)) {
+          this.selectedDates.push(d.clone());
+          this.selectedTimes.push(d.clone());
+          if (index == 0) this.onDisplay = d.clone();
+        } else {
+          this.selectedDates = this.selectedTimes = [];
+          return true;
+        }
+      });
+      if (this.selectedDates.length) this.submitDate();
     },
   },
 };
