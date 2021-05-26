@@ -620,7 +620,7 @@ export default {
     },
 
     /**
-     * show shortcut, for select date quickly
+     * shortcut for select date and time quickly
      * @type Boolean | Object
      * @since 2.2.0
      */
