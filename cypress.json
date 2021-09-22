@@ -1,4 +1,22 @@
 {
-	"baseUrl": "http://localhost:8081",
-	"projectId": "32fyob"
+  "component": {
+    "componentFolder": "test",
+    "testFiles": "**/*.spec.ts"
+  },
+  "fixturesFolder": "test/fixtures",
+  "integrationFolder": "test/integration",
+  "pluginsFile": "test/plugins",
+  "screenshotsFolder": "test/screenshots",
+  "videosFolder": "test/videos",
+  "supportFile": "test/support",
+  "baseUrl": "http://localhost:3001",
+  "projectId": "32fyob",
+  "viewportWidth": 800,
+  "viewportHeight": 800,
+  "screenshotOnRunFailure": false,
+  "video": false,
+  "retries": {
+    "runMode": 3,
+    "openMode": 0
+  }
 }

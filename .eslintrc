@@ -1,0 +1,26 @@
+{
+  "root": true,
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "node": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "@vue/typescript/recommended",
+    "plugin:vue/vue3-recommended",
+
+    "@vue/prettier",
+    "@vue/prettier/@typescript-eslint"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2021
+  },
+  "rules": {
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/no-namespace": "off",
+    "vue/require-default-prop": "off",
+    "vue/no-v-html": "off",
+    "vue/attribute-hyphenation": "off"
+  }
+}

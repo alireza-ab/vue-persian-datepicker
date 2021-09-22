@@ -29,33 +29,33 @@ $day-dimensions: 2.08rem;
 $time-scale: 1;
 
 .pdp {
-	--primary-color: #{$primary-color};
+  --primary-color: #{$primary-color};
 
-	--secondary-color: #{$secondary-color};
+  --secondary-color: #{$secondary-color};
 
-	--in-range-background: #{$in-range-background};
+  --in-range-background: #{$in-range-background};
 
-	--radius: #{$radius};
+  --radius: #{$radius};
 
-	--text-color: #{$text-color};
+  --text-color: #{$text-color};
 
-	--hover-color: #{$hover-color};
+  --hover-color: #{$hover-color};
 
-	--background: #{$background};
+  --background: #{$background};
 
-	--border-color: #{$border-color};
+  --border-color: #{$border-color};
 
-	--z-index: #{$z-index};
+  --z-index: #{$z-index};
 
-	--disabled-opacity: #{$disabled-opacity};
+  --disabled-opacity: #{$disabled-opacity};
 
-	--icon-background: #{$icon-background};
+  --icon-background: #{$icon-background};
 
-	--overlay-color: #{$overlay-color};
+  --overlay-color: #{$overlay-color};
 
-	--main-box-shadow: #{$main-box-shadow};
+  --main-box-shadow: #{$main-box-shadow};
 
-	--day-dimensions: #{$day-dimensions};
+  --day-dimensions: #{$day-dimensions};
 
-	--time-scale: #{$time-scale};
+  --time-scale: #{$time-scale};
 }

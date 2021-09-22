@@ -1,86 +1,48 @@
 {
-	"name": "@alireza-ab/vue-persian-datepicker",
-	"description": "A datepicker component for select persian date",
-	"version": "2.2.0",
-	"main": "./dist/datepicker.common.js",
-	"unpkg": "./dist/datepicker.min.js",
-	"scripts": {
-		"serve": "webpack serve",
-		"build:prod": "cross-env NODE_ENV=production webpack",
-		"build:common": "cross-env NODE_ENV=common webpack",
-		"build:unpkg": "cross-env NODE_ENV=unpkg webpack",
-		"build:all": "yarn build:prod && yarn build:common && yarn build:unpkg",
-		"cy:open": "cypress open",
-		"cy:run": "cypress run",
-		"cy:run-parallel": "cypress run --parallel --ci-build-id GITHUB_TOKEN --record --key de25f7c7-0bd0-4651-8063-eca94dfd3591",
-		"serve:test": "cross-env NODE_ENV=test webpack serve --port 8081",
-		"test": "yarn serve:test > /dev/null 2>&1 & yarn cy:run"
-	},
-	"homepage": "https://alireza-ab.ir/datepicker",
-	"bugs": {
-		"url": "https://github.com/alireza-ab/vue-persian-datepicker/issues"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/alireza-ab/vue-persian-datepicker.git"
-	},
-	"keywords": [
-		"javascript",
-		"js",
-		"vuejs",
-		"nuxtjs",
-		"date",
-		"persian",
-		"jalali",
-		"shamsi",
-		"datepicker",
-		"persian datepicker",
-		"jalali datepicker",
-		"shamsi datepicker",
-		"range datepicker",
-		"persian range datepicker",
-		"vue datepicker",
-		"vue persian datepicker",
-		"vue persian range datepicker",
-		"nuxt datepicker",
-		"nuxt persian datepicker",
-		"nuxt persian range datepicker"
-	],
-	"files": [
-		"src",
-		"dist",
-		"nuxt.js"
-	],
-	"author": "Alireza Alibeiki <alibeikialireza@gmail.com>",
-	"license": "MIT",
-	"dependencies": {
-		"@alireza-ab/persian-date": "^2.5.0"
-	},
-	"devDependencies": {
-		"@babel/core": "^7.14.3",
-		"@vue/cli-plugin-babel": "^4.5.13",
-		"@webpack-cli/serve": "^1.4.0",
-		"babel-loader": "^8.2.2",
-		"core-js": "^3.13.0",
-		"cross-env": "^7.0.3",
-		"css-loader": "^5.2.6",
-		"cypress": "^7.4.0",
-		"cypress-plugin-tab": "^1.0.5",
-		"postcss-loader": "^5.3.0",
-		"sass": "^1.34.0",
-		"sass-loader": "^11.1.1",
-		"style-loader": "^2.0.0",
-		"terser-webpack-plugin": "^5.1.2",
-		"vue": "^2.6.12",
-		"vue-loader": "^15.9.7",
-		"vue-template-compiler": "^2.6.12",
-		"webpack": "^5.37.1",
-		"webpack-cli": "^4.7.0",
-		"webpack-dev-server": "^3.11.2"
-	},
-	"browserslist": [
-		"> 1%",
-		"last 2 versions",
-		"not dead"
-	]
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "serve": "vite preview",
+    "test": "cypress run-ct",
+    "test:open": "cypress open-ct",
+    "lint": "eslint --ext .ts,vue --ignore-path .gitignore .",
+    "pretty": "prettier -w -u ."
+  },
+  "dependencies": {
+    "@alireza-ab/persian-date": "^2.6.0",
+    "vue": "^3.0.5"
+  },
+  "devDependencies": {
+    "@cypress/vite-dev-server": "^2.0.2",
+    "@cypress/vue": "^3.0.0-beta.1",
+    "@cypress/webpack-dev-server": "^1.4.0",
+    "@typescript-eslint/eslint-plugin": "^4.28.4",
+    "@typescript-eslint/parser": "^4.28.4",
+    "@vitejs/plugin-vue": "^1.2.5",
+    "@vue/compiler-sfc": "^3.1.5",
+    "@vue/eslint-config-prettier": "^6.0.0",
+    "@vue/eslint-config-typescript": "^7.0.0",
+    "cypress": "^8.0.0",
+    "eslint": "^7.31.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-vue": "^7.14.0",
+    "husky": "^7.0.1",
+    "lint-staged": "^11.1.0",
+    "prettier": "^2.3.2",
+    "sass": "^1.36.0",
+    "sass-loader": "^12.1.0",
+    "typescript": "^4.3.5",
+    "vite": "^2.4.3",
+    "vue-tsc": "^0.2.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,vue}": "eslint --fix",
+    "*": "prettier -w -u"
+  }
 }
