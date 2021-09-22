@@ -95,8 +95,8 @@ const Core = {
                 nextWeek: "Next Week",
                 thisMonth: "This Month",
                 // time-single
-                onHourAgo: "One Hour ago",
-                onHourLater: "One Hour later",
+                oneHourAgo: "One Hour ago",
+                oneHourLater: "One Hour later",
                 midnight: "Midnight",
                 midday: "Midday",
                 // time-range
