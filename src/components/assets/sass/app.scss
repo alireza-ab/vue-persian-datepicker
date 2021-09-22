@@ -635,7 +635,7 @@
 
 				.pdp-moment {
 					margin-bottom: 1rem;
-					font-size: calc(2rem * $time-scale);
+					font-size: calc(2rem * #{$time-scale});
 					font-size: calc(2rem * var(--time-scale));
 					display: flex;
 					justify-content: space-around;
@@ -670,7 +670,7 @@
 								cursor: pointer;
 
 								svg {
-									width: calc(8px * $time-scale);
+									width: calc(8px * #{$time-scale});
 									width: calc(8px * var(--time-scale));
 								}
 							}
