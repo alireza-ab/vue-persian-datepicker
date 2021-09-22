@@ -50,7 +50,7 @@ describe('select time - range', () => {
         hour = 20 - hour;
         if (hour < 0)
             hour += 24
-        button = cy.get('.pdp-moment button').eq(4).focus()
+        let button = cy.get('.pdp-moment button').eq(4).focus()
         for (let i = 0; i < hour; i++) {
             button.type('{enter}')
         }
@@ -66,7 +66,7 @@ describe('select time - range', () => {
         hour = 15 - hour;
         if (hour < 0)
             hour += 24
-        let button = cy.get('.pdp-moment button').first().focus()
+        button = cy.get('.pdp-moment button').first().focus()
         for (let i = 0; i < hour; i++) {
             button.type('{enter}')
         }
