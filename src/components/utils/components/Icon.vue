@@ -1,3 +1,16 @@
+<script lang="ts" setup>
+  import { PropType, reactive } from 'vue';
+
+  const props = defineProps({
+    icon: {
+      type: String as PropType<'clear' | 'date' | 'datetime' | 'time'>,
+      required: true,
+    },
+  });
+
+  const { icon } = reactive(props);
+</script>
+
 <template>
   <svg
     v-if="icon === 'clear'"
@@ -125,16 +138,3 @@
     ></path>
   </svg>
 </template>
-
-<script lang="ts">
-  import { PropType } from 'vue';
-
-  export default {
-    props: {
-      icon: {
-        type: String as PropType<'clear' | 'date' | 'datetime' | 'time'>,
-        required: true,
-      },
-    },
-  };
-</script>

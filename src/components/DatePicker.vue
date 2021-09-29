@@ -699,7 +699,7 @@
           this.lang.dir.picker,
         ];
         if (this.mode == 'single' && this.dualInput) {
-          attrs['secondInput'].disabled = true;
+          attrs['secondInput'].disabled = 'disabled';
         }
         if (this.showDatePicker) {
           attrs[this.inputName].class += ' pdp-focus';

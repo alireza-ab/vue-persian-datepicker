@@ -1,100 +1,73 @@
-<script lang="ts">
-  import { reactive, defineComponent } from 'vue';
+<script lang="ts" setup>
+  import { reactive, ref } from 'vue';
   import DatePicker, { PersianDate } from '../../src/components/DatePicker.vue';
 
-  declare global {
-    interface Window {
-      PersianDate: PersianDate;
-    }
-  }
-  window.PersianDate = PersianDate;
-
-  export default defineComponent({
-    components: {
-      DatePicker,
-    },
+  const myProps = defineProps({
     props: {
-      props: {
-        required: true,
-        type: Object,
-      },
-      slots: {
-        required: true,
-        type: Object,
-      },
+      required: true,
+      type: Object,
     },
-    setup(myProps) {
-      const [props, slots] = [myProps.props, myProps.slots];
-
-      const state = reactive({
-        model: null,
-        status: '',
-      });
-
-      if (props.disableR) {
-        props.disable = new RegExp(props.disableR);
-        delete props.disableR;
-      } else if (props.disableF) {
-        props.disable = eval(props.disableF);
-        delete props.disableF;
-      }
-      if (props.model) state.model = props.model;
-
-      // *************** Methods ***************
-      const open = () => {
-        state.status += 'open';
-      };
-      const close = () => {
-        state.status += 'close';
-      };
-      const focus = (e: Event, inputNumber: number) => {
-        e.preventDefault();
-        state.status += 'focus:' + inputNumber;
-      };
-      const blur = (e: Event, inputNumber: number) => {
-        e.preventDefault();
-        state.status += 'blur:' + inputNumber;
-      };
-      const input = (e: Event, inputNumber: number) => {
-        e.preventDefault();
-        state.status += 'input:' + inputNumber;
-      };
-      const submit = (e: PersianDate[]) => {
-        state.status +=
-          'submit:' +
-          (Array.isArray(e)
-            ? e.map((date) => date.toString(props.type || 'date'))
-            : e.toString(props.type || 'date'));
-      };
-      const select = (e: PersianDate) => {
-        state.status += 'select:' + e.toString(props.type || 'date');
-      };
-      const show = () => {
-        props.show = true;
-      };
-
-      return {
-        newProps: props,
-        newSlots: slots,
-        state,
-        open,
-        close,
-        focus,
-        blur,
-        input,
-        submit,
-        select,
-        show,
-      };
+    slots: {
+      required: true,
+      type: Object,
     },
   });
+
+  const { props, slots } = reactive(myProps);
+
+  const model = ref(null);
+  const status = ref('');
+
+  if (props.disableR) {
+    props.disable = new RegExp(props.disableR);
+    delete props.disableR;
+  } else if (props.disableF) {
+    props.disable = eval(props.disableF);
+    delete props.disableF;
+  }
+  if (props.model) model.value = props.model;
+
+  // *************** Methods ***************
+  const open = () => {
+    status.value += 'open';
+  };
+  const close = () => {
+    status.value += 'close';
+  };
+  const focus = (e: Event, inputNumber: number) => {
+    e.preventDefault();
+    status.value += 'focus:' + inputNumber;
+    console.log(status);
+  };
+  const blur = (e: Event, inputNumber: number) => {
+    e.preventDefault();
+    status.value += 'blur:' + inputNumber;
+    console.log(status);
+  };
+  const input = (e: Event, inputNumber: number) => {
+    e.preventDefault();
+    status.value += 'input:' + inputNumber;
+  };
+  const submit = (e: PersianDate | PersianDate[]) => {
+    status.value +=
+      'submit:' +
+      (Array.isArray(e)
+        ? e.map((date) => date.toString(props.type || 'date'))
+        : e.toString(props.type || 'date'));
+  };
+  const select = (e: PersianDate) => {
+    status.value += 'select:' + e.toString(props.type || 'date');
+  };
+  const show = () => {
+    props.show = true;
+  };
 </script>
 
 <template>
   <div id="app">
     <DatePicker
-      v-model="state.model"
-      v-bind="newProps"
+      v-model="model"
+      v-bind="props"
       :secondInput-onFocus="
         (e) => {
           focus(e, 2);
@@ -108,16 +81,16 @@
       @select="select"
       @submit="submit"
     >
-      <template v-for="(slot, name) in newSlots" :key="name" #[name]>
+      <template v-for="(slot, name) in slots" :key="name" #[name]>
         <div v-html="slot"></div>
       </template>
     </DatePicker>
 
-    <div class="show">date/time is: {{ state.model }}</div>
+    <div class="show">date/time is: {{ model }}</div>
 
     <button class="show-picker" @click="show">show picker</button>
 
-    <div class="status" style="display: none">{{ state.status }}</div>
+    <div class="status" style="display: none">{{ status }}</div>
   </div>
 </template>
 

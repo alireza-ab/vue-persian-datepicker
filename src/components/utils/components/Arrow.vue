@@ -1,37 +1,31 @@
-<script lang="ts">
-  import { PropType, computed } from 'vue';
-  import { Obj } from '../modules/types';
+<script lang="ts" setup>
+  import { PropType, computed, reactive } from 'vue';
 
   type Direction = 'up' | 'down' | 'right' | 'left';
 
-  export default {
-    props: {
-      direction: {
-        default: 'up',
-        type: String as PropType<Direction>,
-      },
-      inverse: {
-        default: false,
-        type: Boolean,
-      },
+  const props = defineProps({
+    direction: {
+      default: 'up',
+      type: String as PropType<Direction>,
     },
-
-    setup(props: { direction: Direction; inverse: boolean }): Obj {
-      const rotate = computed(() => {
-        const directions = {
-          up: -90,
-          down: 90,
-          right: 0,
-          left: 180,
-        };
-        const deg = directions[props.direction] + (props.inverse ? 180 : 0);
-
-        return `rotate(${deg} 0 0)`;
-      });
-
-      return { rotate };
+    inverse: {
+      default: false,
+      type: Boolean,
     },
-  };
+  });
+  const { direction, inverse } = reactive(props);
+
+  const rotate = computed(() => {
+    const directions = {
+      up: -90,
+      down: 90,
+      right: 0,
+      left: 180,
+    };
+    const deg = directions[direction] + (inverse ? 180 : 0);
+
+    return `rotate(${deg} 0 0)`;
+  });
 </script>
 
 <template>

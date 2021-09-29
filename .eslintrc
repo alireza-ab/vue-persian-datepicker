@@ -8,7 +8,7 @@
   "extends": [
     "eslint:recommended",
     "@vue/typescript/recommended",
-    "plugin:vue/vue3-recommended",
+    "plugin:vue/vue3-strongly-recommended",
 
     "@vue/prettier",
     "@vue/prettier/@typescript-eslint"
@@ -22,5 +22,11 @@
     "vue/require-default-prop": "off",
     "vue/no-v-html": "off",
     "vue/attribute-hyphenation": "off"
+  },
+  "globals": {
+    "defineProps": "readonly",
+    "defineEmits": "readonly",
+    "defineExpose": "readonly",
+    "withDefaults": "readonly"
   }
 }

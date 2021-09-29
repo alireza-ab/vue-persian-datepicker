@@ -32,12 +32,12 @@ export type TypePart = 'date' | 'time';
 export type CalendarPart = 'year' | 'month';
 
 export type Attrs = {
-  div: Obj<string | boolean>;
-  label: Obj<string | boolean>;
-  alt: Obj<string | boolean>;
+  div: Obj<string>;
+  label: Obj<string>;
+  alt: Obj<string>;
   picker: Obj;
-  firstInput: Obj<string | boolean>;
-  secondInput: Obj<string | boolean>;
+  firstInput: Obj<string>;
+  secondInput: Obj<string>;
 };
 export type MonthDays = Obj<
   {

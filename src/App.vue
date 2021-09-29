@@ -1,25 +1,14 @@
-<template>
-  <DatePicker dual-input clearable></DatePicker>
-</template>
-
-<script lang="ts">
+<script lang="ts" setup>
   import DatePicker from './components/DatePicker.vue';
-  import { Obj } from './components/utils/modules/types';
 
-  export default {
-    components: {
-      DatePicker,
-    },
-    setup(): Obj {
-      const focus = (e: Event, inputNumber: number): void => {
-        e.preventDefault();
-        console.log('focus:' + inputNumber);
-      };
-
-      return { focus };
-    },
+  const focus = () => {
+    console.log('focus');
   };
 </script>
+
+<template>
+  <DatePicker dual-input clearable @focus="focus"></DatePicker>
+</template>
 
 <style>
   #app {

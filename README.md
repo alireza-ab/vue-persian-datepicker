@@ -29,11 +29,11 @@ npm i @alireza-ab/vue-persian-datepicker
 ### Usage
 
 ```js
-import datePicker from "@alireza-ab/vue-persian-datepicker";
+import datePicker from '@alireza-ab/vue-persian-datepicker';
 
 new Vue({
-	components: { datePicker },
-	el: "#app",
+  components: { datePicker },
+  el: '#app',
 });
 ```
 
