@@ -10,6 +10,7 @@
 			@open="open"
 			@select="select"
 			@submit="submit"
+			@clear="clear"
 		>
 			<div
 				v-for="(slot, name) in slots"
@@ -75,6 +76,9 @@
 			},
 			select(e) {
 				this.status += "select:" + e.toString(this.props.type || "date");
+			},
+			clear() {
+				this.status += "clear";
 			},
 		},
 	};
