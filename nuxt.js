@@ -7,6 +7,7 @@ export default function (option) {
 	this.nuxt.hook("components:dirs", (dirs) => {
 		dirs.push({
 			path: join(__dirname, "src/components"),
+			pattern: "**/*.vue",
 		});
 	});
 }

@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@alireza-ab/persian-date@^2.6.1":
-  version "2.6.1"
-  resolved "https://registry.yarnpkg.com/@alireza-ab/persian-date/-/persian-date-2.6.1.tgz#ea452fa87c3e4b38ac93c42834c6d0c18f088be0"
-  integrity sha512-yXQGTJ5v79IHmqphRAWlROR6N/T19cByIjWe60sI1H1QtW2dx5ctZ0BEUMk6973+oxVLa4sJ3y/O1kk7uqPhEg==
+"@alireza-ab/persian-date@^2.6.2":
+  version "2.6.2"
+  resolved "https://registry.yarnpkg.com/@alireza-ab/persian-date/-/persian-date-2.6.2.tgz#03c968cc00a4976f83366ab1a0980698f0cc49bc"
+  integrity sha512-Xv7gi9z4a9Y+2C7iklVaOOAuWWPFUxJbvoDgOJFATNirTFvzWtiKWAwXY/rYfil4Z8TrPD2RSpvBQZ4PoemGrw==
 
 "@ampproject/remapping@^2.0.0":
   version "2.0.2"
