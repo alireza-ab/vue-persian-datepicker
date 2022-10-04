@@ -1523,6 +1523,7 @@
 			setDate(date) {
 				if (!date) return;
 				if (this.mode == "single" && typeof date === "string") date = [date];
+				this.selectedDates = [];
 				date.some((d, index) => {
 					d = this.core
 						.clone()
